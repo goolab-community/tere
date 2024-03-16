@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+  tere-api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: tere_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - ./.env
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - tere-mongo
+    restart: always
+  react-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_frontend
+    ports:
+      - "3000:3000"
+    # environment:
+    # REACT_APP_SYNCFUSION_LICENSE_KEY: ${REACT_APP_SYNCFUSION_LICENSE_KEY}
+    depends_on:
+      - tere-api
+    restart: always
+    volumes:
+       - ./frontend:/react-docker:delegated
+       - /frontend/node_modules
+
+  tere-mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example

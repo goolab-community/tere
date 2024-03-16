@@ -1,0 +1,13 @@
+.App {
+  text-align: center;
+}
+
+.leaflet-container {
+  height: 600px;
+  width: 100%;
+}
+
+.leaflet-div-icon {
+  background: transparent;
+  border: none;
+}
