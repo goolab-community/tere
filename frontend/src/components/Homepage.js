@@ -16,10 +16,12 @@ function Homepage() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [activePark, setActivePark] = useState(null);
+  const [marker_created, setMarkerCreated] = useState(false);
+  const [marker_count, setMarkerCount] = useState(0);
 
   const position = [45.383321536272049, -75.3372987731628];
 
-  const parkData = {
+  const [markers, setMarkers] = useState({
     "features": [
       {
         "type": "Feature",
@@ -47,52 +49,46 @@ function Homepage() {
       }
     ]
   }
-  
-  function addMarker(e) {
-    console.log(e.latlng);
-    const { lat, lng } = e.latlng;
-    marker_positions.push([lat, lng]);
-    setMarkerPosition(marker_positions);
-  }
+);
 
-  function MyComponent() {
-    const map = useMapEvents({
-      click: (e) => {
-        console.log(e.latlng);
-        const { lat, lng } = e.latlng;
-        console.log(lat, lng);
-        console.log(marker_positions);
-        // L.marker([lat, lng], { icon }).addTo(map);
-        marker_positions.push([lat, lng]);
-        setMarkerPosition(marker_positions);
-        handleShow();
+  function create_new_marker(latlng) {
+    markers.features.push({
+      "type": "Feature",
+      "properties": {
+        "PARK_ID": 1220,
+        "NAME": "New marker",
+        "DESCRIPTIO": "Flat asphalt surface, 10 components, City run learn to skateboard programs, City run skateboard camps in summer"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [latlng.lng, latlng.lat]
       }
     });
-    return null;
+    setMarkers(markers);
+    setMarkerCount(marker_count + 1);
+    console.log("Creating new marker at:", latlng);
   }
 
-  function BuildMarkers(m_positions) {
-    return (
-      <div>
-        {m_positions.map((position) => 
-          () =>{
-            console.log("Create marker with:", position);
-            const next_marker = <Marker position={position}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker>
-            let DefaultIcon = L.icon({
-              iconUrl: icon,
-              shadowUrl: iconShadow
-            });
-            next_marker.prototype.options.icon = DefaultIcon;
-            return next_marker;
-          }
-        )}
-      </div>
-    );
-  }
+
+  function LocationMarker() {
+    const [position, setPosition] = useState(null)
+    const map = useMapEvents({
+      click(e) {
+        create_new_marker(e.latlng) //console.log(`click on: ${e.latlng} `) // map.locate()
+      },
+      locationfound(e) {
+        setPosition(e.latlng)
+        map.flyTo(e.latlng, map.getZoom())
+        console.log("Location found:", e.latlng);
+      },
+    })
+  
+    return position === null ? null : (
+      <Marker position={position}>
+        <Popup>You are here</Popup>
+      </Marker>
+    )
+  }  
 
   useEffect(() => {
     // Fetch user data from the API endpoint
@@ -105,26 +101,6 @@ function Homepage() {
       .then((data) => setUserData(data))
       .catch((error) => console.error(error));
   }, []);
-
-  function AddNewMarker(show, handleClose) {
-    console.log("AddNewMarker", show, handleClose);
-    return (
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary">
-            Close
-          </Button>
-          <Button variant="primary">
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    )
-  }
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
@@ -140,12 +116,13 @@ function Homepage() {
   return (
     <div>
       {userData && (`Welcome ${username} to the Tere app!`)}
+      <h1>Map {markers.features.length} </h1>
       <MapContainer center={position} zoom={13} scrollWheelZoom={true} style={{height: "100vh", width: "100vw"}}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {parkData.features.map(park => (
+        {markers.features.map(park => (
           <Marker
             key={park.properties.PARK_ID}
             position={[
@@ -163,12 +140,11 @@ function Homepage() {
                 <p>{park.properties.DESCRIPTIO}</p>
               </div>
             </Popup>
-            </Marker>
+          </Marker>
         ))}
+        <LocationMarker />
       </MapContainer>
     </div>
   );
 }
 export default Homepage;
-
-let pp = [[ 51.49901887040356, -0.11003494262695312 ], [ 51.492713457097935, -0.09441375732421875 ], [ 51.49506473014368, -0.07776260375976564 ], [ 51.49431661096613, -0.07810592651367189 ] ];
