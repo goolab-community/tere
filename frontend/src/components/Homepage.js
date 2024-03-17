@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Map, Popup, useMap, useMapEvents } fro
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import {Card, } from 'react-bootstrap';
 import L from 'leaflet';
 import "leaflet/dist/leaflet.css";
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -48,8 +49,7 @@ function Homepage() {
         }
       }
     ]
-  }
-);
+  });
 
   function create_new_marker(latlng) {
     markers.features.push({
@@ -135,10 +135,16 @@ function Homepage() {
             }}
             >
             <Popup>
-              <div>
-                <h2>{park.properties.NAME}</h2>
-                <p>{park.properties.DESCRIPTIO}</p>
-              </div>
+              <Card style={{ width: '18rem' }}>
+                <Card.Img variant="top" src="https://hips.hearstapps.com/ghk.h-cdn.co/assets/17/30/pit-bull.jpg" />
+                <Card.Body>
+                  <Card.Title>{park.properties.NAME}</Card.Title>
+                  <Card.Text>
+                    {park.properties.DESCRIPTIO}
+                  </Card.Text>
+                  <Button variant="primary">Go somewhere</Button>
+                </Card.Body>
+              </Card>
             </Popup>
           </Marker>
         ))}
