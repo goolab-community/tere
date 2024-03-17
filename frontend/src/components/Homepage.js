@@ -15,10 +15,39 @@ function Homepage() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [activePark, setActivePark] = useState(null);
 
-  const position = [51.505, -0.09];
+  const position = [45.383321536272049, -75.3372987731628];
 
-
+  const parkData = {
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "PARK_ID": 960,
+          "NAME": "Bearbrook Skateboard Park",
+          "DESCRIPTIO": "Flat asphalt surface, 5 components"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-75.3372987731628, 45.383321536272049]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "PARK_ID": 1219,
+          "NAME": "Bob MacQuarrie Skateboard Park (SK8 Extreme Park)",
+          "DESCRIPTIO": "Flat asphalt surface, 10 components, City run learn to skateboard programs, City run skateboard camps in summer"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-75.546518086577947, 45.467134581917357]
+        }
+      }
+    ]
+  }
+  
   function addMarker(e) {
     console.log(e.latlng);
     const { lat, lng } = e.latlng;
@@ -102,32 +131,40 @@ function Homepage() {
 
   let DefaultIcon = L.icon({
     iconUrl: icon,
-    shadowUrl: iconShadow
+    shadowUrl: iconShadow,
+    iconSize: [28, 46],
+    iconAnchor: [17, 46],
   });
   L.Marker.prototype.options.icon = DefaultIcon;
-  //  {marker_positions.map((position) => 
 
   return (
     <div>
       {userData && (`Welcome ${username} to the Tere app!`)}
-      <MapContainer id="map_container" center={position} zoom={13} scrollWheelZoom={false} style={{ height: '100vh', width: '100vw' }}>
+      <MapContainer center={position} zoom={13} scrollWheelZoom={true} style={{height: "100vh", width: "100vw"}}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup... <br /> Easily customizable.
-          </Popup>
-        </Marker>
-        <MarkerClusterGroup>
-          {marker_positions.map((position, idx) =>
-            <Marker key={idx} position={position} />
-          )}
-        </MarkerClusterGroup>
-        {/* <BuildMarkers m_positions={marker_positions} /> */}
-        <MyComponent />
-        {/*<AddNewMarker show={show} handleClose={handleClose} />*/}
+        {parkData.features.map(park => (
+          <Marker
+            key={park.properties.PARK_ID}
+            position={[
+              park.geometry.coordinates[1],
+              park.geometry.coordinates[0]
+            ]}
+            onClick={() => {
+              setActivePark(park);
+              console.log("Active park:", park);
+            }}
+            >
+            <Popup>
+              <div>
+                <h2>{park.properties.NAME}</h2>
+                <p>{park.properties.DESCRIPTIO}</p>
+              </div>
+            </Popup>
+            </Marker>
+        ))}
       </MapContainer>
     </div>
   );
