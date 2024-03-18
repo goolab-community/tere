@@ -25,39 +25,91 @@ function Homepage() {
   const [markers, setMarkers] = useState({
     "features": [
       {
-        "type": "Feature",
+        "type": "dog",
         "properties": {
-          "PARK_ID": 960,
-          "NAME": "Bearbrook Skateboard Park",
-          "DESCRIPTIO": "Flat asphalt surface, 5 components"
+          "id": 960,
+          "sex": "M",
+          "bread": "Pitbull",
+          "age": 2,
+          "age_guess": "Adult",
+          "name": "Buddy",
+          "description": "Buddy is a very friendly dog. He loves to play and run around. He is very good with kids and other dogs. He is a very good",
+        },
+        "media": {
+          "photos": [
+            "https://hips.hearstapps.com/ghk.h-cdn.co/assets/17/30/pit-bull.jpg"
+          ],
+          "videos": []
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [-75.3372987731628, 45.383321536272049]
+          "coordinates": [-44.3372987731628, 41.383321536272049]
         }
       },
       {
-        "type": "Feature",
+        "type": "cat",
         "properties": {
-          "PARK_ID": 1219,
-          "NAME": "Bob MacQuarrie Skateboard Park (SK8 Extreme Park)",
-          "DESCRIPTIO": "Flat asphalt surface, 10 components, City run learn to skateboard programs, City run skateboard camps in summer"
+          "id": 961,
+          "sex": "F",
+          "bread": "british-shorthair",
+          "age": 4,
+          "age_guess": "Adult",
+          "name": "Sassy",
+          "description": "Sassy is a very friendly cat. She loves to play and run around. She is very good with kids and other cats. She is a very good",
+        },
+        "media": {
+          "photos": [
+            "https://image.petmd.com/files/styles/978x550/public/2023-04/british-shorthair.jpg"
+          ],
+          "videos": []
         },
         "geometry": {
           "type": "Point",
-          "coordinates": [-75.546518086577947, 45.467134581917357]
+          "coordinates": [-43.3472987731628, 40.383321536272049]
         }
-      }
+      },
+      {
+        "type": "dog",
+        "properties": {
+          "id": 962,
+          "sex": "M",
+          "bread": "Poodle",
+          "age": 1,
+          "age_guess": "Puppy",
+          "name": "Max",
+          "description": "Max is a very friendly dog. He loves to play and run around. He is very good with kids and other dogs. He is a very good",
+        },
+        "media": {
+          "photos": [
+            "https://www.thesprucepets.com/thmb/-Bx_TMMdE_hWd2p2x_zKJlbN-EI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/irish-dog-names-4798912-hero-fedcedd8960f42788c2f58e269952b4a.jpg"
+          ],
+          "videos": []
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-42.3572987731628, 39.383321536272049]
+        }
+      },
     ]
   });
 
   function create_new_marker(latlng) {
     markers.features.push({
-      "type": "Feature",
+      "type": "dog",
       "properties": {
-        "PARK_ID": 1220,
-        "NAME": "New marker",
-        "DESCRIPTIO": "Flat asphalt surface, 10 components, City run learn to skateboard programs, City run skateboard camps in summer"
+        "id": 963,
+        "sex": "M",
+        "bread": "Staffordshire Terrier",
+        "age": 2,
+        "age_guess": "Adult",
+        "name": "Buddy",
+        "description": "Buddy is a very friendly dog. He loves to play and run around. He is very good with kids and other dogs. He is a very good",
+      },
+      "media": {
+        "photos": [
+          "https://s.yimg.com/ny/api/res/1.2/NjTKtW_PpJqHrsAsC4xU9Q--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQzNw--/https://media.zenfs.com/en/pethelpful_915/131119842bdc193910b6291d087884b3"
+        ],
+        "videos": []
       },
       "geometry": {
         "type": "Point",
@@ -122,25 +174,25 @@ function Homepage() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {markers.features.map(park => (
+        {markers.features.map(marker => (
           <Marker
-            key={park.properties.PARK_ID}
+            key={marker.properties.id}
             position={[
-              park.geometry.coordinates[1],
-              park.geometry.coordinates[0]
+              marker.geometry.coordinates[1],
+              marker.geometry.coordinates[0]
             ]}
             onClick={() => {
-              setActivePark(park);
-              console.log("Active park:", park);
+              setActivePark(marker);
+              console.log("Active marker:", marker);
             }}
             >
             <Popup>
               <Card style={{ width: '18rem' }}>
-                <Card.Img variant="top" src="https://hips.hearstapps.com/ghk.h-cdn.co/assets/17/30/pit-bull.jpg" />
+                <Card.Img variant="top" src={marker.media.photos[0]} />
                 <Card.Body>
-                  <Card.Title>{park.properties.NAME}</Card.Title>
+                  <Card.Title>{marker.properties.name}</Card.Title>
                   <Card.Text>
-                    {park.properties.DESCRIPTIO}
+                    {marker.properties.description}
                   </Card.Text>
                   <Button variant="primary">Go somewhere</Button>
                 </Card.Body>
