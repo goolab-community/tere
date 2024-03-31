@@ -21,7 +21,9 @@ function SiteNavbar() {
   return (
       <Navbar expand="lg" className="bg-body-tertiary" bg="light" data-bs-theme="light">
         <Container>
-          <Navbar.Brand href="/">Home</Navbar.Brand>
+          <Navbar.Brand href="/">Map</Navbar.Brand>
+          <Navbar.Brand href="/animals">Animals</Navbar.Brand>
+          <Navbar.Brand href="/history">History</Navbar.Brand>
           <Nav className="me-auto">
             {links}
           </Nav>

@@ -57,15 +57,19 @@ Tables
     bread_id: foreign key to the breads table
     tag_id: str, null
     rfid_code: str, null
-    age: int, null
-    age_from: int, null
-    age_to: int, null
+    age_year: int, null
+    age_month: int, null
+    age_year_from: int, null
+    age_month_from: int, null
+    age_year_to: int, null
+    age_month_to: int, null
     name: str, null
     description: str, null
     media_id: foreign key to the media table
     latitude:  float
     longitude: float
-    last_ecent_id: foreign key to the history table
+    address: str, null
+    last_event_id: foreign key to the history table
 
 ### caretakers_animals:
     id: int, decimal
