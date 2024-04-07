@@ -55,7 +55,9 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
             raise HTTPException(status_code=400, detail="Invalid password")
         if db_user.is_active:
             logger.info("Generating token...")
-            token = generate_token(db_user.email)
+            token = generate_token(
+                {"email": db_user.email, "username": db_user.username, "is_active": db_user.is_active}
+            )
             user_dict = {"_id": str(db_user.id)}
             user_dict["token"] = token
             return user_dict

@@ -13,18 +13,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
 
-def generate_token(email: str) -> str:
-    payload = {"email": email}
-    token = jwt_encode(payload, API_SECRET_KEY, algorithm="HS256")
-    return token
-
-
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def generate_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, API_SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -40,7 +34,15 @@ def get_password_hash(password):
 
 
 def verify_token(token):
-    return decode(token, API_SECRET_KEY, algorithms=[ALGORITHM])
+    try:
+        payload = jwt.decode(token, API_SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
 
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(security)):

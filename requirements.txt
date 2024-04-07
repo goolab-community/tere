@@ -4,4 +4,5 @@ SQLAlchemy
 psycopg2
 alembic
 python-jose[cryptography]
+bcrypt==4.0.1
 passlib[bcrypt]
