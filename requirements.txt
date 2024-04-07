@@ -1,2 +1,7 @@
 pymongo
 PyJWT
+SQLAlchemy
+psycopg2
+alembic
+python-jose[cryptography]
+passlib[bcrypt]

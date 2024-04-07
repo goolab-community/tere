@@ -54,7 +54,7 @@ Tables
     id: int, decimal 
     species: enum
     sex: enum, null
-    bread_id: foreign key to the breads table
+    breed_id: foreign key to the breeds table
     tag_id: str, null
     rfid_code: str, null
     age_year: int, null

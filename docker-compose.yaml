@@ -16,7 +16,7 @@ services:
     depends_on:
       - tere-mongo
     restart: always
-  react-app:
+  tere-react:
     build:
       context: .
       dockerfile: ./Dockerfile_frontend
@@ -42,3 +42,25 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+
+  tere-db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+
+  tere-pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: tere@tere.ge
+      PGADMIN_DEFAULT_PASSWORD: tere
+    depends_on:
+      - tere-db
