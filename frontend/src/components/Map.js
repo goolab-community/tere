@@ -92,7 +92,7 @@ function MapPage() {
     $("#save-marker-btn").hide();
     $("#cancel-marker-btn").hide();
     // Fetch user data from the API endpoint
-    fetch("http://localhost:8000/api/user", {
+    fetch("http://localhost:8000/api/v1/auth/user", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -271,7 +271,6 @@ function MapPage() {
         )
         // --
         )}
-        <MyVerticallyCenteredModal selected_marker={selected_marker} show={createAnimalModalShow} onHide={() => setCreateAnimalModalShow(false) }/>
         <LocationMarker />
       </MapContainer>
     </div>

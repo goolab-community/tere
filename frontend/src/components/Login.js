@@ -9,14 +9,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const handleLogin = () => {
     // Send login request to the backend
     axios
-      .post("http://localhost:8000/login", { email, password })
+      .post("http://localhost:8000/api/v1/auth/login", { login, password })
       .then(function (response) {
         console.log(response);
         console.log(response.data);
@@ -42,7 +42,7 @@ function Login() {
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Form.Control type="email" placeholder="Enter email" value={login} onChange={(e) => setLogin(e.target.value)} />
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
           </Form.Text>

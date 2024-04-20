@@ -16,12 +16,13 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(null);
+  const [isRegistered, setIsRegistered] = useState(false);
   const navigate = useNavigate();
   const handleRegister = () => {
     // Send registration request to the backend
     axios
-      .post("http://localhost:8000/register", { username, email, password })
+      .post("http://127.0.0.1:8000/api/v1/auth/register", { username, email, password })
       .then((response) => {
         setMessage(response.data.message);
         const { username, email, token } = response.data;
@@ -29,8 +30,11 @@ function Register() {
         localStorage.setItem("email", email);
         localStorage.setItem("token", token);
         // Redirect to homepage using navigate
-        navigate("/"); // Replace '/' with the homepage URL if needed
+        //navigate("/"); // Replace '/' with the homepage URL if needed
+        //logout();
+        alert("Registration successful. Please login to continue.");
         logout();
+        navigate("/login");
       })
       .catch((error) => {
         console.error(error);

@@ -21,7 +21,7 @@ from settings import BASE_URL
 from routes import auth, animal, history
 
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     docs_url=f"{BASE_URL}/docs",
