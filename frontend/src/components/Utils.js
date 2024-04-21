@@ -1,9 +1,17 @@
 import { Form, Row, Col } from 'react-bootstrap';
 import React from 'react';
 
-function SliderWithInputFormControl({id, name, default_value, max}) {
+function SliderWithInputFormControl({id, name, value, max, setValue}) {
 
-    const [ value, setValue ] = React.useState(default_value);
+    // const [ _value, setLocalValue ] = React.useState(value);
+
+    function setVal(e){
+      // console.log(setValue);
+      console.log("setVal", e.target.value);
+      setValue(e.target.value);
+      // setLocalValue(e.target.value);
+    };
+
     return (
       <Form key={id}>
         <Form.Group as={Row}>
@@ -12,11 +20,11 @@ function SliderWithInputFormControl({id, name, default_value, max}) {
             <Form.Range
               value={value}
               max={max}
-              onChange={e => setValue(e.target.value)}
+              onChange={e => setVal(e)}
             />
           </Col>
           <Col xs="3">
-            <Form.Text>
+            <Form.Text id={id+"_value"}>
               {value}
             </Form.Text>
           </Col>

@@ -63,7 +63,6 @@ function MapPage() {
     });
     setMarkers(markers);
     setMarkerCount(marker_count + 1);
-    // console.log("Creating new marker at:", latlng);
   }
 
   function LocationMarker() {
@@ -144,7 +143,7 @@ function MapPage() {
   }
 
   function MyVerticallyCenteredModal(props) {
-    // console.log("Selected marker:", props);
+    console.log("Selected marker:", props);
     return (
       <Modal
         {...props}
@@ -163,9 +162,9 @@ function MapPage() {
           <p>
             {props.selected_marker != null && props.selected_marker.properties.description}
           </p>
-          {<NewAnimal1 marker={props.selected_marker} createAnimalModalShow={createAnimalModalShow}
+          <NewAnimal1 marker={props.selected_marker} createAnimalModalShow={createAnimalModalShow}
             setSelectedMarker={null}
-            setCreateAnimalModalShow={setCreateAnimalModalShow}/>}
+          setCreateAnimalModalShow={setCreateAnimalModalShow}/>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onHide}>Close</Button>
@@ -271,6 +270,10 @@ function MapPage() {
         )
         // --
         )}
+        {
+          <MyVerticallyCenteredModal selected_marker={selected_marker} show={createAnimalModalShow}
+            onHide={() => setCreateAnimalModalShow(false) }/>
+        }
         <LocationMarker />
       </MapContainer>
     </div>
