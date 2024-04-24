@@ -21,8 +21,14 @@ function Register() {
   const navigate = useNavigate();
   const handleRegister = () => {
     // Send registration request to the backend
+    console.log("Registering...");
+    console.log(username, email, password);
     axios
-      .post("http://127.0.0.1:8000/api/v1/auth/register", { username, email, password })
+      .post("http://localhost:8000/api/v1/auth/register", { 
+        "username": username,
+        "email": email,
+        "password": password,
+      })
       .then((response) => {
         setMessage(response.data.message);
         const { username, email, token } = response.data;
@@ -57,7 +63,7 @@ function Register() {
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </Form.Group>
-        <Button variant="primary" type="submit" onClick={handleRegister}>
+        <Button variant="primary" type="button" onClick={handleRegister}>
           Register
         </Button>
         <Form.Label>{message && <p>{message}</p>}</Form.Label>

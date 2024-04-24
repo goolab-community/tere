@@ -8,6 +8,7 @@ import schemas
 import models
 from database import get_db
 from sqlalchemy.orm import Session
+from pydantic import parse_obj_as
 from utils import (
     generate_token,
     verify_password,
@@ -26,6 +27,87 @@ router = APIRouter(
 )
 
 
-@router.post("/animals")
+@router.get("/animals")
 def animals(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db)):
     return db.query(models.Animal).all()
+
+
+@router.get("/animals_open")
+def animals_open(db: Session = Depends(get_db)):
+    return db.query(models.Animal).all()
+
+
+# Animal model CRUD
+@router.post("/create", response_model=dict)
+def create_animal(animal: schemas.Animal, db: Session = Depends(get_db)):
+    try:
+        logger.info((animal.species, animal.sex))
+        new_animal = models.Animal(
+            species=animal.species,
+            sex=animal.sex,
+            breed_id=animal.breed_id,
+            tag_id=animal.tag_id,
+            rfid_code=animal.rfid_code,
+            age_year=animal.age_year,
+            age_month=animal.age_month,
+            age_year_from=animal.age_year_from,
+            age_month_from=animal.age_month_from,
+            age_year_to=animal.age_year_to,
+            age_month_to=animal.age_month_to,
+            name=animal.name,
+            description=animal.description,
+            latitude=animal.latitude,
+            longitude=animal.longitude,
+            address=animal.address
+        )
+        db.add(new_animal)
+        db.commit()
+        return {
+            "animal": new_animal.to_json()
+        }
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.get("/read/{animal_id}", response_model=dict)
+def read_animal(animal_id: int, db: Session = Depends(get_db)):
+    animal = db.query(models.Animal).filter(models.Animal.id == animal_id).first()
+    if animal:
+        return {
+            "animal": animal.to_json()
+        }
+    else:
+        raise HTTPException(status_code=404, detail="Animal not found")
+
+
+@router.put("/update/{animal_id}", response_model=dict)
+def update_animal(animal_id: int, animal: schemas.Animal, db: Session = Depends(get_db)):
+    try:
+        db_animal = db.query(models.Animal).filter(models.Animal.id == animal_id).first()
+        if db_animal:
+            db_animal.species = animal.species
+            db_animal.sex = animal.sex
+            db_animal.breed_id = animal.breed_id
+            db_animal.tag_id = animal.tag_id
+            db_animal.rfid_code = animal.rfid_code
+            db_animal.age_year = animal.age_year
+            db_animal.age_month = animal.age_month
+            db_animal.age_year_from = animal.age_year_from
+            db_animal.age_month_from = animal.age_month_from
+            db_animal.age_year_to = animal.age_year_to
+            db_animal.age_month_to = animal.age_month_to
+            db_animal.name = animal.name
+            db_animal.description = animal.description
+            db_animal.latitude = animal.latitude
+            db_animal.longitude = animal.longitude
+            db_animal.address = animal.address
+            db.commit()
+            return {
+                "animal": db_animal.to_json()
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Animal not found")
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
