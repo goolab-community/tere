@@ -45,7 +45,7 @@ def create_animal(animal: schemas.Animal, db: Session = Depends(get_db)):
         new_animal = models.Animal(
             species=animal.species,
             sex=animal.sex,
-            breed_id=animal.breed_id,
+            breed_id=None,  # animal.breed_id,
             tag_id=animal.tag_id,
             rfid_code=animal.rfid_code,
             age_year=animal.age_year,
@@ -109,5 +109,6 @@ def update_animal(animal_id: int, animal: schemas.Animal, db: Session = Depends(
         else:
             raise HTTPException(status_code=404, detail="Animal not found")
     except Exception as e:
+        raise e
         logger.error(e)
         raise HTTPException(status_code=500, detail="Internal Server Error")

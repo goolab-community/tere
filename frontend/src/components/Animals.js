@@ -7,6 +7,10 @@ import {Card, Col, Row, Image} from 'react-bootstrap';
 import { Grid, h, createRef as gCreateRef } from "gridjs";
 import { Popup } from "react-leaflet";
 import {SliderWithInputFormControl} from "./Utils";
+import Moment from 'react-moment';
+import moment from 'moment';
+import axios from "axios";
+
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -59,6 +63,62 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
       setSelectedFile(file);
     }
 
+    function submit_handler(e) {
+      console.log("Submit Marker: ", marker.geometry.coordinates);
+      console.log(selected_file);
+      console.log(description);
+      console.log(specie);
+      console.log(sex);
+      console.log(bread);
+      console.log(age_month_comp, age_year_comp);
+      console.log(age_from_month_comp, age_from_year_comp);
+      console.log(age_to_month_comp, age_to_year_comp);
+      console.log(tag_id);
+      console.log(rfid_code);
+      console.log(name);
+      console.log(address);
+
+      const new_animal = {
+        "species": specie,
+        "sex": sex,
+        // "breed_id": bread,
+        "tag_id": tag_id,
+        "rfid_code": rfid_code,
+        "age_year": age_year_comp,
+        "age_month": age_month_comp,
+        "age_year_from": age_from_year_comp,
+        "age_month_from": age_from_month_comp,
+        "age_year_to": age_to_year_comp,
+        "age_month_to": age_to_month_comp,
+        "name": name,
+        "description": description,
+        "medias": [
+          {
+            "url": "string",
+            "type": "image",
+            "uploaded_by_user_id": 1,
+            "date": moment().toISOString(new Date()),
+            "description": "string",
+            "animal_id": 0
+          }
+        ],
+        "latitude": marker.geometry.coordinates[1],
+        "longitude": marker.geometry.coordinates[0],
+        "address": address
+      };
+
+      console.log(new_animal);
+
+      axios.post("http://localhost:8000/api/v1/animal/create", new_animal).then((response) => {
+        console.log(response);
+        alert("New animal created successfully");
+        setCreateAnimalModalShow(false);
+      }).catch((error) => {
+        console.error(error);
+        alert("Failed to create new animal");
+      });
+    }
+
     useEffect(() => {
         if (selected_file !== null) {
           const reader = new FileReader();
@@ -89,15 +149,15 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea3">
           <Form.Label>Sex</Form.Label>
           <Form.Control as="select" onChange={(e) => {setSex(e.target.value)}}>
-            <option value={"M"}>Male</option>
-            <option value={"F"}>Female</option>
+            <option value={"male"}>Male</option>
+            <option value={"female"}>Female</option>
           </Form.Control>
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea4">
           <Form.Label>Bread</Form.Label>
           <Form.Control as="select" placeholder="Bread" onChange={(e) => {setBread(e.target.value)}} >
-            <option value={"Pitbull"}>Pitbull</option>
-            <option value={"Poodle"}>Poodle</option>
+            <option value={"pitbull"}>Pitbull</option>
+            <option value={"poodle"}>Poodle</option>
             <option value={"british-shorthair"}>British Shorthair</option>
           </Form.Control>
         </Form.Group>
@@ -150,20 +210,7 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
         </>}
         <Button variant="primary" onClick={
             (e) => {
-              console.log("Submit Marker: ", marker.geometry.coordinates);
-              console.log(selected_file);
-              console.log(description);
-              console.log(specie);
-              console.log(sex);
-              console.log(bread);
-              console.log(age_month_comp, age_year_comp);
-              console.log(age_from_month_comp, age_from_year_comp);
-              console.log(age_to_month_comp, age_to_year_comp);
-              console.log(tag_id);
-              console.log(rfid_code);
-              console.log(name);
-              console.log(address);
-
+              submit_handler(e);
             }
           } >
           Submit
