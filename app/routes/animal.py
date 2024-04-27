@@ -19,6 +19,8 @@ from utils import (
 )
 # from typing import Annotated
 from settings import BASE_URL
+from gcp import generate_upload_signed_url_v4
+from datetime import datetime
 
 
 router = APIRouter(
@@ -39,9 +41,12 @@ def animals_open(db: Session = Depends(get_db)):
 
 # Animal model CRUD
 @router.post("/create", response_model=dict)
-def create_animal(animal: schemas.Animal, db: Session = Depends(get_db)):
+def create_animal(animal: schemas.Animal,
+                  user: HTTPAuthorizationCredentials = Depends(get_current_user),
+                  db: Session = Depends(get_db)):
     try:
         logger.info((animal.species, animal.sex))
+        logger.info(user)
         new_animal = models.Animal(
             species=animal.species,
             sex=animal.sex,
@@ -62,8 +67,20 @@ def create_animal(animal: schemas.Animal, db: Session = Depends(get_db)):
         )
         db.add(new_animal)
         db.commit()
+        media = models.Media(
+            url=f"images/animal_main_image_{new_animal.id}.jpg",
+            type="image",
+            uploaded_by_user_id=user.get("user_id"),
+            date=datetime.now(),
+            animal_id=new_animal.id
+        )
+        db.add(media)
+        db.commit()
+        url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_main_image_{new_animal.id}.jpg")
         return {
-            "animal": new_animal.to_json()
+            "animal": new_animal.to_json(),
+            "message": "Animal created successfully",
+            "upload_url":  url
         }
     except Exception as e:
         logger.error(e)

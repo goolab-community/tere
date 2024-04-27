@@ -3,7 +3,7 @@ const animals = [
       "type": "dog",
       "properties": {
         "id": 960,
-        "sex": "M",
+        "sex": "male",
         "bread": "Pitbull",
         "age": 2,
         "age_guess": "Adult",
@@ -26,7 +26,7 @@ const animals = [
       "type": "cat",
       "properties": {
         "id": 961,
-        "sex": "F",
+        "sex": "female",
         "bread": "british-shorthair",
         "age": 4,
         "age_guess": "Adult",
@@ -49,7 +49,7 @@ const animals = [
       "type": "dog",
       "properties": {
         "id": 962,
-        "sex": "M",
+        "sex": "male",
         "bread": "Poodle",
         "age": 1,
         "age_guess": "Puppy",

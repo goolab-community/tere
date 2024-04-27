@@ -31,10 +31,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "https://storage.googleapis.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-Custom-Header"],
+    max_age=3600
 )
 
 # client = MongoClient("mongodb://root:example@tere-mongo:27017")

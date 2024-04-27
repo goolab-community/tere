@@ -31,7 +31,7 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
   function NewAnimalForm(){
     const [description, setDescription] = useState(null);
     const [specie, setSpecie] = useState("dog");
-    const [sex, setSex] = useState("M");
+    const [sex, setSex] = useState("male");
     const [bread, setBread] = useState("Pitbull");
     const [age_month_comp, setAgeMonthComp] = useState(1);
     const [age_year_comp, setAgeYearComp] = useState(1);
@@ -61,6 +61,24 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
         return;
       }
       setSelectedFile(file);
+    }
+
+    function uploadFile(file, signedUrl) {
+      console.log("Uploading file to S3:", file.type, "URL:", signedUrl);
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`,
+          'Content-Type': 'application/octet-stream',
+        },
+      };
+  
+      axios.put(signedUrl, file, config)
+        .then(response => {
+            console.log('File uploaded successfully:', response);
+        })
+        .catch(error => {
+            console.error('Error uploading file:', error);
+        });
     }
 
     function submit_handler(e) {
@@ -109,8 +127,16 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
 
       console.log(new_animal);
 
-      axios.post("http://localhost:8000/api/v1/animal/create", new_animal).then((response) => {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`,
+          'Content-Type': 'application/json',
+        },
+      };
+
+      axios.post("http://localhost:8000/api/v1/animal/create", new_animal, config).then((response) => {
         console.log(response);
+        uploadFile(selected_file, response.data.upload_url);
         alert("New animal created successfully");
         setCreateAnimalModalShow(false);
       }).catch((error) => {

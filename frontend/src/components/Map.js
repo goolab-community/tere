@@ -42,7 +42,7 @@ function MapPage() {
       "type": "dog",
       "properties": {
         "id": 963,
-        "sex": "M",
+        "sex": "male",
         "bread": "Staffordshire Terrier",
         "age": 2,
         "age_guess": "Adult",

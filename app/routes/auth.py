@@ -56,7 +56,12 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
         if db_user.is_active:
             logger.info("Generating token...")
             token = generate_token(
-                {"email": db_user.email, "username": db_user.username, "is_active": db_user.is_active}
+                {
+                    "email": db_user.email,
+                    "username": db_user.username,
+                    "user_id": db_user.id,
+                    "is_active": db_user.is_active
+                }
             )
             user_dict = {"_id": str(db_user.id)}
             user_dict["token"] = token
@@ -64,7 +69,6 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
         else:
             raise HTTPException(status_code=400, detail="User is not active")
     except Exception as e:
-        raise e
         return HTTPException(status_code=400, detail=str(e))
 
 

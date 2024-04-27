@@ -3,3 +3,6 @@
 
 # GCP service account key
 service_account.json
+
+# test env folder
+junk
