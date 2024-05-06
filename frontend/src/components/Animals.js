@@ -181,9 +181,13 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea4">
           <Form.Label>Bread</Form.Label>
-          <Form.Control as="select" placeholder="Bread" onChange={(e) => {setBread(e.target.value)}} >
+          <Form.Control as="select" placeholder="Breed" onChange={(e) => {setBread(e.target.value)}} >
             <option value={"pitbull"}>Pitbull</option>
             <option value={"poodle"}>Poodle</option>
+            <option value={"georgian-sheppard"}>Georgian Sheppard</option>
+            <option value={"german-sheppard"}>German Sheppard</option>
+            <option value={"labrador-retriever"}>Labrador Retriever</option>
+            <option value={"Mixed"}>Mixed</option>
             <option value={"british-shorthair"}>British Shorthair</option>
           </Form.Control>
         </Form.Group>

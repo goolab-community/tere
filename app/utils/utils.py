@@ -46,6 +46,7 @@ def verify_token(token):
 
 
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(security)):
+    logger.info(token)
     user = verify_token(token.credentials)
     if not user:
         raise HTTPException(
