@@ -82,7 +82,7 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
     }
 
     function submit_handler(e) {
-      console.log("Submit Marker: ", marker.geometry.coordinates);
+      console.log("Submit Marker: ", marker.latitude, marker.longitude);
       console.log(selected_file);
       console.log(description);
       console.log(specie);
@@ -120,8 +120,8 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
             "animal_id": 0
           }
         ],
-        "latitude": marker.geometry.coordinates[1],
-        "longitude": marker.geometry.coordinates[0],
+        "latitude": marker.latitude,
+        "longitude": marker.longitude,
         "address": address
       };
 

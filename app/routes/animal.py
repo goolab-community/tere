@@ -19,7 +19,7 @@ from utils import (
 )
 # from typing import Annotated
 from settings import BASE_URL
-from gcp import generate_upload_signed_url_v4
+from gcp import generate_upload_signed_url_v4, generate_download_signed_url_v4
 from datetime import datetime
 
 
@@ -31,7 +31,16 @@ router = APIRouter(
 
 @router.get("/animals")
 def animals(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db)):
-    return db.query(models.Animal).all()
+    animals = db.query(models.Animal).all()
+
+    for animal in animals:
+        animal.medias = db.query(models.Media).filter(models.Media.animal_id == animal.id).all()
+        if animal.medias and len(animal.medias) > 0:
+            animal.public_url = generate_download_signed_url_v4(
+                "tere-media-bucket",
+                animal.medias[0].url
+            )
+    return animals
 
 
 @router.get("/animals_open")
@@ -126,6 +135,24 @@ def update_animal(animal_id: int, animal: schemas.Animal, db: Session = Depends(
         else:
             raise HTTPException(status_code=404, detail="Animal not found")
     except Exception as e:
-        raise e
+        # raise e
         logger.error(e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.get("/media/{media_id}", response_model=dict)
+def read_media(media_type: str, media_id: int, db: Session = Depends(get_db)):
+    media = db.query(models.Media).filter(models.Media.id == media_id).first()
+    if media:
+        try:
+            url = generate_download_signed_url_v4("tere-media-bucket", media.url)
+        except Exception as e:
+            logger.error(e)
+            raise HTTPException(status_code=404, detail="Media not found")
+        return {
+            "media": {
+                "url": url,
+            }
+        }
+    else:
+        raise HTTPException(status_code=404, detail="Media not found")

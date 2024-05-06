@@ -13,7 +13,6 @@ import {red_icon, green_icon, blue_icon, yellow_icon, Defaulticon} from "./Icons
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import LocationComponent from './LocationComponent';
 import {NewAnimal, NewAnimal1} from './Animals';
-import animals from './PropData';
 import {SliderWithInputFormControl} from "./Utils";
 
 
@@ -34,35 +33,29 @@ function MapPage() {
   const popupElRef = useRef(null);
 
   const position = [41.799188, 44.797391];
-  const [markers, setMarkers] = useState({"features": animals});
-
+  // const [markers, setMarkers] = useState({"features": animals});
+  const [db_animals, setAnimals] = useState([]);
 
   function create_new_marker(latlng) {
-    markers.features.push({
-      "type": "dog",
-      "properties": {
-        "id": 963,
-        "sex": "male",
-        "bread": "Staffordshire Terrier",
-        "age": 2,
-        "age_guess": "Adult",
-        "name": "Buddy",
-        "description": "Buddy is a very friendly dog. He loves to play and run around. He is very good with kids and other dogs. He is a very good",
-      },
-      "media": {
-        "photos": [
-          "https://s.yimg.com/ny/api/res/1.2/NjTKtW_PpJqHrsAsC4xU9Q--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQzNw--/https://media.zenfs.com/en/pethelpful_915/131119842bdc193910b6291d087884b3"
-        ],
-        "videos": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [latlng.lng, latlng.lat]
-      },
-      "icon_color": "red"
-    });
-    setMarkers(markers);
+    console.log("Creating new marker");
+    console.log(latlng);
+    console.log(db_animals);
+    if (latlng != null) {
+      db_animals.push(
+      {
+        "latitude": latlng.lat,
+        "longitude": latlng.lng,
+      });
+    }
+    setAnimals(db_animals);
     setMarkerCount(marker_count + 1);
+  }
+
+  function set_animals(data) {
+    console.log("Setting markers");
+    console.log(data);
+    setAnimals(data);
+    // setMarkers(animals);
   }
 
   function LocationMarker() {
@@ -96,9 +89,20 @@ function MapPage() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
-      .then((response) => response.json())
-      .then((data) => setUserData(data))
-      .catch((error) => console.error(error));
+    .then((response) => response.json())
+    .then((data) => setUserData(data))
+    .catch((error) => console.error(error));
+
+    // Fetch markers from the API endpoint
+    fetch("http://localhost:8000/api/v1/animal/animals", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => set_animals(data))
+    .catch((error) => console.error(error));
+
   }, []);
 
   const username = localStorage.getItem("username");
@@ -159,9 +163,10 @@ function MapPage() {
         </Modal.Header>
         <Modal.Body>
           <h4>Description fields</h4>
-          <p>
+          {/*<p>
             {props.selected_marker != null && props.selected_marker.properties.description}
           </p>
+          */}
           <NewAnimal1 marker={props.selected_marker} createAnimalModalShow={createAnimalModalShow}
             setSelectedMarker={null}
           setCreateAnimalModalShow={setCreateAnimalModalShow}/>
@@ -172,12 +177,6 @@ function MapPage() {
       </Modal>
     );
   }
-
-  const hideElement = () => {
-    if (!popupElRef.current || !map) return;
-    popupElRef.current._close();
-    // map.closePopup();
-  };
 
   return (
     <div style={{minHeight:"1000px"}}>
@@ -235,16 +234,16 @@ function MapPage() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {markers.features.map(marker => (
+        {db_animals.map(animal => (
           <Marker
-            icon={get_icon(marker.icon_color)}
-            key={marker.properties.id}
+            icon={get_icon("blue")}
+            key={animal.id}
             position={[
-              marker.geometry.coordinates[1],
-              marker.geometry.coordinates[0]
+              animal.latitude,
+              animal.longitude
             ]}
             onClick={() => {
-              setActivePark(marker);
+              setActivePark(animal);
               // console.log("Active marker:", marker);
               setCreateAnimalModalShow(true);
             }}
@@ -252,17 +251,17 @@ function MapPage() {
             {! allow_marker_creation ?
               <Popup>
                 <Card style={{ width: '18rem' }}>
-                  <Card.Img variant="top" src={marker.media.photos[0]} />
+                  <Card.Img id={"image_" + animal.medias.id} variant="top" src={animal.public_url} />
                   <Card.Body>
-                    <Card.Title>{marker.properties.name}</Card.Title>
+                    <Card.Title>{animal.name}</Card.Title>
                     <Card.Text>
-                      {marker.properties.description}
+                      {animal.description}
                     </Card.Text>
                     <Button variant="primary">Go somewhere</Button>
                   </Card.Body>
                 </Card>
               </Popup> :
-              <NewAnimal marker={marker} createAnimalModalShow={createAnimalModalShow}
+              <NewAnimal marker={animal} createAnimalModalShow={createAnimalModalShow}
                 setSelectedMarker={setSelectedMarker}
                 setCreateAnimalModalShow={setCreateAnimalModalShow}/>
             }
