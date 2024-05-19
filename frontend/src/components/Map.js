@@ -81,17 +81,17 @@ function MapPage() {
   }
 
   useEffect(() => {
-    $("#save-marker-btn").hide();
-    $("#cancel-marker-btn").hide();
-    // Fetch user data from the API endpoint
-    fetch("http://localhost:8000/api/v1/auth/user", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-    .then((response) => response.json())
-    .then((data) => setUserData(data))
-    .catch((error) => console.error(error));
+    // $("#save-marker-btn").hide();
+    // $("#cancel-marker-btn").hide();
+    // // Fetch user data from the API endpoint
+    // fetch("http://localhost:8000/api/v1/auth/user", {
+    //   headers: {
+    //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //   },
+    // })
+    // .then((response) => response.json())
+    // .then((data) => setUserData(data))
+    // .catch((error) => console.error(error));
 
     // Fetch markers from the API endpoint
     fetch("http://localhost:8000/api/v1/animal/animals", {
