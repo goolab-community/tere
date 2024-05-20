@@ -102,7 +102,6 @@ function MapPage() {
     .then((response) => response.json())
     .then((data) => set_animals(data))
     .catch((error) => console.error(error));
-
   }, []);
 
   const username = localStorage.getItem("username");

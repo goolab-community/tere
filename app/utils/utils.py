@@ -36,6 +36,7 @@ def get_password_hash(password):
 def verify_token(token):
     try:
         payload = jwt.decode(token, API_SECRET_KEY, algorithms=[ALGORITHM])
+        logger.info(payload)
         return payload
     except JWTError:
         raise HTTPException(
@@ -47,7 +48,9 @@ def verify_token(token):
 
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(security)):
     logger.info(token)
+    logger.info(token.credentials)
     user = verify_token(token.credentials)
+    logger.info("USER", user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

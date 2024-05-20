@@ -15,6 +15,7 @@ function History () {
     axisX: {showGrid: false, showLabel: false, offset: 0},
     axisY: {showGrid: false, showLabel: false, offset: 0}
   };
+  
   const grid = new Grid({
     sort: true,
     columns: [
@@ -52,6 +53,7 @@ function History () {
   });
   
   useEffect(() => {
+
     grid.render(wrapperRef.current);
   });
   

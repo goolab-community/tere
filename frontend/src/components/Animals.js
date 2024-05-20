@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import {Card, Col, Row, Image} from 'react-bootstrap';
-import { Grid, h, createRef as gCreateRef } from "gridjs";
+import { Grid, h, html, createRef as gCreateRef } from "gridjs";
 import { Popup } from "react-leaflet";
 import {SliderWithInputFormControl} from "./Utils";
 import Moment from 'react-moment';
@@ -428,32 +428,63 @@ function NewAnimal({marker, createAnimalModalShow, setSelectedMarker, setCreateA
 }
 
 function Animals () {
-    const wrapperRef = useRef(null);
-    const grid = new Grid({
-        columns: [
-         {
-           name: 'Name',
-           formatter: (cell) => cell.firstName
-         }, 
-         'Email',
-         'Phone Number'
-        ],
-        search: {
-          selector: (cell, rowIndex, cellIndex) => cellIndex === 0 ? cell.firstName : cell
-        },
-        data: [
-          [{ firstName: 'John', lastName: 'MP' }, 'john@example.com', '(353) 01 222 3333'],
-          [{ firstName: 'Mark', lastName: 'Blue' }, 'mark@gmail.com',   '(01) 22 888 4444'],
-          [{ firstName: 'Eoin', lastName: 'Kavanagh' }, 'eo3n@yahoo.com',   '(05) 10 878 5554'],
-          [{ firstName: 'Megan', lastName: 'Niesen' }, 'nis900@gmail.com',   '313 333 1923']
-        ]
-    });
-    
-    useEffect(() => {
-      grid.render(wrapperRef.current);
-    });
-    
-    return <div ref={wrapperRef} />;
+  const wrapperRef = useRef(null);
+  
+  const formatDate = (isoDate, showTime) => {
+    const date = new Date(isoDate);
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      ...(showTime && { hour: 'numeric', minute: 'numeric', second: 'numeric' })
+    };
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  const grid = new Grid({
+    sort: true,
+    resizable: true,
+    search: true,
+    columns: [
+        "Address",
+        "Age",
+        "Age Relative",
+        "Created",
+        "Description",
+        "Name",
+        "RFID",
+        "Image",
+        "Sex",
+        "Tag ID"
+      ],
+    server: {
+      url: "http://localhost:8000/api/v1/animal/animals",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      then: data => data.map(animal => [
+        animal.address,
+        html(
+          `<strong>${animal.age_year} Year and ${animal.age_month} Month</strong>`
+        ),
+        html(
+          `<strong>From ${animal.age_year_from} Year and ${animal.age_month_from} Month</span>
+          <strong>To ${animal.age_year_to} Year and ${animal.age_month_to} Month</strong>`
+        ),
+        html(`<p>${formatDate(animal.created_at, true)}</p>`),
+        animal.description,
+        animal.name,
+        animal.rfid_code,
+        html(`<img src="${animal.public_url}" alt="Animal Image" width="200" height="300">`),
+        html(`<h3>${animal.sex === "male"? "♂" : "♀"}</h3>`),
+        animal.tag_id
+      ]),
+      total: data => data.length
+    }});
+
+  useEffect(() => {
+    grid.render(wrapperRef.current);
+  });
+  
+  return <div ref={wrapperRef} />;
   }
   
-  export {Animals, NewAnimal, NewAnimal1};
+export {Animals, NewAnimal, NewAnimal1};
