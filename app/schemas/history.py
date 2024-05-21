@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from enum import Enum
 from datetime import datetime
@@ -37,6 +37,8 @@ class Media(BaseModel):
 
 class History(BaseModel):
     user_id: int
+    animal_id: int
+    history_type: HistoryType = Field(alias='type')
     description: Optional[str] = None
     date: str
     autocheck: bool

@@ -29,3 +29,23 @@ router = APIRouter(
 @router.get("/history")
 def history(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db)):
     return db.query(models.History).all()
+
+
+@router.post("/history")
+def create_history(
+    history: schemas.History,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    logger.info(user.get("user_id"))
+    history_data = history.dict()
+    logger.info(history_data)
+    history_data["type"] = history_data["history_type"].value
+    history_data.pop("history_type")
+    history = models.History(
+        **history_data,
+    )
+    db.add(history)
+    db.commit()
+    db.refresh(history)
+    return history
