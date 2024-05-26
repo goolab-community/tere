@@ -18,6 +18,7 @@ class HistoryType(enum.Enum):
     '''
     History type enum
     '''
+    # feed = 'feed'
     lost = 'lost'
     found = 'found'
     sighting = 'sighting'
@@ -50,6 +51,7 @@ class History(BaseModel):
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User", back_populates="events")
 
+    # health_scale = Column(Integer, nullable=True)
     description = Column(String)
     date = Column(DateTime, default=func.now())
     autocheck = Column(Boolean, default=False)

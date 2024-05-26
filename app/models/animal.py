@@ -78,6 +78,7 @@ class Animal(BaseModel):
     age_month_to = Column(Integer, nullable=True)
     name = Column(String, nullable=True)
     description = Column(String, nullable=True)
+    # overall_health = Column(Integer, nullable=True)
 
     medias = relationship("Media", back_populates="animal")
 
