@@ -69,6 +69,7 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
         else:
             raise HTTPException(status_code=400, detail="User is not active")
     except Exception as e:
+        raise e
         return HTTPException(status_code=400, detail=str(e))
 
 

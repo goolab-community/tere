@@ -8,6 +8,7 @@ import schemas
 import models
 from database import get_db
 from sqlalchemy.orm import Session
+from gcp import generate_upload_signed_url_v4, generate_download_signed_url_v4
 from utils import (
     generate_token,
     verify_password,
@@ -16,6 +17,7 @@ from utils import (
     security,
     get_current_user,
 )
+from datetime import datetime
 # from typing import Annotated
 from settings import BASE_URL
 
@@ -37,15 +39,35 @@ def create_history(
     user: HTTPAuthorizationCredentials = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    logger.info(user.get("user_id"))
-    history_data = history.dict()
-    logger.info(history_data)
-    history_data["type"] = history_data["history_type"].value
-    history_data.pop("history_type")
-    history = models.History(
-        **history_data,
-    )
-    db.add(history)
-    db.commit()
-    db.refresh(history)
-    return history
+    try:
+        logger.info(history.description)
+        logger.info(user.get("user_id"))
+        history_data = history.dict()
+        logger.info(history_data)
+        history_data["type"] = models.HistoryType[history_data["history_type"]]
+        history_data.pop("history_type")
+        history = models.History(
+            **history_data,
+        )
+        db.add(history)
+        db.commit()
+        db.refresh(history)
+        media = models.Media(
+            url=f"images/animal_history_image_{history.id}.jpg",
+            type="image",
+            uploaded_by_user_id=user.get("user_id"),
+            date=datetime.now(),
+            animal_id=history.animal_id,
+        )
+        db.add(media)
+        db.commit()
+        url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_history_image_{history.id}.jpg")
+        return {
+                # "history": history,
+                "message": "Animal created successfully",
+                "upload_url":  url
+        }
+    except Exception as e:
+        raise e
+        logger.error(e)
+        raise HTTPException(status_code=400, detail="Error creating history")

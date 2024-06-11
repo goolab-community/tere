@@ -63,3 +63,12 @@ def generate_download_signed_url_v4(bucket_name, blob_name):
     print("You can use this URL with any user agent, for example:")
     print(f"curl '{url}'")
     return url
+
+
+def list_blobs(bucket_name, folder):
+    """Lists all the blobs in the bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+
+    blobs = bucket.list_blobs(prefix=folder)
+    return [blob.name for blob in blobs]

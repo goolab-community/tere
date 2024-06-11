@@ -36,9 +36,11 @@ class Media(BaseModel):
 
 
 class History(BaseModel):
-    user_id: int
     animal_id: int
-    history_type: HistoryType = Field(alias='type')
+    history_type: Optional[str] = None
+    user_id: int
+    health_scale: Optional[int] = None
     description: Optional[str] = None
     date: str
+    media_link: Optional[str] = None
     autocheck: bool

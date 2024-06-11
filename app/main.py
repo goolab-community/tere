@@ -21,7 +21,7 @@ from settings import BASE_URL
 from routes import auth, animal, history
 
 
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     docs_url=f"{BASE_URL}/docs",
@@ -38,10 +38,6 @@ app.add_middleware(
     expose_headers=["X-Custom-Header"],
     max_age=3600
 )
-
-# client = MongoClient("mongodb://root:example@tere-mongo:27017")
-# db = client["mydatabase"]
-# users_collection = db["users"]
 
 app.include_router(auth.router)
 app.include_router(animal.router)

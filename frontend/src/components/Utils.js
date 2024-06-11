@@ -1,5 +1,7 @@
 import { Form, Row, Col } from 'react-bootstrap';
 import React from 'react';
+import axios from 'axios';
+
 
 function SliderWithInputFormControl({id, name, value, max, setValue}) {
 
@@ -33,4 +35,24 @@ function SliderWithInputFormControl({id, name, value, max, setValue}) {
     );
 }
 
-export {SliderWithInputFormControl};
+
+function uploadFile(file, signedUrl) {
+  console.log("Uploading file to S3:", file.type, "URL:", signedUrl);
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem("token")}`,
+      'Content-Type': 'application/octet-stream',
+    },
+  };
+
+  axios.put(signedUrl, file, config)
+    .then(response => {
+        console.log('File uploaded successfully:', response);
+    })
+    .catch(error => {
+        console.error('Error uploading file:', error);
+    });
+}
+
+
+export {SliderWithInputFormControl, uploadFile};

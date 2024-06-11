@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import $ from 'jquery';
+import $, { event } from 'jquery';
 
 import { MapContainer, TileLayer, Marker, Map, Popup, useMap, useMapEvents } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
@@ -13,19 +13,23 @@ import {red_icon, green_icon, blue_icon, yellow_icon, Defaulticon} from "./Icons
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import LocationComponent from './LocationComponent';
 import {NewAnimal, NewAnimal1} from './Animals';
-import {SliderWithInputFormControl} from "./Utils";
+import {SliderWithInputFormControl, uploadFile} from "./Utils";
+import axios from "axios";
 
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 
-function StatusUpdateModal({handleShow, handleClose, show}) {
+function StatusUpdateModal({handleShow, handleClose, show, animal}) {
 
   const [health_scale, setHealthScale] = useState(0);
 
   const [fileDataURL, setFileDataURL] = useState(null);
   const [selected_file, setSelectedFile] = useState(null);
 
+  const [event_type, setEventType] = useState("feed");
+  const [event_date, setEventDate] = useState(null);
+  const [event_description, setEventDescription] = useState(null);
 
   function file_handler(e) {
     console.log(e);
@@ -49,6 +53,45 @@ function StatusUpdateModal({handleShow, handleClose, show}) {
     }
   });
 
+  function submit_history(e) {
+    handleClose();
+    console.log(`------- Submitting history for animal ${animal.name} --------`);
+    console.log("Event Type:", event_type);
+    console.log("Health Scale:", health_scale);
+    console.log("Date:", event_date);
+    console.log("Description:", event_description);
+    console.log("File:", selected_file);
+    console.log("-------------------------------------------------------------");
+    // make a pos request to the backend
+    const history = {
+      user_id: parseInt(localStorage.getItem("_id")),
+      animal_id: animal.id,
+      history_type: event_type,
+      health_scale: parseInt(health_scale),
+      media_link: "",
+      description: event_description,
+      date: event_date,
+      autocheck: false,
+    };
+
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    axios.post("http://localhost:8000/api/v1/history/history", history, config).then((response) => {
+      console.log(response);
+      uploadFile(selected_file, response.data.upload_url);
+      alert("History updated successfully");
+    }).catch((error) => {
+      console.log(history);
+      console.log(error);
+      alert("Error updating history");
+    });
+  }
+
   return (
     <>
       <Modal show={show} fullscreen={true} onHide={handleClose}>
@@ -58,7 +101,8 @@ function StatusUpdateModal({handleShow, handleClose, show}) {
         <Modal.Body>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea4">
             <Form.Label>Event Type</Form.Label>
-            <Form.Control as="select" placeholder="Event Type" onChange={(e) => {console.log(e.target.value)}} >
+            <Form.Control as="select" placeholder="Event Type" onChange={(e) => {setEventType(e.target.value)}} >
+              <option value={"feed"}>Feed</option>
               <option value={"lost"}>Lost</option>
               <option value={"found"}>Found</option>
               <option value={"sighting"}>Seen</option>
@@ -73,12 +117,12 @@ function StatusUpdateModal({handleShow, handleClose, show}) {
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea2">
             <Form.Label>Date</Form.Label>
             <p></p>
-            <input type="datetime-local" id="birthdaytime" name="birthdaytime"></input>
+            <input type="datetime-local" id="eventdate" name="eventdate" onChange={(e)=>setEventDate(e.target.value)}></input>
             <p></p>
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" rows={3} />
+            <Form.Control as="textarea" rows={3} onChange={(e) => setEventDescription(e.target.value)} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea3">
             <Form.Label>Media</Form.Label>
@@ -92,7 +136,7 @@ function StatusUpdateModal({handleShow, handleClose, show}) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={(a)=>submit_history(a)}>
             Save Changes
           </Button>
         </Modal.Footer>
@@ -127,6 +171,8 @@ function MapPage() {
   const position = [41.799188, 44.797391];
   // const [markers, setMarkers] = useState({"features": animals});
   const [db_animals, setAnimals] = useState([]);
+
+  const [selected_animal, setSelectedAnimal] = useState(null);
 
   function create_new_marker(latlng) {
     console.log("Creating new marker");
@@ -269,10 +315,15 @@ function MapPage() {
     );
   }
 
+  function show_animal_history_modal(animal) {
+    console.log("Show animal history modal");
+    setSelectedAnimal(animal);
+    handleShow();
+  }
 
   return (
     <div>
-      <StatusUpdateModal handleShow={handleShow} handleClose={handleClose} show={show} />
+      <StatusUpdateModal handleShow={handleShow} handleClose={handleClose} show={show} animal={selected_animal}/>
       <div style={{minHeight:"1000px"}}>
         {/*userData && (`Welcome ${username} to the Tere app!`)*/}
         {/*<LocationComponent />*/}
@@ -351,7 +402,7 @@ function MapPage() {
                       <Card.Text>
                         {animal.description}
                       </Card.Text>
-                      <Button variant="primary" onClick={handleShow}>Status Update</Button>
+                      <Button variant="primary" onClick={(e)=>show_animal_history_modal(animal)}>Status Update</Button>
                     </Card.Body>
                   </Card>
                 </Popup> :

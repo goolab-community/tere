@@ -114,7 +114,7 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
           {
             "url": "string",
             "type": "image",
-            "uploaded_by_user_id": 1,
+            "uploaded_by_user_id": parseInt(localStorage.getItem("_id")),
             "date": moment().toISOString(new Date()),
             "description": "string",
             "animal_id": 0
