@@ -15,45 +15,79 @@ function History () {
     axisX: {showGrid: false, showLabel: false, offset: 0},
     axisY: {showGrid: false, showLabel: false, offset: 0}
   };
+
+
+  function health_scale_chart(cell) {
+    let style = 'green';
+    if (cell  < 3) {
+      style = 'red';
+    }else if (cell < 5) {
+      style = 'orange';
+    }else if (cell < 7) {
+      style = 'yellow';
+    }else {
+      style = 'green';
+    }
+    const chart = h('b', { style: {
+      'color': style,
+    }}, cell);
+    return chart;
+  }
+
   
   const grid = new Grid({
     sort: true,
+    resizable: true,
+    search: true,
     columns: [
-      'Symbol',
-      'Last price',
+      "Animal_id",
+      // "Animal",
+      "Type",
+      "User ID",
+      // "User",
       { 
-        name: 'Difference', 
+        name: 'Health', 
         formatter: (cell) => {
-          return h('b', { style: {
-            'color': cell > 0 ? 'green' : 'red'
-          }}, cell);
+          return health_scale_chart(cell);
         }
       },
+      "Description",
+      "Date",
+      "Media Link",
       {
-        name: 'Trend',
+        name: "Autocheck",
         sort: false,
         width: '20%',
         formatter: (cell) => {
           const ref = gCreateRef();
-          const chart = h('div', { ref: ref })
-          
+          const chart = h('div', { ref: ref });
           // setTimeout to ensure that the chart wrapper is mounted
           setTimeout(() => {
           }, 0);
-          
           return chart;
         }
       }],
-    data: [
-      ['AAPL', 360.2, 20.19, [360, 363, 366, 361, 366, 350, 370]],
-      ['ETSY', 102.1, 8.22, [90, 91, 92, 90, 94, 95, 99, 102]],
-      ['AMZN', 2734.8, -30.01, [2779, 2786, 2792, 2780, 2750, 2765, 2740, 2734]],
-      ['TSLA', 960.85, -40.91, [993, 990, 985, 983, 970, 985, 988, 960]],
-    ]
+      server: {
+        url: "http://localhost:8000/api/v1/history/list",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        then: data => data.map(history => [
+          history.animal_id,
+          // history.animal.name,
+          history.type,
+          history.user_id,
+          // history.user.username,
+          history.health_scale,
+          history.description,
+          history.date,
+          history.media_link,
+          history.autocheck
+        ]),
+    },
   });
   
   useEffect(() => {
-
+    // empty grid container first
+    wrapperRef.current.innerHTML = "";
     grid.render(wrapperRef.current);
   });
   

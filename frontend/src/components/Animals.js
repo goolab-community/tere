@@ -18,12 +18,6 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
   // console.log(marker);
   const [show, setShow] = useState(false);
 
-  const [ value_age_month, setAgeMonthValue ] = React.useState(1);
-  const [ value_age_year, setAgeYearValue ] = React.useState(1);
-  // const [ value_age_from_month, setAgeFromMonthValue ] = React.useState(1);
-  // const [ value_age_from_year, setAgeFromYearValue ] = React.useState(2);
-  // const [ value_age_to_month, setAgeToMonthValue ] = React.useState(1);
-  // const [ value_age_to_year, setAgeToYearValue ] = React.useState(2);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -259,41 +253,11 @@ function NewAnimal({marker, createAnimalModalShow, setSelectedMarker, setCreateA
     // console.log(marker);
     const [show, setShow] = useState(false);
     const [selected_file, setSelectedFile] = useState(null);
-    const [description, setDescription] = useState(null);
-    const [specie, setSpecie] = useState(null);
-    const [sex, setSex] = useState(null);
-    const [bread, setBread] = useState(null);
-    const [age_month_comp, setAgeMonthComp] = useState(1);
-    const [age_year_comp, setAgeYearComp] = useState(1);
-    const [age_from_month_comp, setAgeFromMonthComp] = useState(1);
-    const [age_from_year_comp, setAgeFromYearComp] = useState(1);
 
     const [fileDataURL, setFileDataURL] = useState(null);
 
-    const [age_approx, setAgeApprox] = useState(false);
-    const [show_other_params, setShowOtherParams] = useState(false);
-
-    const [ value_age_month, setAgeMonthValue ] = React.useState(1);
-    const [ value_age_year, setAgeYearValue ] = React.useState(1);
-    const [ value_age_from_month, setAgeFromMonthValue ] = React.useState(1);
-    const [ value_age_from_year, setAgeFromYearValue ] = React.useState(2);
-    const [ value_age_to_month, setAgeToMonthValue ] = React.useState(1);
-    const [ value_age_to_year, setAgeToYearValue ] = React.useState(2);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-
-    function file_handler(e) {
-        console.log(e);
-        // get file object
-        var file = e.target.files[0];
-        
-        if (!file.type.match(fileTypes)) {
-          alert("Image mime type is not valid");
-          return;
-        }
-        setSelectedFile(file);
-    }
 
     useEffect(() => {
         if (selected_file !== null) {
@@ -304,105 +268,6 @@ function NewAnimal({marker, createAnimalModalShow, setSelectedMarker, setCreateA
           reader.readAsDataURL(selected_file);
         }
     });
-    function isMobile() {
-      const minWidth = 768;
-      return window.innerWidth < minWidth || window.innerWidth < minWidth;
-    }
-
-    function NewAnimalForm(){
-      return (
-        <>
-          <Form.Group controlId="formFile" className="mb-3">
-            <Form.Label>Upload image</Form.Label>
-            <Form.Control onChange={(e)=>file_handler(e)} type="file" />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Description</Form.Label>
-            <Form.Control onChange={(e) => {setDescription(e.target.value)}} as="textarea" rows={2}/>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlSelect2">
-            <Form.Label>Specie</Form.Label>
-            <Form.Control as="select" onChange={(e)=>{setSpecie(e.target.value)}}>
-              <option value={"dog"} >Dog</option>
-              <option value={"cat"}>Cat</option>
-            </Form.Control>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea3">
-            <Form.Label>Sex</Form.Label>
-            <Form.Control as="select" onChange={(e) => {setSex(e.target.value)}}>
-              <option value={"M"}>Male</option>
-              <option value={"F"}>Female</option>
-            </Form.Control>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea4">
-            <Form.Label>Bread</Form.Label>
-            <Form.Control as="select" placeholder="Bread" onChange={(e) => {setBread(e.target.value)}}>
-              <option value={"Pitbull"}>Pitbull</option>
-              <option value={"Poodle"}>Poodle</option>
-              <option value={"british-shorthair"}>British Shorthair</option>
-            </Form.Control>
-          </Form.Group>
-          {!age_approx ?
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea5">
-            <Form.Label>Age</Form.Label>
-            <SliderWithInputFormControl id="age_month_comp" name="Age Month" value={value_age_month} max="12" setValue={setAgeMonthComp}/>
-            <SliderWithInputFormControl id="age_year_comp" name="Age Year" value={value_age_year} max="30" setValue={setAgeYearComp} />
-          </Form.Group>
-          :
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea6">
-            <Form.Label>Age From-to</Form.Label>
-            <Form.Group as={Row}>
-              <Col xs="6">
-                <SliderWithInputFormControl id="age_from_month_comp" name="Month" value={value_age_from_month} max="12" setValue={setAgeFromMonthComp} />
-              </Col>
-              <Col xs="6">
-                <SliderWithInputFormControl id="age_from_year_comp" name="Year" value={value_age_from_year} max="30" setValue={setAgeFromYearComp}/>
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-              <Col xs="6">
-                <SliderWithInputFormControl id="age_to_month_comp" name="Month" value={value_age_to_month} max="12" />
-              </Col>
-              <Col xs="6">
-                <SliderWithInputFormControl id="age_to_year_comp" name="Year" value={value_age_to_year} max="30" />
-              </Col>
-            </Form.Group>
-          </Form.Group>}
-          <Form.Check type="checkbox" id="add_edit_new_anumal_check"
-            onChange={(e) => setAgeApprox(e.target.checked)} label="Relative Age">
-          </Form.Check>
-          <Form.Check type="checkbox" id="add_set_other_params_check"
-            onChange={(e) => setShowOtherParams(e.target.checked)} label="Other Params">
-          </Form.Check>
-          {show_other_params &&
-          <>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea7">
-              <Form.Control type="text" placeholder="Tag ID" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea8">
-              <Form.Control type="text" placeholder="RFID Code" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea9">
-              <Form.Control type="text" placeholder="Name" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea10">
-              <Form.Control type="text" placeholder="Address" />
-            </Form.Group>
-          </>}
-          <Button onClick={
-            (e) => {
-              console.log("Submit");
-              console.log(selected_file);
-              console.log(description);
-              // console.log($("#description_textarea").textContent);
-              // console.log($("#age_month_comp_value").textContent);
-            }
-          } variant="primary">
-            Submit
-          </Button>
-        </>
-      )
-    }
 
     return (
       <Popup>
@@ -427,9 +292,10 @@ function NewAnimal({marker, createAnimalModalShow, setSelectedMarker, setCreateA
     );
 }
 
+
 function Animals () {
   const wrapperRef = useRef(null);
-  
+
   const formatDate = (isoDate, showTime) => {
     const date = new Date(isoDate);
     const options = { 
@@ -483,8 +349,8 @@ function Animals () {
   useEffect(() => {
     grid.render(wrapperRef.current);
   });
-  
+
   return <div ref={wrapperRef} />;
-  }
+}
   
 export {Animals, NewAnimal, NewAnimal1};

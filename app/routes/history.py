@@ -8,7 +8,7 @@ import schemas
 import models
 from database import get_db
 from sqlalchemy.orm import Session
-from gcp import generate_upload_signed_url_v4, generate_download_signed_url_v4
+from gcp import generate_upload_signed_url_v4
 from utils import (
     generate_token,
     verify_password,
@@ -28,7 +28,7 @@ router = APIRouter(
 )
 
 
-@router.get("/history")
+@router.get("/list")
 def history(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db)):
     return db.query(models.History).all()
 
@@ -68,6 +68,5 @@ def create_history(
                 "upload_url":  url
         }
     except Exception as e:
-        raise e
         logger.error(e)
         raise HTTPException(status_code=400, detail="Error creating history")
