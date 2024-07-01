@@ -152,7 +152,7 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
     return (
       <>
         <Card.Img src={fileDataURL} />
-        <Form.Group style={{"margin-top": "10px"}} controlId="formFile" className="mb-3">
+        <Form.Group style={{"marginTop": "10px"}} controlId="formFile" className="mb-3">
           <Form.Control onChange={(e)=>file_handler(e)} type="file" />
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">

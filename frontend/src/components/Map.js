@@ -85,6 +85,8 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
       console.log(response);
       uploadFile(selected_file, response.data.upload_url);
       alert("History updated successfully");
+      // goto home page
+      window.location.href = "/";
     }).catch((error) => {
       console.log(history);
       console.log(error);
@@ -127,7 +129,7 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea3">
             <Form.Label>Media</Form.Label>
             <Card.Img src={fileDataURL} />
-            <Form.Group style={{"margin-top": "10px"}} controlId="formFile" className="mb-3">
+            <Form.Group style={{"marginTop": "10px"}} controlId="formFile" className="mb-3">
               <Form.Control onChange={(e)=>file_handler(e)} type="file" />
             </Form.Group>
           </Form.Group>
@@ -266,6 +268,18 @@ function MapPage() {
     }
   }
 
+  function health_to_color(health_scale) {
+    if (health_scale >= 0 && health_scale <= 2) {
+      return "red";
+    } else if (health_scale > 2 && health_scale <= 4) {
+      return "yellow";
+    } else if (health_scale > 4 && health_scale <= 7) {
+      return "blue";
+    } else if (health_scale > 7 && health_scale <= 10) {
+      return "green";
+    }
+  }
+
   function set_btn_state(e) {
     // console.log(e);
     setAllowMarkerCreation(!allow_marker_creation);
@@ -363,10 +377,11 @@ function MapPage() {
             onClick={
               (e) => {
                 console.log("Cancel markers creation");
-                setAllowMarkerCreation(false);
-                $("#save-marker-btn").hide();
-                $("#cancel-marker-btn").hide();
-                $("#toggle-marker-creation-btn").show();
+                // setAllowMarkerCreation(false);
+                // $("#save-marker-btn").hide();
+                // $("#cancel-marker-btn").hide();
+                // $("#toggle-marker-creation-btn").show();
+                window.location.reload();
               }
             }>
             Cancel
@@ -381,7 +396,7 @@ function MapPage() {
           />
           {db_animals.map(animal => (
             <Marker
-              icon={get_icon("blue")}
+              icon={get_icon(health_to_color(animal.overall_health))}
               key={animal.id}
               position={[
                 animal.latitude,

@@ -60,6 +60,8 @@ def create_history(
             animal_id=history.animal_id,
         )
         db.add(media)
+        # Update animal overall health
+        history.animal.overall_health = history.health_scale
         db.commit()
         url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_history_image_{history.id}.jpg")
         return {
