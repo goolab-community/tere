@@ -11,6 +11,8 @@ import Moment from 'react-moment';
 import moment from 'moment';
 import axios from "axios";
 
+import Resizer from "react-image-file-resizer";
+
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -55,6 +57,25 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
         return;
       }
       setSelectedFile(file);
+    }
+
+    function resize_image(file, max_width, max_height) {
+      return new Promise((resolve) => {
+        Resizer.imageFileResizer(
+          file,
+          max_width,
+          max_height,
+          'JPEG',
+          100,
+          0,
+          uri => {
+            resolve(uri);
+          },
+          "base64",
+          200,
+          200
+        );
+      });
     }
 
     function uploadFile(file, signedUrl) {
@@ -130,6 +151,7 @@ function NewAnimal1({marker, createAnimalModalShow, setSelectedMarker, setCreate
 
       axios.post("http://localhost:8000/api/v1/animal/create", new_animal, config).then((response) => {
         console.log(response);
+        // const file = resize_image(selected_file, 300, 300);
         uploadFile(selected_file, response.data.upload_url);
         alert("New animal created successfully");
         setCreateAnimalModalShow(false);
@@ -350,7 +372,7 @@ function Animals () {
     grid.render(wrapperRef.current);
   });
 
-  return <div ref={wrapperRef} />;
+  return <div style={{"margin-left": "3%", "margin-right": "5%"}} ref={wrapperRef} />;
 }
   
 export {Animals, NewAnimal, NewAnimal1};

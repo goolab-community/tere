@@ -90,8 +90,7 @@ function History () {
     wrapperRef.current.innerHTML = "";
     grid.render(wrapperRef.current);
   });
-  
-  return <div ref={wrapperRef} />;
+  return <div style={{"margin-left": "3%", "margin-right": "5%"}} ref={wrapperRef} />;
 }
 
 export default History;

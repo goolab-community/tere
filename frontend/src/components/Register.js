@@ -47,18 +47,19 @@ function Register() {
         setMessage("Error registering. Please try again.");
       });
   };
+
   return (
-    <div>
+    <div style={{"width": "500px", "margin-left": "10%", "margin-top": "100px"}}>
       <header><h1>Register</h1></header>
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <Form.Text className="text-muted">
+          <Form.Control type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          {/*<Form.Text className="text-muted">
             We'll never share your email with anyone else.
-          </Form.Text>
+          </Form.Text>*/}
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Control type="text" placeholder="Enter User Name" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <Form.Control type="text" placeholder="User Name" value={username} onChange={(e) => setUsername(e.target.value)} />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />

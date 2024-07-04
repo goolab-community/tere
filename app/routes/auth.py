@@ -73,16 +73,16 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
         return HTTPException(status_code=400, detail=str(e))
 
 
-# @router.get("/api/user")
-# def get_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-#     # Extract the token from the Authorization header
-#     token = credentials.credentials
-#     logger.info(token)
-#     # decrypt the token
-#     user_data = verify_token(token)
-#     if user_data["email"]:
-#         return user_data
-#     raise HTTPException(status_code=401, detail="Invalid token")
+@router.get("/api/user")
+def get_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    # Extract the token from the Authorization header
+    token = credentials.credentials
+    logger.info(token)
+    # decrypt the token
+    user_data = verify_token(token)
+    if user_data["email"]:
+        return user_data
+    raise HTTPException(status_code=401, detail="Invalid token")
 
 
 @router.get("/user")

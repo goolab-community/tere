@@ -16,6 +16,8 @@ import {NewAnimal, NewAnimal1} from './Animals';
 import {SliderWithInputFormControl, uploadFile} from "./Utils";
 import axios from "axios";
 
+import Resizer from "react-image-file-resizer";
+
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -41,6 +43,38 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
       return;
     }
     setSelectedFile(file);
+  }
+
+  function fileChangedHandler(event) {
+    var file = event.target.files[0];
+
+    if (!file.type.match(fileTypes)) {
+      alert("Image mime type is not valid");
+      return;
+    }
+    var fileInput = false;
+    if (file) {
+      fileInput = true;
+    }
+    if (fileInput) {
+      try {
+        Resizer.imageFileResizer(
+          file,
+          300,
+          300,
+          "JPEG",
+          100,
+          0,
+          (uri) => {
+            console.log(uri);
+            setSelectedFile(uri);
+          },
+          "blob"
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    }
   }
 
   useEffect(() => {
@@ -338,54 +372,56 @@ function MapPage() {
   return (
     <div>
       <StatusUpdateModal handleShow={handleShow} handleClose={handleClose} show={show} animal={selected_animal}/>
-      <div style={{minHeight:"1000px"}}>
+      <div style={{minHeight:"100%"}}>
         {/*userData && (`Welcome ${username} to the Tere app!`)*/}
         {/*<LocationComponent />*/}
-        <Button
-            id="toggle-marker-creation-btn"
-            style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "10px"}}
-            className="btn-sm btn-danger position-absolute bottom-0 start-0"
-            value="disabled"
-            onClick={
-              (e) => {
-                set_btn_state(e);
-              }
-            }>
-            {allow_marker_creation? "-": "+"}
-        </Button>
-        <Button
-            id="save-marker-btn"
-            style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "45px"}}
-            className="btn-sm btn-primary position-absolute bottom-0 start-0"
-            value="disabled"
-            onClick={
-              (e) => {
-                console.log("Save markers creation");
-                setAllowMarkerCreation(false);
-                $("#save-marker-btn").hide();
-                $("#cancel-marker-btn").hide();
-                $("#toggle-marker-creation-btn").show();
-              }
-            }>
-            Save
-        </Button>
-        <Button
-            id="cancel-marker-btn"
-            style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "100px"}}
-            className="btn-sm btn-secondary position-absolute bottom-0 start-0"
-            value="disabled"
-            onClick={
-              (e) => {
-                console.log("Cancel markers creation");
-                // setAllowMarkerCreation(false);
-                // $("#save-marker-btn").hide();
-                // $("#cancel-marker-btn").hide();
-                // $("#toggle-marker-creation-btn").show();
-                window.location.reload();
-              }
-            }>
-            Cancel
-        </Button>
+        <div>
+          <Button
+              id="toggle-marker-creation-btn"
+              style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "10px"}}
+              className="btn-sm btn-danger position-absolute bottom-0 start-0"
+              value="disabled"
+              onClick={
+                (e) => {
+                  set_btn_state(e);
+                }
+              }>
+              {allow_marker_creation? "-": "+"}
+          </Button>
+          <Button
+              id="save-marker-btn"
+              style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "45px"}}
+              className="btn-sm btn-primary position-absolute bottom-0 start-0"
+              value="disabled"
+              onClick={
+                (e) => {
+                  console.log("Save markers creation");
+                  setAllowMarkerCreation(false);
+                  $("#save-marker-btn").hide();
+                  $("#cancel-marker-btn").hide();
+                  $("#toggle-marker-creation-btn").show();
+                }
+              }>
+              Save
+          </Button>
+          <Button
+              id="cancel-marker-btn"
+              style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "100px"}}
+              className="btn-sm btn-secondary position-absolute bottom-0 start-0"
+              value="disabled"
+              onClick={
+                (e) => {
+                  console.log("Cancel markers creation");
+                  // setAllowMarkerCreation(false);
+                  // $("#save-marker-btn").hide();
+                  // $("#cancel-marker-btn").hide();
+                  // $("#toggle-marker-creation-btn").show();
+                  window.location.reload();
+                }
+              }>
+              Cancel
+          </Button>
+        </div>
 
         <MapContainer center={position} zoom={9} scrollWheelZoom={true}
           whenCreated={setMap}

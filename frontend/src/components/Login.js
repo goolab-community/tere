@@ -39,18 +39,15 @@ function Login() {
       });
   };
   return (
-    <div>
-      <header><h1>Login</h1></header>
+    <div style={{"width": "500px", "margin-left": "10%", "margin-top": "100px"}}>
+      <header>
+        <h4>Login</h4>
+      </header>
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" value={login} onChange={(e) => setLogin(e.target.value)} />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
+          <Form.Control type="email" placeholder="Email" value={login} onChange={(e) => setLogin(e.target.value)} />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </Form.Group>
         {/*

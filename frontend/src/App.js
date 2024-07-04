@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
+import NoAccess from "./components/NoAccess";
 import Register from "./components/Register";
 import Map from "./components/Map";
 import {Animals} from "./components/Animals";
@@ -41,7 +42,11 @@ function App() {
       console.log("User data is null");
       return (
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<NoAccess />} />
+          <Route path="/animals" element={<NoAccess />} />
+          <Route path="/history" element={<NoAccess />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       );
     }else{
@@ -58,9 +63,25 @@ function App() {
     }
   }
 
+  function RoutesAll1() {
+    console.log(userData);
+    if (userData === null) {
+      console.log("User data is null");
+    }
+    return (
+      <Routes>
+        <Route path="/" element={<Map />} />
+        <Route path="/animals" element={<Animals />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    );
+  }
+
   return (
     <Router>
-      <Navbar />
+      <Navbar style={{position: "absolute", "margin-left": "3%"}}/>
       <div className="container1">
         <RoutesAll />
       </div>
