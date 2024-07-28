@@ -1,0 +1,11 @@
+a {
+  text-decoration-line: none;
+  margin-right: 12px;
+  /* color: white; */
+  color: rgb(30, 16, 16);
+}
+
+.active {
+  /* color: rgb(30, 16, 16); */
+  color: white;
+}

@@ -4,14 +4,17 @@ import Login from "./components/Login";
 import NoAccess from "./components/NoAccess";
 import Register from "./components/Register";
 import Map from "./components/Map";
-import {Animals} from "./components/Animals";
+import { Animals } from "./components/Animals";
 import Navbar from "./components/Navbar";
 import History from "./components/History";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 import { get } from "jquery";
 
+import Home from "./components/Home";
+import SiteNavbar from "./components/Navbar";
+import LogReg from "./components/LoginRegistration";
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -19,7 +22,7 @@ function App() {
   function get_response(response, data) {
     if (response.status === 200) {
       return response.json();
-    }else{
+    } else {
       return null;
     }
   }
@@ -31,9 +34,9 @@ function App() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
-    .then((response) => get_response(response))
-    .then((data) => setUserData(data))
-    .catch((error) => console.error(error));
+      .then((response) => get_response(response))
+      .then((data) => setUserData(data))
+      .catch((error) => console.error(error));
   }, []);
 
   function RoutesAll() {
@@ -42,22 +45,22 @@ function App() {
       console.log("User data is null");
       return (
         <Routes>
-          <Route path="/" element={<NoAccess />} />
+          <Route path="/" element={<Home />} />
           <Route path="/animals" element={<NoAccess />} />
           <Route path="/history" element={<NoAccess />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<LogReg />} />
+          <Route path="/register" element={<LogReg />} />
         </Routes>
       );
-    }else{
+    } else {
       console.log("User data is not null");
       return (
         <Routes>
           <Route path="/" element={<Map />} />
           <Route path="/animals" element={<Animals />} />
           <Route path="/history" element={<History />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* <Route path="/login" element={<LogReg />} /> */}
+          {/* <Route path="/register" element={<LogReg />} /> */}
         </Routes>
       );
     }
@@ -81,10 +84,8 @@ function App() {
 
   return (
     <Router>
-      <Navbar style={{position: "absolute", "margin-left": "3%"}}/>
-      <div className="container1">
-        <RoutesAll />
-      </div>
+      <SiteNavbar />
+      <RoutesAll />
     </Router>
   );
 }

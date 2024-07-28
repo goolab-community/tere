@@ -1,29 +1,41 @@
 import React, { useEffect, useState, useRef } from "react";
-import $, { event } from 'jquery';
+import $, { event } from "jquery";
+// import Navbar from "./Navbar";
 
-import { MapContainer, TileLayer, Marker, Map, Popup, useMap, useMapEvents } from 'react-leaflet'
-import MarkerClusterGroup from 'react-leaflet-cluster'
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import ToggleButton from 'react-bootstrap/ToggleButton';
-import {Card, Form} from 'react-bootstrap';
-import L from 'leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Map,
+  Popup,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import ToggleButton from "react-bootstrap/ToggleButton";
+import { Card, Form } from "react-bootstrap";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import {red_icon, green_icon, blue_icon, yellow_icon, Defaulticon} from "./Icons" 
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-import LocationComponent from './LocationComponent';
-import {NewAnimal, NewAnimal1} from './Animals';
-import {SliderWithInputFormControl, uploadFile} from "./Utils";
+import {
+  red_icon,
+  green_icon,
+  blue_icon,
+  yellow_icon,
+  Defaulticon,
+} from "./Icons";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
+import LocationComponent from "./LocationComponent";
+import { NewAnimal, NewAnimal1 } from "./Animals";
+import { SliderWithInputFormControl, uploadFile } from "./Utils";
 import axios from "axios";
 
 import Resizer from "react-image-file-resizer";
 
-
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
-
-function StatusUpdateModal({handleShow, handleClose, show, animal}) {
-
+function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
   const [health_scale, setHealthScale] = useState(0);
 
   const [fileDataURL, setFileDataURL] = useState(null);
@@ -89,13 +101,17 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
 
   function submit_history(e) {
     handleClose();
-    console.log(`------- Submitting history for animal ${animal.name} --------`);
+    console.log(
+      `------- Submitting history for animal ${animal.name} --------`
+    );
     console.log("Event Type:", event_type);
     console.log("Health Scale:", health_scale);
     console.log("Date:", event_date);
     console.log("Description:", event_description);
     console.log("File:", selected_file);
-    console.log("-------------------------------------------------------------");
+    console.log(
+      "-------------------------------------------------------------"
+    );
     // make a pos request to the backend
     const history = {
       user_id: parseInt(localStorage.getItem("_id")),
@@ -110,34 +126,43 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
 
     const config = {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem("token")}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
       },
     };
 
-    axios.post("http://localhost:8000/api/v1/history/history", history, config).then((response) => {
-      console.log(response);
-      uploadFile(selected_file, response.data.upload_url);
-      alert("History updated successfully");
-      // goto home page
-      window.location.href = "/";
-    }).catch((error) => {
-      console.log(history);
-      console.log(error);
-      alert("Error updating history");
-    });
+    axios
+      .post("http://localhost:8000/api/v1/history/history", history, config)
+      .then((response) => {
+        console.log(response);
+        uploadFile(selected_file, response.data.upload_url);
+        alert("History updated successfully");
+        // goto home page
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.log(history);
+        console.log(error);
+        alert("Error updating history");
+      });
   }
 
   return (
-    <>
-      <Modal show={show} fullscreen={true} onHide={handleClose}>
+    <div>
+      <Modal class="mt-36" show={show} fullscreen={true} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Status Update</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea4">
             <Form.Label>Event Type</Form.Label>
-            <Form.Control as="select" placeholder="Event Type" onChange={(e) => {setEventType(e.target.value)}} >
+            <Form.Control
+              as="select"
+              placeholder="Event Type"
+              onChange={(e) => {
+                setEventType(e.target.value);
+              }}
+            >
               <option value={"feed"}>Feed</option>
               <option value={"lost"}>Lost</option>
               <option value={"found"}>Found</option>
@@ -147,24 +172,43 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
               <option value={"other"}>Other</option>
             </Form.Control>
             <p></p>
-            <SliderWithInputFormControl id="health_scale" name="Health Scale"
-              value={health_scale} min="0" max="10" setValue={setHealthScale}/>
+            <SliderWithInputFormControl
+              id="health_scale"
+              name="Health Scale"
+              value={health_scale}
+              min="0"
+              max="10"
+              setValue={setHealthScale}
+            />
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea2">
             <Form.Label>Date</Form.Label>
             <p></p>
-            <input type="datetime-local" id="eventdate" name="eventdate" onChange={(e)=>setEventDate(e.target.value)}></input>
+            <input
+              type="datetime-local"
+              id="eventdate"
+              name="eventdate"
+              onChange={(e) => setEventDate(e.target.value)}
+            ></input>
             <p></p>
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" rows={3} onChange={(e) => setEventDescription(e.target.value)} />
+            <Form.Control
+              as="textarea"
+              rows={3}
+              onChange={(e) => setEventDescription(e.target.value)}
+            />
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea3">
             <Form.Label>Media</Form.Label>
             <Card.Img src={fileDataURL} />
-            <Form.Group style={{"marginTop": "10px"}} controlId="formFile" className="mb-3">
-              <Form.Control onChange={(e)=>file_handler(e)} type="file" />
+            <Form.Group
+              style={{ marginTop: "10px" }}
+              controlId="formFile"
+              className="mb-3"
+            >
+              <Form.Control onChange={(e) => file_handler(e)} type="file" />
             </Form.Group>
           </Form.Group>
         </Modal.Body>
@@ -172,15 +216,14 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={(a)=>submit_history(a)}>
+          <Button variant="primary" onClick={(a) => submit_history(a)}>
             Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 }
-
 
 function MapPage() {
   const [userData, setUserData] = useState(null);
@@ -190,9 +233,9 @@ function MapPage() {
   const [marker_created, setMarkerCreated] = useState(false);
   const [marker_count, setMarkerCount] = useState(0);
   const [allow_marker_creation, setAllowMarkerCreation] = useState(false);
-  const [createAnimalModalShow, setCreateAnimalModalShow] = React.useState(false);
+  const [createAnimalModalShow, setCreateAnimalModalShow] =
+    React.useState(false);
   const [selected_marker, setSelectedMarker] = useState(null);
-  
 
   // modal controls
   const [show, setShow] = useState(false);
@@ -215,10 +258,9 @@ function MapPage() {
     console.log(latlng);
     console.log(db_animals);
     if (latlng != null) {
-      db_animals.push(
-      {
-        "latitude": latlng.lat,
-        "longitude": latlng.lng,
+      db_animals.push({
+        latitude: latlng.lat,
+        longitude: latlng.lng,
       });
     }
     setAnimals(db_animals);
@@ -233,7 +275,7 @@ function MapPage() {
   }
 
   function LocationMarker() {
-    const [position, setPosition] = useState(null)
+    const [position, setPosition] = useState(null);
     const map = useMapEvents({
       click(e) {
         if (allow_marker_creation) {
@@ -245,13 +287,13 @@ function MapPage() {
         map.flyTo(e.latlng, map.getZoom());
         // console.log("Location found:", e.latlng);
       },
-    })
-  
+    });
+
     return position === null ? null : (
       <Marker position={position}>
         <Popup>You are here</Popup>
       </Marker>
-    )
+    );
   }
 
   useEffect(() => {
@@ -273,9 +315,9 @@ function MapPage() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
-    .then((response) => response.json())
-    .then((data) => set_animals(data))
-    .catch((error) => console.error(error));
+      .then((response) => response.json())
+      .then((data) => set_animals(data))
+      .catch((error) => console.error(error));
   }, []);
 
   const username = localStorage.getItem("username");
@@ -322,7 +364,7 @@ function MapPage() {
       // hide save/cancel buttons
       $("#save-marker-btn").hide();
       $("#cancel-marker-btn").hide();
-    }else {
+    } else {
       console.log("Enable marker creation");
       // enable save/cancel buttons
       $("#save-marker-btn").show();
@@ -352,9 +394,12 @@ function MapPage() {
             {props.selected_marker != null && props.selected_marker.properties.description}
           </p>
           */}
-          <NewAnimal1 marker={props.selected_marker} createAnimalModalShow={createAnimalModalShow}
+          <NewAnimal1
+            marker={props.selected_marker}
+            createAnimalModalShow={createAnimalModalShow}
             setSelectedMarker={null}
-          setCreateAnimalModalShow={setCreateAnimalModalShow}/>
+            setCreateAnimalModalShow={setCreateAnimalModalShow}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onHide}>Close</Button>
@@ -370,104 +415,122 @@ function MapPage() {
   }
 
   return (
-    <div>
-      <StatusUpdateModal handleShow={handleShow} handleClose={handleClose} show={show} animal={selected_animal}/>
-      <div style={{minHeight:"100%"}}>
+    <div class="mt-20 z-10 relative">
+      <StatusUpdateModal
+        handleShow={handleShow}
+        handleClose={handleClose}
+        show={show}
+        animal={selected_animal}
+      />
+      <div style={{ minHeight: "100%" }}>
         {/*userData && (`Welcome ${username} to the Tere app!`)*/}
         {/*<LocationComponent />*/}
-        <div>
+        <div class="absolute bottom-20 left-2">
           <Button
-              id="toggle-marker-creation-btn"
-              style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "10px"}}
-              className="btn-sm btn-danger position-absolute bottom-0 start-0"
-              value="disabled"
-              onClick={
-                (e) => {
-                  set_btn_state(e);
-                }
-              }>
-              {allow_marker_creation? "-": "+"}
+            id="toggle-marker-creation-btn"
+            style={{ zIndex: 1000, marginBottom: "10px", marginLeft: "10px" }}
+            className="btn-sm btn-danger position-absolute bottom-0 start-0"
+            value="disabled"
+            onClick={(e) => {
+              set_btn_state(e);
+            }}
+          >
+            {allow_marker_creation ? "-" : "+"}
           </Button>
           <Button
-              id="save-marker-btn"
-              style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "45px"}}
-              className="btn-sm btn-primary position-absolute bottom-0 start-0"
-              value="disabled"
-              onClick={
-                (e) => {
-                  console.log("Save markers creation");
-                  setAllowMarkerCreation(false);
-                  $("#save-marker-btn").hide();
-                  $("#cancel-marker-btn").hide();
-                  $("#toggle-marker-creation-btn").show();
-                }
-              }>
-              Save
+            id="save-marker-btn"
+            style={{ zIndex: 1000, marginBottom: "10px", marginLeft: "45px" }}
+            className="btn-sm btn-primary position-absolute bottom-0 start-0"
+            value="disabled"
+            onClick={(e) => {
+              console.log("Save markers creation");
+              setAllowMarkerCreation(false);
+              $("#save-marker-btn").hide();
+              $("#cancel-marker-btn").hide();
+              $("#toggle-marker-creation-btn").show();
+            }}
+          >
+            Save
           </Button>
           <Button
-              id="cancel-marker-btn"
-              style={{zIndex: 1000, "marginBottom": "10px", "marginLeft": "100px"}}
-              className="btn-sm btn-secondary position-absolute bottom-0 start-0"
-              value="disabled"
-              onClick={
-                (e) => {
-                  console.log("Cancel markers creation");
-                  // setAllowMarkerCreation(false);
-                  // $("#save-marker-btn").hide();
-                  // $("#cancel-marker-btn").hide();
-                  // $("#toggle-marker-creation-btn").show();
-                  window.location.reload();
-                }
-              }>
-              Cancel
+            id="cancel-marker-btn"
+            style={{ zIndex: 1000, marginBottom: "10px", marginLeft: "100px" }}
+            className="btn-sm btn-secondary position-absolute bottom-0 start-0"
+            value="disabled"
+            onClick={(e) => {
+              console.log("Cancel markers creation");
+              // setAllowMarkerCreation(false);
+              // $("#save-marker-btn").hide();
+              // $("#cancel-marker-btn").hide();
+              // $("#toggle-marker-creation-btn").show();
+              window.location.reload();
+            }}
+          >
+            Cancel
           </Button>
         </div>
 
-        <MapContainer center={position} zoom={9} scrollWheelZoom={true}
+        <MapContainer
+          center={position}
+          zoom={9}
+          scrollWheelZoom={true}
           whenCreated={setMap}
-          style={{height: "100vh", width: "100vw"}}>
+          style={{ height: "100vh", width: "100vw" }}
+        >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {db_animals.map(animal => (
-            <Marker
-              icon={get_icon(health_to_color(animal.overall_health))}
-              key={animal.id}
-              position={[
-                animal.latitude,
-                animal.longitude
-              ]}
-              onClick={() => {
-                setActivePark(animal);
-                // console.log("Active marker:", marker);
-                setCreateAnimalModalShow(true);
-              }}
+          {db_animals.map(
+            (animal) => (
+              <Marker
+                icon={get_icon(health_to_color(animal.overall_health))}
+                key={animal.id}
+                position={[animal.latitude, animal.longitude]}
+                onClick={() => {
+                  setActivePark(animal);
+                  // console.log("Active marker:", marker);
+                  setCreateAnimalModalShow(true);
+                }}
               >
-              {! allow_marker_creation ?
-                <Popup>
-                  <Card style={{ width: '18rem' }}>
-                    <Card.Img id={"image_" + animal.medias.id} variant="top" src={animal.public_url} />
-                    <Card.Body>
-                      <Card.Title>{animal.name}</Card.Title>
-                      <Card.Text>
-                        {animal.description}
-                      </Card.Text>
-                      <Button variant="primary" onClick={(e)=>show_animal_history_modal(animal)}>Status Update</Button>
-                    </Card.Body>
-                  </Card>
-                </Popup> :
-                <NewAnimal marker={animal} createAnimalModalShow={createAnimalModalShow}
-                  setSelectedMarker={setSelectedMarker}
-                  setCreateAnimalModalShow={setCreateAnimalModalShow}/>
-              }
-            </Marker>
-          )
-          // --
+                {!allow_marker_creation ? (
+                  <Popup>
+                    <Card style={{ width: "18rem" }}>
+                      <Card.Img
+                        id={"image_" + animal.medias.id}
+                        variant="top"
+                        src={animal.public_url}
+                      />
+                      <Card.Body>
+                        <Card.Title>{animal.name}</Card.Title>
+                        <Card.Text>{animal.description}</Card.Text>
+                        <Button
+                          variant="primary"
+                          onClick={(e) => show_animal_history_modal(animal)}
+                        >
+                          Status Update
+                        </Button>
+                      </Card.Body>
+                    </Card>
+                  </Popup>
+                ) : (
+                  <NewAnimal
+                    marker={animal}
+                    createAnimalModalShow={createAnimalModalShow}
+                    setSelectedMarker={setSelectedMarker}
+                    setCreateAnimalModalShow={setCreateAnimalModalShow}
+                  />
+                )}
+              </Marker>
+            )
+            // --
           )}
           {
-            <MyVerticallyCenteredModal selected_marker={selected_marker} show={createAnimalModalShow}
-              onHide={() => setCreateAnimalModalShow(false) }/>
+            <MyVerticallyCenteredModal
+              selected_marker={selected_marker}
+              show={createAnimalModalShow}
+              onHide={() => setCreateAnimalModalShow(false)}
+            />
           }
           <LocationMarker />
         </MapContainer>
