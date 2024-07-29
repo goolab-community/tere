@@ -12,9 +12,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { get } from "jquery";
 
-import Home from "./components/Home";
+import Home from "./Routes/Home";
 import SiteNavbar from "./components/Navbar";
-import LogReg from "./components/LoginRegistration";
+// import LogReg from "./Routes/LoginRegistration";
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -48,8 +48,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/animals" element={<NoAccess />} />
           <Route path="/history" element={<NoAccess />} />
-          <Route path="/login" element={<LogReg />} />
-          <Route path="/register" element={<LogReg />} />
+          {/* <Route path="/login" element={<LogReg />} />
+          <Route path="/register" element={<LogReg />} /> */}
         </Routes>
       );
     } else {

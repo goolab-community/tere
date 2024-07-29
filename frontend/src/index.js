@@ -8,13 +8,34 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // routing
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SiteNavbar from "./components/Navbar";
-import Home from "./components/Home";
+import Home from "./Routes/Home";
+import LogReg from "./Routes/LoginRegistration";
+import ErrorPage from "./components/Error/error-page";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <SiteNavbar />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "login",
+        element: <LogReg />,
+      },
+      {
+        path: "register",
+        element: <LogReg />,
+      },
+    ],
   },
+  // {
+  //   path: "home",
+  //   element: <Home />,
+  // },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
