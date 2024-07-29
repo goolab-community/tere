@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+import App, { loader } from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -10,6 +10,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SiteNavbar from "./components/Navbar";
 import Home from "./Routes/Home";
 import LogReg from "./Routes/LoginRegistration";
+import MapPage from "./components/Map";
+import Logaut from "./components/Logout";
 import ErrorPage from "./components/Error/error-page";
 
 const router = createBrowserRouter([
@@ -17,6 +19,8 @@ const router = createBrowserRouter([
     path: "/",
     element: <SiteNavbar />,
     errorElement: <ErrorPage />,
+    loader: loader,
+    // action: logoutAction,
     // all children ellement appear under of siteNvabar becouse Outlet from React-router-dom is used inside siteNavbar
     children: [
       {
@@ -33,10 +37,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "home",
-  //   element: <Home />,
-  // },
+  {
+    path: "map",
+    element: <MapPage />,
+  },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

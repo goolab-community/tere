@@ -1,19 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { Link, NavLink, redirect, Outlet } from "react-router-dom";
+import Logaut from "./Logout";
 
 import "../css/navbar.css";
 
 function SiteNavbar() {
-  const [user, setuser] = useState(true);
-
-  function logout() {
-    console.log("logout");
-    localStorage.clear();
-    window.location.href = "/";
-  }
-
   return (
     // <MainNavBar/>
     <>
@@ -32,17 +24,7 @@ function SiteNavbar() {
             </a>
 
             {localStorage.token ? (
-              <a>
-                <NavLink
-                  onClick={logout}
-                  to={"/logout"}
-                  className={({ isActive, isPending }) =>
-                    isPending ? "nonactive" : isActive ? "active" : ""
-                  }
-                >
-                  Log Out
-                </NavLink>
-              </a>
+              <Logaut />
             ) : (
               <>
                 <a>

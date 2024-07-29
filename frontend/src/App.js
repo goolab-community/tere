@@ -16,61 +16,29 @@ import Home from "./Routes/Home";
 import SiteNavbar from "./components/Navbar";
 // import LogReg from "./Routes/LoginRegistration";
 
+function get_response(response, data) {
+  if (response.status === 200) {
+    return response.json();
+  } else {
+    return null + " user not registered";
+  }
+}
+export async function loader() {
+  const user = await fetch("http://localhost:8000/api/v1/auth/user", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+    .then((response) => get_response(response))
+    // .then((data) => setUserData(data))
+    .catch((error) => console.error(error));
+
+  console.log(user);
+
+  return user;
+}
+
 function App() {
-  const [userData, setUserData] = useState(null);
-
-  function get_response(response, data) {
-    if (response.status === 200) {
-      return response.json();
-    } else {
-      return null;
-    }
-  }
-
-  useEffect(() => {
-    // Fetch user data from the API endpoint
-    fetch("http://localhost:8000/api/v1/auth/user", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((response) => get_response(response))
-      .then((data) => setUserData(data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  function RoutesAll() {
-    console.log(userData);
-    if (userData === null) {
-      console.log("User data is null");
-      return (
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/animals" element={<NoAccess />} />
-          <Route path="/history" element={<NoAccess />} />
-          {/* <Route path="/login" element={<LogReg />} />
-          <Route path="/register" element={<LogReg />} /> */}
-        </Routes>
-      );
-    } else {
-      console.log("User data is not null");
-      return (
-        <Routes>
-          <Route path="/" element={<Map />} />
-          <Route path="/animals" element={<Animals />} />
-          <Route path="/history" element={<History />} />
-          {/* <Route path="/login" element={<LogReg />} /> */}
-          {/* <Route path="/register" element={<LogReg />} /> */}
-        </Routes>
-      );
-    }
-  }
-
-  return (
-    <Router>
-      <SiteNavbar />
-      <RoutesAll />
-    </Router>
-  );
+  return null;
 }
 export default App;
