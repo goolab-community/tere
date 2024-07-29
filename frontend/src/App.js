@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
+
 import NoAccess from "./components/NoAccess";
-import Register from "./components/Register";
+
 import Map from "./components/Map";
 import { Animals } from "./components/Animals";
 import Navbar from "./components/Navbar";
@@ -64,22 +64,6 @@ function App() {
         </Routes>
       );
     }
-  }
-
-  function RoutesAll1() {
-    console.log(userData);
-    if (userData === null) {
-      console.log("User data is null");
-    }
-    return (
-      <Routes>
-        <Route path="/" element={<Map />} />
-        <Route path="/animals" element={<Animals />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    );
   }
 
   return (
