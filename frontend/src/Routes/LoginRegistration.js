@@ -57,8 +57,10 @@ const LogReg = () => {
           localStorage.setItem("is_active", is_active);
           localStorage.setItem("_id", _id);
           // Redirect to homepage using navigate
-          navigate("/"); // Replace '/' with the homepage URL if needed
-          window.location.href = "/";
+          navigate("/map");
+          window.location.reload();
+          // Replace '/' with the homepage URL if needed
+          // window.location.href = "/";
         })
         .catch((error) => {
           console.error(error);

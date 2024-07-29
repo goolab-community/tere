@@ -10,7 +10,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SiteNavbar from "./components/Navbar";
 import Home from "./Routes/Home";
 import LogReg from "./Routes/LoginRegistration";
-import MapPage from "./components/Map";
+import MapPage, { action as enterMappageAction } from "./components/Map";
 import Logaut from "./components/Logout";
 import ErrorPage from "./components/Error/error-page";
 
@@ -35,11 +35,11 @@ const router = createBrowserRouter([
         path: "register",
         element: <LogReg />,
       },
+      {
+        path: "map",
+        element: <MapPage />,
+      },
     ],
-  },
-  {
-    path: "map",
-    element: <MapPage />,
   },
 ]);
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+
 import $, { event } from "jquery";
 // import Navbar from "./Navbar";
 
@@ -32,6 +33,7 @@ import { SliderWithInputFormControl, uploadFile } from "./Utils";
 import axios from "axios";
 
 import Resizer from "react-image-file-resizer";
+import { redirect, useNavigate } from "react-router-dom";
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -413,7 +415,15 @@ function MapPage() {
     setSelectedAnimal(animal);
     handleShow();
   }
-
+  let navigate = useNavigate();
+  if (!localStorage.token) {
+    navigate("/login");
+    return (
+      <div class=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-14">
+        please logi in
+      </div>
+    );
+  }
   return (
     <div class="mt-10 z-10 relative">
       <StatusUpdateModal
@@ -538,4 +548,5 @@ function MapPage() {
     </div>
   );
 }
+
 export default MapPage;
