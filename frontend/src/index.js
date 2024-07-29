@@ -17,6 +17,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <SiteNavbar />,
     errorElement: <ErrorPage />,
+    // all children ellement appear under of siteNvabar becouse Outlet from React-router-dom is used inside siteNavbar
     children: [
       {
         path: "/",
