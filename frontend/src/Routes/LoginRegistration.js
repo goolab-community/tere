@@ -22,10 +22,10 @@ const LogReg = () => {
         })
         .then((response) => {
           setMessage(response.data.message);
-          const { username, email, token } = response.data;
-          localStorage.setItem("username", username);
-          localStorage.setItem("email", email);
-          localStorage.setItem("token", token);
+          // const { username, email, token } = response.data;
+          // localStorage.setItem("username", username);
+          // localStorage.setItem("email", email);
+          // localStorage.setItem("token", token);
           // Redirect to homepage using navigate
           //navigate("/"); // Replace '/' with the homepage URL if needed
           //logout();

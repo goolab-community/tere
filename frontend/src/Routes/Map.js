@@ -251,7 +251,7 @@ function MapPage() {
 
   const position = [41.799188, 44.797391];
   // const [markers, setMarkers] = useState({"features": animals});
-  const [db_animals, setAnimals] = useState();
+  const [db_animals, setAnimals] = useState([]);
 
   const [selected_animal, setSelectedAnimal] = useState(null);
 
