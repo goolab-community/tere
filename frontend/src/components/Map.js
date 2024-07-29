@@ -415,7 +415,7 @@ function MapPage() {
   }
 
   return (
-    <div class="mt-20 z-10 relative">
+    <div class="mt-10 z-10 relative">
       <StatusUpdateModal
         handleShow={handleShow}
         handleClose={handleClose}
