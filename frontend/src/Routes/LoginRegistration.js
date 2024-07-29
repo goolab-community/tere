@@ -58,7 +58,9 @@ const LogReg = () => {
           localStorage.setItem("_id", _id);
           // Redirect to homepage using navigate
           navigate("/map");
-          window.location.reload();
+
+          // in no reload user not reflected
+          // window.location.reload();
           // Replace '/' with the homepage URL if needed
           // window.location.href = "/";
         })

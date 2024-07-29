@@ -1,11 +1,12 @@
 import React from "react";
 import { useState } from "react";
-import { Link, NavLink, redirect, Outlet } from "react-router-dom";
+import { Link, NavLink, redirect, Outlet, useLocation } from "react-router-dom";
 import Logaut from "./Logout";
 
 import "../css/navbar.css";
 
 function SiteNavbar() {
+  const location = useLocation();
   return (
     // <MainNavBar/>
     <>
@@ -22,6 +23,18 @@ function SiteNavbar() {
                 Home
               </NavLink>
             </a>
+            {localStorage.token && (
+              <a>
+                <NavLink
+                  to={"/map"}
+                  className={({ isActive, isPending }) =>
+                    isPending ? "nonactive" : isActive ? "active" : ""
+                  }
+                >
+                  Map
+                </NavLink>
+              </a>
+            )}
 
             {localStorage.token ? (
               <Logaut />
