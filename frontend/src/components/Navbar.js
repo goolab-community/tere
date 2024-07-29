@@ -10,7 +10,7 @@ function SiteNavbar() {
   return (
     // <MainNavBar/>
     <>
-      <nav class=" font-font1 font-semibold flex items-center flex-wrap bg-indigo-400 pl-4 fixed top-0 w-full h-10 z-50">
+      <nav class=" font-font1 font-semibold flex items-center flex-wrap bg-indigo-400 pl-4 fixed top-0 w-full h-10 z-30">
         <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto ">
           <div class="text-sm lg:flex-grow">
             <a>
