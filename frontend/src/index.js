@@ -7,11 +7,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // routing
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import SiteNavbar from "./components/Navbar";
+import SiteNavbar from "./Routes/Navbar";
 import Home from "./Routes/Home";
 import LogReg from "./Routes/LoginRegistration";
-import MapPage, { action as enterMappageAction } from "./components/Map";
-import Logaut from "./components/Logout";
+import MapPage from "./Routes/Map";
+
+import { Animals } from "./Routes/Animals";
+import History from "./Routes/History";
 import ErrorPage from "./components/Error/error-page";
 
 const router = createBrowserRouter([
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
       {
         path: "map",
         element: <MapPage />,
+      },
+      {
+        path: "animals",
+        element: <Animals />,
+      },
+      {
+        path: "history",
+        element: <History />,
       },
     ],
   },

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Link, NavLink, redirect, Outlet, useLocation } from "react-router-dom";
-import Logaut from "./Logout";
+import Logaut from "../components/Logout";
 
 import "../css/navbar.css";
 

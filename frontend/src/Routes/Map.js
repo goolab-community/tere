@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import $, { event } from "jquery";
+import $, { data, event } from "jquery";
 // import Navbar from "./Navbar";
 
 import {
@@ -25,11 +25,11 @@ import {
   blue_icon,
   yellow_icon,
   Defaulticon,
-} from "./Icons";
+} from "../components/Icons";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
-import LocationComponent from "./LocationComponent";
+import LocationComponent from "../components/LocationComponent";
 import { NewAnimal, NewAnimal1 } from "./Animals";
-import { SliderWithInputFormControl, uploadFile } from "./Utils";
+import { SliderWithInputFormControl, uploadFile } from "../components/Utils";
 import axios from "axios";
 
 import Resizer from "react-image-file-resizer";
@@ -251,7 +251,7 @@ function MapPage() {
 
   const position = [41.799188, 44.797391];
   // const [markers, setMarkers] = useState({"features": animals});
-  const [db_animals, setAnimals] = useState([]);
+  const [db_animals, setAnimals] = useState();
 
   const [selected_animal, setSelectedAnimal] = useState(null);
 
@@ -437,7 +437,7 @@ function MapPage() {
           {/*userData && (`Welcome ${username} to the Tere app!`)*/}
           {/*<LocationComponent />*/}
           <div
-            class=" h-12 w-full fixed  bottom-1 left-3 content-center
+            class=" h-12 w-full fixed  bottom-0.5 left-3 content-center
            "
           >
             <div>
@@ -490,7 +490,7 @@ function MapPage() {
               </Button> */}
               <button
                 type="button"
-                class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+                class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-1 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 w-12"
                 onClick={(e) => {
                   set_btn_state(e);
                 }}
