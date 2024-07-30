@@ -426,7 +426,7 @@ function MapPage() {
   }
   return (
     <>
-      <div class="mt-10 z-10 relative">
+      <div class=" mt-[--margin-top]  z-10 relative">
         <StatusUpdateModal
           handleShow={handleShow}
           handleClose={handleClose}
@@ -437,10 +437,10 @@ function MapPage() {
           {/*userData && (`Welcome ${username} to the Tere app!`)*/}
           {/*<LocationComponent />*/}
           <div
-            class=" h-12 w-full fixed  bottom-0.5 left-3 content-center
+            class=" h-14   w-full fixed  bottom-0 left-0  content-center
            "
           >
-            <div>
+            <div class="bg-indigo-300 pl-3  pt-2 h-full">
               {/* <Button
                 id="toggle-marker-creation-btn"
                 style={{ zIndex: 1000 }}
@@ -529,7 +529,7 @@ function MapPage() {
           <div class="h-[calc(100vh-6rem)] overflow-scroll">
             <MapContainer
               center={position}
-              zoom={9}
+              zoom={7.5}
               scrollWheelZoom={true}
               whenCreated={setMap}
               style={{ height: "100vh", width: "100vw" }}
