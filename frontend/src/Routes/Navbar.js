@@ -9,8 +9,9 @@ function SiteNavbar() {
   const location = useLocation();
   return (
     // <MainNavBar/>
-    <>
-      <nav class=" font-font1 font-semibold flex items-center flex-wrap bg-indigo-400 pl-4 fixed top-0 w-full h-10 z-30">
+    // 100& screen
+    <div class="flex  h-screen bg-indigo-300">
+      <nav class=" flex-1 font-font1 font-semibold flex items-center flex-wrap bg-indigo-400 pl-6 fixed top-0 w-full h-10 z-30">
         <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto ">
           <div class="text-sm lg:flex-grow">
             <a>
@@ -88,10 +89,9 @@ function SiteNavbar() {
           </div>
         </div>
       </nav>
-      <div>
-        <Outlet />
-      </div>
-    </>
+
+      <Outlet />
+    </div>
   );
 }
 
