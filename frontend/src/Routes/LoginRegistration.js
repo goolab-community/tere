@@ -72,7 +72,7 @@ const LogReg = () => {
   };
 
   return (
-    <div className="flex w-full mt-[--margin-top] bg-red-600  items-center  flex-col justify-center px-6 py-0 lg:px-8">
+    <div className="flex w-full mt-[--margin-top]   items-center  flex-col justify-center px-6 py-0 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 ">
           {location.pathname == "/register"
