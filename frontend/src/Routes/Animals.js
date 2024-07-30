@@ -438,7 +438,7 @@ function NewAnimal({
 
 function Animals() {
   const wrapperRef = useRef(null);
-
+  console.log("animals");
   const formatDate = (isoDate, showTime) => {
     const date = new Date(isoDate);
     const options = {
@@ -470,11 +470,13 @@ function Animals() {
       "Sex",
       "Tag ID",
     ],
+    // sruliad shesacvlelia
     server: {
       url: "http://localhost:8000/api/v1/animal/animals",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      then: (data) =>
-        data.map((animal) => [
+      then: (data) => {
+        console.log(data);
+        return data.map((animal) => [
           animal.address,
           html(
             `<strong>${animal.age_year} Year and ${animal.age_month} Month</strong>`
@@ -492,7 +494,9 @@ function Animals() {
           ),
           html(`<h3>${animal.sex === "male" ? "♂" : "♀"}</h3>`),
           animal.tag_id,
-        ]),
+        ]);
+      },
+
       total: (data) => data.length,
     },
   });
@@ -503,6 +507,7 @@ function Animals() {
 
   return (
     <div
+      className="mt-[--margin-top]"
       style={{ "margin-left": "3%", "margin-right": "5%" }}
       ref={wrapperRef}
     />
