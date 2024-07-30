@@ -24,16 +24,38 @@ function SiteNavbar() {
               </NavLink>
             </a>
             {localStorage.token && (
-              <a>
-                <NavLink
-                  to={"/map"}
-                  className={({ isActive, isPending }) =>
-                    isPending ? "nonactive" : isActive ? "active" : ""
-                  }
-                >
-                  Map
-                </NavLink>
-              </a>
+              <>
+                <a>
+                  <NavLink
+                    to={"/map"}
+                    className={({ isActive, isPending }) =>
+                      isPending ? "nonactive" : isActive ? "active" : ""
+                    }
+                  >
+                    Map
+                  </NavLink>
+                </a>
+                <a>
+                  <NavLink
+                    to={"/animals"}
+                    className={({ isActive, isPending }) =>
+                      isPending ? "nonactive" : isActive ? "active" : ""
+                    }
+                  >
+                    Animals
+                  </NavLink>
+                </a>
+                <a>
+                  <NavLink
+                    to={"/history"}
+                    className={({ isActive, isPending }) =>
+                      isPending ? "nonactive" : isActive ? "active" : ""
+                    }
+                  >
+                    Hystory
+                  </NavLink>
+                </a>
+              </>
             )}
 
             {localStorage.token ? (
