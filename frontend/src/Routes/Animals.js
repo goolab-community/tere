@@ -74,8 +74,8 @@ function NewAnimal1({
       const file = event.target.files[0];
       if (file) {
         const img = new Image();
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
         console.log("File - : ", file);
 
@@ -100,7 +100,6 @@ function NewAnimal1({
         img.src = URL.createObjectURL(file);
       }
     };
-
 
     function resize_image(file, max_width, max_height) {
       return new Promise((resolve) => {
@@ -544,6 +543,11 @@ function Animals() {
     },
   });
 
+  const handleSortClick = (SortBy) => {
+    // here request
+    console.log(SortBy);
+  };
+
   useEffect(() => {
     // grid.render(wrapperRef.current);
   });
@@ -568,13 +572,47 @@ function Animals() {
     // />
     <div className="mt-[--margin-top]    ">
       {/* main first container */}
-      <div className="  mt-16 flex items-center gap-2 font-font1 font-medium bg-gradient-to-r from-indigo-200 to-indigo-300 p-1  ">
+
+      <div className="  mt-16 flex items-center gap-2 font-font1 font-medium bg-gradient-to-r from-indigo-200 to-indigo-300 p-1 leading-8 ">
         {/* sortedby */}
-        <i className="pl-[--pading-left] ">Sorted By:</i>&nbsp;
-        <p className=" text-sm cursor-pointer">Sort1</p>
-        <p className=" text-sm cursor-pointer">Sort2</p>
-        <p className=" text-sm cursor-pointer">Sort3</p>
+        <p className="pl-[--pading-left] ">
+          <svg
+            class="w-5 h-5 text-gray-800 dark:text-black"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"
+            />
+          </svg>
+        </p>
+        &nbsp;
+        <p
+          className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
+          onClick={() => handleSortClick("age")}
+        >
+          Age
+        </p>
+        <p
+          className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
+          onClick={() => handleSortClick("nearest")}
+        >
+          Nearest
+        </p>
+        <p
+          className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
+          onClick={() => handleSortClick("Last-Updated")}
+        >
+          Last-Updated
+        </p>
       </div>
+
       {/* main second container */}
       <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-10">
         {/* main-div */}
