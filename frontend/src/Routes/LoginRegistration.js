@@ -74,7 +74,7 @@ const LogReg = () => {
   return (
     <div className="flex w-full mt-[--margin-top]   items-center  flex-col justify-center px-6 py-0 lg:px-8 text-white">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="text-center text-2xl font-bold leading-9 tracking-tight ">
+        <h2 className="text-center text-xl sm:text-2xl font-bold leading-9 tracking-tight ">
           {location.pathname == "/register"
             ? "Registration"
             : "Sign in to your account"}

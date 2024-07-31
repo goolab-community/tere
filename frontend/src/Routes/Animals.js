@@ -11,6 +11,10 @@ import Moment from "react-moment";
 import moment from "moment";
 import axios from "axios";
 
+// start work
+import dog from "../Images/german-dog.jpg";
+import { testAnimals } from "../components/PropData";
+
 import Resizer from "react-image-file-resizer";
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
@@ -437,6 +441,7 @@ function NewAnimal({
 }
 
 function Animals() {
+  // const [allanimal, setAllenimal] = useState
   const wrapperRef = useRef(null);
   console.log("animals");
   const formatDate = (isoDate, showTime) => {
@@ -502,15 +507,82 @@ function Animals() {
   });
 
   useEffect(() => {
-    grid.render(wrapperRef.current);
+    // grid.render(wrapperRef.current);
   });
 
+  const conditonsTyleReturn = (conditon) => {
+    if (conditon == "not bad") {
+      return "bg-yellow-300";
+    }
+    if (conditon == "good") {
+      return "bg-green-300";
+    }
+    if (conditon == "bad") {
+      return "bg-red-300";
+    }
+  };
+
   return (
-    <div
-      className="mt-[--margin-top]"
-      style={{ "margin-left": "3%", "margin-right": "5%" }}
-      ref={wrapperRef}
-    />
+    // <div
+    //   className="mt-[--margin-top]"
+    //   style={{ "margin-left": "3%", "margin-right": "5%" }}
+    //   ref={wrapperRef}
+    // />
+    <div className="mt-[--margin-top]    ">
+      {/* main first container */}
+      <div className="  mt-16 flex items-center gap-2 font-font1 font-medium bg-gradient-to-r from-indigo-200 to-indigo-300 p-1  ">
+        {/* sortedby */}
+        <i className="pl-[--pading-left] ">Sorted By:</i>&nbsp;
+        <p className=" text-sm cursor-pointer">Sort1</p>
+        <p className=" text-sm cursor-pointer">Sort2</p>
+        <p className=" text-sm cursor-pointer">Sort3</p>
+      </div>
+      {/* main second container */}
+      <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-10">
+        {/* main-div */}
+        <div className=" flex flex-wrap gap-2 items-center justify-center sm:justify-start ">
+          {testAnimals.map((animal) => {
+            return (
+              <div class=" h-80  w-[calc(100%-0.5rem)] sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300">
+                <img class="w-full" src={dog} alt="dog" />
+
+                {/* small container age name sex */}
+                <div className=" mt-1.5 pl-2">
+                  <div className=" font-semibold text-xs">
+                    <span>Name:</span>&nbsp;
+                    <span className=" ">{animal.name}</span>
+                  </div>
+                  <div className=" font-semibold text-xs">
+                    <span>Age:</span>&nbsp;
+                    <span className=" ">{animal.age}</span>
+                  </div>
+                  <div className=" font-semibold text-xs">
+                    <span>Sex:</span>&nbsp;
+                    <span className=" ">{animal.sex}</span>
+                  </div>
+                  <div className=" font-semibold text-xs">
+                    <span>Created:</span>&nbsp;
+                    <span className=" ">{animal.created}</span>
+                  </div>
+                  <div className=" font-semibold text-xs">
+                    <span>Condition:</span>&nbsp;
+                    <span className={conditonsTyleReturn(animal.conditions)}>
+                      {animal.conditions}
+                    </span>
+                  </div>
+                </div>
+                {/* Desc Container */}
+                <div className=" pl-2 mt-2  text-xs pb-3">
+                  <i className="font-semibold">Description:</i>
+                  <p>{animal.description}</p>
+                </div>
+              </div>
+            );
+          })}
+          {/* one whole card item */}
+        </div>
+      </div>
+    </div>
   );
 }
 

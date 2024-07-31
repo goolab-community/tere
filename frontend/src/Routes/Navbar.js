@@ -11,7 +11,7 @@ function SiteNavbar() {
     // <MainNavBar/>
     // 100& screen
     <div class="flex  h-screen bg-indigo-300">
-      <nav class=" flex-1 font-font1 font-semibold flex items-center flex-wrap bg-gradient-to-r from-indigo-300 to-indigo-600 pl-6 fixed top-0 w-full h-10 z-30">
+      <nav class=" pl-[--pading-left] flex-1 font-font1 font-semibold flex items-center flex-wrap bg-gradient-to-r from-indigo-200 to-indigo-300 fixed top-0 w-full h-10 z-30">
         <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto ">
           <div class="text-xs sm:text-sm    lg:flex-grow">
             <a>
