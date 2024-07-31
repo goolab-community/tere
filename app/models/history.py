@@ -32,6 +32,7 @@ class MediaType(enum.Enum):
     Media type enum
     '''
     image = 'image'
+    icon = 'icon'
     video = 'video'
     audio = 'audio'
     document = 'document'

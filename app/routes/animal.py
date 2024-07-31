@@ -35,10 +35,12 @@ def animals(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: 
 
     for animal in animals:
         animal.medias = db.query(models.Media).filter(models.Media.animal_id == animal.id).all()
+        logger.info(animal.medias)
+        icon = [m for m in animal.medias if m.type == models.MediaType.icon][0]
         if animal.medias and len(animal.medias) > 0:
             animal.public_url = generate_download_signed_url_v4(
                 "tere-media-bucket",
-                animal.medias[0].url
+                icon.url
             )
     return animals
 
@@ -76,20 +78,30 @@ def create_animal(animal: schemas.Animal,
         )
         db.add(new_animal)
         db.commit()
-        media = models.Media(
+        image_media = models.Media(
+            url=f"icons/animal_main_image_{new_animal.id}.jpg",
+            type="icon",
+            uploaded_by_user_id=user.get("user_id"),
+            date=datetime.now(),
+            animal_id=new_animal.id
+        )
+        icon_media = models.Media(
             url=f"images/animal_main_image_{new_animal.id}.jpg",
             type="image",
             uploaded_by_user_id=user.get("user_id"),
             date=datetime.now(),
             animal_id=new_animal.id
         )
-        db.add(media)
+        db.add(image_media)
+        db.add(icon_media)
         db.commit()
         url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_main_image_{new_animal.id}.jpg")
+        url_icon = generate_upload_signed_url_v4("tere-media-bucket", f"icons/animal_main_image_{new_animal.id}.jpg")
         return {
             "animal": new_animal.to_json(),
             "message": "Animal created successfully",
-            "upload_url":  url
+            "upload_url":  url,
+            "upload_url_icon": url_icon
         }
     except Exception as e:
         logger.error(e)

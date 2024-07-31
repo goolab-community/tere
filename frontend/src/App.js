@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import NoAccess from "./components/NoAccess";
 
 import Map from "./Routes/Map";
 import { Animals } from "./Routes/Animals";
