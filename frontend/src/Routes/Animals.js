@@ -3,7 +3,7 @@ import $ from "jquery";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { Card, Col, Row, Image } from "react-bootstrap";
+import { Card, Col, Row, BootstrapImage } from "react-bootstrap";
 import { Grid, h, html, createRef as gCreateRef } from "gridjs";
 import { Popup } from "react-leaflet";
 import { SliderWithInputFormControl } from "../components/Utils";
@@ -52,6 +52,9 @@ function NewAnimal1({
     const [show_other_params, setShowOtherParams] = useState(false);
 
     const [selected_file, setSelectedFile] = useState(null);
+    const [resizedImage, setResizedImage] = useState(null);
+    const [resizedImageFile, setResizedImageFile] = useState(null);
+
     const [fileDataURL, setFileDataURL] = useState(null);
 
     function file_handler(e) {
@@ -64,7 +67,40 @@ function NewAnimal1({
         return;
       }
       setSelectedFile(file);
+      handleResizeImage(e);
     }
+
+    const handleResizeImage = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const img = new Image();
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        console.log("File - : ", file);
+
+        img.onload = () => {
+          const desiredWidth = 200;
+          const aspectRatio = img.width / img.height;
+          const newWidth = desiredWidth;
+          const newHeight = desiredWidth / aspectRatio;
+
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+          ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+          canvas.toBlob((blob) => {
+            const newFile = new File([blob], file.name, { type: file.type });
+            setResizedImageFile(newFile);
+            const resizedImageURL = URL.createObjectURL(newFile);
+            setResizedImage(resizedImageURL);
+          }, file.type);
+        };
+
+        img.src = URL.createObjectURL(file);
+      }
+    };
+
 
     function resize_image(file, max_width, max_height) {
       return new Promise((resolve) => {
@@ -163,6 +199,7 @@ function NewAnimal1({
           console.log(response);
           // const file = resize_image(selected_file, 300, 300);
           uploadFile(selected_file, response.data.upload_url);
+          uploadFile(resizedImageFile, response.data.upload_url_icon);
           alert("New animal created successfully");
           setCreateAnimalModalShow(false);
         })
@@ -185,6 +222,7 @@ function NewAnimal1({
     return (
       <>
         <Card.Img src={fileDataURL} />
+        {resizedImage && <img src={resizedImage} alt="Resized" />}
         <Form.Group
           style={{ marginTop: "10px" }}
           controlId="formFile"

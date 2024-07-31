@@ -387,7 +387,7 @@ function MapPage() {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Animal Form
+            Animal Form 2
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

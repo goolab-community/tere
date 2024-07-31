@@ -343,7 +343,7 @@ function MapPage() {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Animal Form
+            Animal Form 1
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -352,7 +352,8 @@ function MapPage() {
             {props.selected_marker != null && props.selected_marker.properties.description}
           </p>
           */}
-          <NewAnimal1 marker={props.selected_marker} createAnimalModalShow={createAnimalModalShow}
+          <NewAnimal1 marker={props.selected_marker}
+            createAnimalModalShow={createAnimalModalShow}
             setSelectedMarker={null}
           setCreateAnimalModalShow={setCreateAnimalModalShow}/>
         </Modal.Body>
