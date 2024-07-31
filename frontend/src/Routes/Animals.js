@@ -17,6 +17,8 @@ import { testAnimals } from "../components/PropData";
 
 import Resizer from "react-image-file-resizer";
 
+import "../css/modal.css";
+
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 function NewAnimal1({
@@ -408,14 +410,17 @@ function NewAnimal1({
             </Form.Group>
           </>
         )}
-        <Button
-          variant="primary"
-          onClick={(e) => {
-            submit_handler(e);
-          }}
-        >
-          Submit
-        </Button>
+        <div className=" mt-3">
+          <Button
+            className=""
+            variant="primary"
+            onClick={(e) => {
+              submit_handler(e);
+            }}
+          >
+            Save
+          </Button>
+        </div>
       </>
     );
   }
