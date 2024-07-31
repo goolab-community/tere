@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Link, NavLink, redirect, Outlet, useLocation } from "react-router-dom";
 
-//i need it for ovveride bootstrap variables
+//i need it for ovveride bootstrap variable
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import Logaut from "../components/Logout";

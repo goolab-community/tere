@@ -478,7 +478,7 @@ function NewAnimal({
 }
 
 function Animals() {
-  // const [allanimal, setAllenimal] = useState
+  const [allanimal, setAllenimal] = useState(testAnimals);
   const wrapperRef = useRef(null);
   console.log("animals");
   const formatDate = (isoDate, showTime) => {
@@ -543,9 +543,17 @@ function Animals() {
     },
   });
 
+  // sort action
   const handleSortClick = (SortBy) => {
     // here request
+
     console.log(SortBy);
+  };
+
+  // load more action
+  const handleLoadmoreClick = () => {
+    setAllenimal((prev) => [...prev, ...testAnimals]);
+    console.log("lodad more");
   };
 
   useEffect(() => {
@@ -570,93 +578,107 @@ function Animals() {
     //   style={{ "margin-left": "3%", "margin-right": "5%" }}
     //   ref={wrapperRef}
     // />
-    <div className="mt-[--margin-top]    ">
-      {/* main first container */}
+    <div className="flex flex-col">
+      <div className="mt-[--margin-top]    ">
+        {/* main first container */}
 
-      <div className="  mt-16 flex items-center gap-2 font-font1 font-medium bg-gradient-to-r from-indigo-200 to-indigo-300 p-1 leading-8 ">
-        {/* sortedby */}
-        <p className="pl-[--pading-left] ">
-          <svg
-            class="w-5 h-5 text-gray-800 dark:text-black"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
+        <div className="  mt-16 flex items-center gap-2 font-font1 font-medium bg-gradient-to-r from-indigo-200 to-indigo-300 p-1 leading-8 ">
+          {/* sortedby */}
+          <p className="pl-[--pading-left] ">
+            <svg
+              class="w-5 h-5 text-gray-800 dark:text-black"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"
+              />
+            </svg>
+          </p>
+          &nbsp;
+          <p
+            className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
+            onClick={() => handleSortClick("age")}
           >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"
-            />
-          </svg>
-        </p>
-        &nbsp;
-        <p
-          className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
-          onClick={() => handleSortClick("age")}
-        >
-          Age
-        </p>
-        <p
-          className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
-          onClick={() => handleSortClick("nearest")}
-        >
-          Nearest
-        </p>
-        <p
-          className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
-          onClick={() => handleSortClick("Last-Updated")}
-        >
-          Last-Updated
-        </p>
-      </div>
-
-      {/* main second container */}
-      <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-10">
-        {/* main-div */}
-        <div className=" flex flex-wrap gap-2 items-center justify-center sm:justify-start ">
-          {testAnimals.map((animal) => {
-            return (
-              <div class=" h-80  w-[calc(100%-0.5rem)] sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300">
-                <img class="w-full" src={dog} alt="dog" />
-
-                {/* small container age name sex */}
-                <div className=" mt-1.5 pl-2">
-                  <div className=" font-semibold text-xs">
-                    <span>Name:</span>&nbsp;
-                    <span className=" ">{animal.name}</span>
-                  </div>
-                  <div className=" font-semibold text-xs">
-                    <span>Age:</span>&nbsp;
-                    <span className=" ">{animal.age}</span>
-                  </div>
-                  <div className=" font-semibold text-xs">
-                    <span>Sex:</span>&nbsp;
-                    <span className=" ">{animal.sex}</span>
-                  </div>
-                  <div className=" font-semibold text-xs">
-                    <span>Created:</span>&nbsp;
-                    <span className=" ">{animal.created}</span>
-                  </div>
-                  <div className=" font-semibold text-xs">
-                    <span>Condition:</span>&nbsp;
-                    <span className={conditonsTyleReturn(animal.conditions)}>
-                      {animal.conditions}
-                    </span>
-                  </div>
-                </div>
-                {/* Desc Container */}
-                <div className=" pl-2 mt-2  text-xs pb-3">
-                  <i className="font-semibold">Description:</i>
-                  <p>{animal.description}</p>
-                </div>
-              </div>
-            );
-          })}
-          {/* one whole card item */}
+            Age
+          </p>
+          <p
+            className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
+            onClick={() => handleSortClick("nearest")}
+          >
+            Nearest
+          </p>
+          <p
+            className=" text-sm cursor-pointer hover:underline underline-offset-4 hover:decoration-white "
+            onClick={() => handleSortClick("Last-Updated")}
+          >
+            Last-Updated
+          </p>
         </div>
+
+        {/* main second container */}
+        <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-2">
+          {/* main-div */}
+          <div className=" flex flex-wrap gap-2 items-center justify-center sm:justify-start ">
+            {allanimal.map((animal) => {
+              return (
+                <div class=" h-80  w-[calc(100%-0.5rem)] sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300">
+                  <img class="w-full" src={dog} alt="dog" />
+
+                  {/* small container age name sex */}
+                  <div className=" mt-1.5 pl-2">
+                    <div className=" font-semibold text-xs">
+                      <span>Name:</span>&nbsp;
+                      <span className=" ">{animal.name}</span>
+                    </div>
+                    <div className=" font-semibold text-xs">
+                      <span>Age:</span>&nbsp;
+                      <span className=" ">{animal.age}</span>
+                    </div>
+                    <div className=" font-semibold text-xs">
+                      <span>Sex:</span>&nbsp;
+                      <span className=" ">{animal.sex}</span>
+                    </div>
+                    <div className=" font-semibold text-xs">
+                      <span>Created:</span>&nbsp;
+                      <span className=" ">{animal.created}</span>
+                    </div>
+                    <div className=" font-semibold text-xs">
+                      <span>Condition:</span>&nbsp;
+                      <span className={conditonsTyleReturn(animal.conditions)}>
+                        {animal.conditions}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Desc Container */}
+                  <div className=" pl-2 mt-2  text-xs pb-3">
+                    <i className="font-semibold">Description:</i>
+                    <p>{animal.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+            {/* <div className=" absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            Load more
+          </div> */}
+          </div>
+        </div>
+        {/* Load more */}
+      </div>
+      <div className="  flex items-center justify-center text-center bg-indigo-300 p-3  ">
+        <button
+          onClick={handleLoadmoreClick}
+          type="button"
+          class="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
+        >
+          Load More
+        </button>
       </div>
     </div>
   );
