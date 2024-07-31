@@ -8,6 +8,9 @@
   --margin-top: 2.5rem;
   --pading-left: 1.5rem;
   --pading-right: 1.5rem;
+
+  /* ovveride bootstrap */
+  --a: black;
 }
 body {
   margin: 0;
@@ -30,7 +33,7 @@ code {
     monospace;
 }
 
-a {
+/* a {
   text-decoration: none !important;
 
-}
+} */

@@ -1,6 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { Link, NavLink, redirect, Outlet, useLocation } from "react-router-dom";
+
+//i need it for ovveride bootstrap variables
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import Logaut from "../components/Logout";
 
 import "../css/navbar.css";
@@ -13,8 +17,8 @@ function SiteNavbar() {
     <div class="flex  h-screen bg-indigo-300">
       <nav class=" pl-[--pading-left] flex-1 font-font1 font-semibold flex items-center flex-wrap bg-gradient-to-r from-indigo-200 to-indigo-300 fixed top-0 w-full h-10 z-30">
         <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto ">
-          <div class="text-xs sm:text-sm    lg:flex-grow">
-            <a>
+          <div class="text-xs sm:text-sm     lg:flex-grow">
+            <a className="text-[--a]">
               <NavLink
                 to={"/"}
                 className={({ isActive, isPending }) =>
@@ -24,6 +28,7 @@ function SiteNavbar() {
                 Home
               </NavLink>
             </a>
+
             {localStorage.token && (
               <>
                 <a>
@@ -53,7 +58,7 @@ function SiteNavbar() {
                       isPending ? "nonactive" : isActive ? "active" : ""
                     }
                   >
-                    Hystory
+                    History
                   </NavLink>
                 </a>
               </>
