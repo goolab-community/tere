@@ -16,8 +16,6 @@ import {NewAnimal, NewAnimal1} from './Animals';
 import {SliderWithInputFormControl, uploadFile} from "./Utils";
 import axios from "axios";
 
-import Resizer from "react-image-file-resizer";
-
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -43,38 +41,6 @@ function StatusUpdateModal({handleShow, handleClose, show, animal}) {
       return;
     }
     setSelectedFile(file);
-  }
-
-  function fileChangedHandler(event) {
-    var file = event.target.files[0];
-
-    if (!file.type.match(fileTypes)) {
-      alert("Image mime type is not valid");
-      return;
-    }
-    var fileInput = false;
-    if (file) {
-      fileInput = true;
-    }
-    if (fileInput) {
-      try {
-        Resizer.imageFileResizer(
-          file,
-          300,
-          300,
-          "JPEG",
-          100,
-          0,
-          (uri) => {
-            console.log(uri);
-            setSelectedFile(uri);
-          },
-          "blob"
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    }
   }
 
   useEffect(() => {
