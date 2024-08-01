@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, APIRouter, status
 from fastapi.middleware.cors import CORSMiddleware
-from pymongo import MongoClient
+# from pymongo import MongoClient
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from utils import logger
 from database import Base, engine

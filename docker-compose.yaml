@@ -14,7 +14,7 @@ services:
     volumes:
       - ./app:/app
     depends_on:
-      - tere-mongo
+      - tere-cloudsql-proxy
     restart: always
   tere-react:
     build:
@@ -37,26 +37,13 @@ services:
     volumes:
       - ./frontend:/app:delegated
       - /app/node_modules
-
-  tere-mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
-  tere-db:
-    image: postgres
-    restart: always
-    # set shared memory limit when using docker-compose
-    shm_size: 128mb
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    ports:
-      - "5432:5432"
-
+  tere-cloudsql-proxy:
+      container_name: tere-cloudsql-proxy
+      image: gcr.io/cloudsql-docker/gce-proxy:1.31.1
+      command: /cloud_sql_proxy --dir=/cloudsql -instances=tere-421617:europe-north1:tere-db=tcp:0.0.0.0:5432 -credential_file=/secrets/cloudsql/credentials.json -verbose=true
+      volumes:
+        - ./app/service_account.json:/secrets/cloudsql/credentials.json:ro
+      restart: always
   tere-pgadmin:
     image: dpage/pgadmin4
     ports:
@@ -65,4 +52,22 @@ services:
       PGADMIN_DEFAULT_EMAIL: tere@tere.ge
       PGADMIN_DEFAULT_PASSWORD: tere
     depends_on:
-      - tere-db
+      - tere-cloudsql-proxy
+
+# tere-mongo:
+#   image: mongo
+#   restart: always
+#   environment:
+#     MONGO_INITDB_ROOT_USERNAME: root
+#     MONGO_INITDB_ROOT_PASSWORD: example
+# tere-db:
+#   image: postgres
+#   restart: always
+#   # set shared memory limit when using docker-compose
+#   shm_size: 128mb
+#   environment:
+#     POSTGRES_USER: ${DB_USER}
+#     POSTGRES_PASSWORD: ${DB_PASSWORD}
+#     POSTGRES_DB: ${DB_NAME}
+#   ports:
+#     - "5432:5432"
