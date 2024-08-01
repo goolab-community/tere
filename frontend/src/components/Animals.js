@@ -11,8 +11,6 @@ import Moment from 'react-moment';
 import moment from 'moment';
 import axios from "axios";
 
-import Resizer from "react-image-file-resizer";
-
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 

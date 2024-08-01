@@ -15,8 +15,6 @@ import axios from "axios";
 import dog from "../Images/german-dog.jpg";
 import { testAnimals } from "../components/PropData";
 
-import Resizer from "react-image-file-resizer";
-
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 function NewAnimal1({
@@ -100,26 +98,6 @@ function NewAnimal1({
         img.src = URL.createObjectURL(file);
       }
     };
-
-
-    function resize_image(file, max_width, max_height) {
-      return new Promise((resolve) => {
-        Resizer.imageFileResizer(
-          file,
-          max_width,
-          max_height,
-          "JPEG",
-          100,
-          0,
-          (uri) => {
-            resolve(uri);
-          },
-          "base64",
-          200,
-          200
-        );
-      });
-    }
 
     function uploadFile(file, signedUrl) {
       console.log("Uploading file to S3:", file.type, "URL:", signedUrl);
