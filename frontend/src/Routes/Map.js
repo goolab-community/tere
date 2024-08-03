@@ -36,6 +36,7 @@ import { redirect, useNavigate } from "react-router-dom";
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
+// update modal
 function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
   const [health_scale, setHealthScale] = useState(0);
 
@@ -90,7 +91,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
       media_link: "",
       description: event_description,
       date: event_date,
-      autocheck: false,
+      autocheck: true,
     };
 
     const config = {
@@ -107,7 +108,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
         uploadFile(selected_file, response.data.upload_url);
         alert("History updated successfully");
         // goto home page
-        window.location.href = "/";
+        window.location.href = "/history";
       })
       .catch((error) => {
         console.log(history);
@@ -118,7 +119,12 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
 
   return (
     <div>
-      <Modal class="mt-36" show={show} fullscreen={true} onHide={handleClose}>
+      <Modal
+        className="mt-36"
+        show={show}
+        fullscreen={true}
+        onHide={handleClose}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Status Update</Modal.Title>
         </Modal.Header>
@@ -179,16 +185,15 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
             >
               <Form.Control onChange={(e) => file_handler(e)} type="file" />
             </Form.Group>
+            <Button className="mr-3" variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={(a) => submit_history(a)}>
+              Save Changes
+            </Button>
           </Form.Group>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={(a) => submit_history(a)}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
+        <Modal.Footer></Modal.Footer>
       </Modal>
     </div>
   );
@@ -264,6 +269,9 @@ function MapPage() {
       </Marker>
     );
   }
+
+  //  aq moaqvs yvela animali.
+  // animalebi unda vanaxo animal routzee wamoghebuli da savaraudod reduxi dagvchirdeba
 
   useEffect(() => {
     // $("#save-marker-btn").hide();
@@ -386,14 +394,14 @@ function MapPage() {
   if (!localStorage.token) {
     navigate("/login");
     return (
-      <div class=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-14">
+      <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-14">
         please logi in
       </div>
     );
   }
   return (
     <>
-      <div class=" mt-[--margin-top]  z-10 relative">
+      <div className=" mt-[--margin-top]  z-10 relative">
         <StatusUpdateModal
           handleShow={handleShow}
           handleClose={handleClose}
@@ -401,91 +409,28 @@ function MapPage() {
           animal={selected_animal}
         />
         <div>
-          {/*userData && (`Welcome ${username} to the Tere app!`)*/}
-          {/*<LocationComponent />*/}
           <div
-            class=" h-14   w-full fixed  bottom-0 left-0  content-center
+            className=" h-14   w-full fixed  bottom-0 left-0  content-center
            "
           >
-            <div class="bg-indigo-300 pl-3  pt-2 h-full">
-              {/* <Button
-                id="toggle-marker-creation-btn"
-                style={{ zIndex: 1000 }}
-                className="btn-sm btn-danger position-absolute bottom-0 start-0"
-                value="disabled"
-                onClick={(e) => {
-                  set_btn_state(e);
-                }}
-              >
-                {allow_marker_creation ? "-" : "+"}
-              </Button>
-
-              <Button
-                id="save-marker-btn"
-                style={{ zIndex: 1000, marginLeft: "45px" }}
-                className="btn-sm btn-primary position-absolute bottom-0 start-0"
-                value="disabled"
-                onClick={(e) => {
-                  console.log("Save markers creation");
-                  setAllowMarkerCreation(false);
-                  $("#save-marker-btn").hide();
-                  $("#cancel-marker-btn").hide();
-                  $("#toggle-marker-creation-btn").show();
-                }}
-              >
-                Save
-              </Button>
-              <Button
-                id="cancel-marker-btn"
-                style={{
-                  zIndex: 1000,
-
-                  marginLeft: "100px",
-                }}
-                className="btn-sm btn-secondary position-absolute bottom-0 start-0"
-                value="disabled"
-                onClick={(e) => {
-                  console.log("Cancel markers creation");
-                  // setAllowMarkerCreation(false);
-                  // $("#save-marker-btn").hide();
-                  // $("#cancel-marker-btn").hide();
-                  // $("#toggle-marker-creation-btn").show();
-                  window.location.reload();
-                }}
-              >
-                Cancel
-              </Button> */}
+            <div className="bg-indigo-300 pl-3  pt-2 h-full">
               <button
+                disabled={allow_marker_creation && true}
                 type="button"
-                class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-1 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 w-12"
+                className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-1 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 w-12"
                 onClick={(e) => {
                   set_btn_state(e);
                 }}
               >
                 {allow_marker_creation ? "-" : "+"}
               </button>
+
               <button
                 type="button"
-                class="text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-3.5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900"
-                onClick={(e) => {
-                  console.log("Save markers creation");
-                  setAllowMarkerCreation(false);
-                  $("#save-marker-btn").hide();
-                  $("#cancel-marker-btn").hide();
-                  $("#toggle-marker-creation-btn").show();
-                }}
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                class="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3.5 py-2.5 text-center me-2 mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+                className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3.5 py-2.5 text-center me-2 mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
                 onClick={(e) => {
                   console.log("Cancel markers creation");
-                  // setAllowMarkerCreation(false);
-                  // $("#save-marker-btn").hide();
-                  // $("#cancel-marker-btn").hide();
-                  // $("#toggle-marker-creation-btn").show();
+
                   window.location.reload();
                 }}
               >
@@ -493,7 +438,7 @@ function MapPage() {
               </button>
             </div>
           </div>
-          <div class="h-[calc(100vh-6rem)] overflow-scroll">
+          <div className="h-[calc(100vh-6rem)] overflow-scroll">
             <MapContainer
               center={position}
               zoom={7.5}
@@ -518,6 +463,7 @@ function MapPage() {
                     }}
                   >
                     {!allow_marker_creation ? (
+                      // small popup after click location
                       <Popup>
                         <Card style={{ width: "18rem" }}>
                           <Card.Img
@@ -538,6 +484,7 @@ function MapPage() {
                         </Card>
                       </Popup>
                     ) : (
+                      // new animal small popup
                       <NewAnimal
                         marker={animal}
                         createAnimalModalShow={createAnimalModalShow}

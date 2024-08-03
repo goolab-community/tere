@@ -1,36 +1,31 @@
-import React, { useRef, useEffect, useState } from "react";
-import $ from "jquery";
-import Modal from "react-bootstrap/Modal";
+import React, { useEffect, useRef, useState } from "react";
+
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { Card, Col, Row, BootstrapImage } from "react-bootstrap";
-import { Grid, h, html, createRef as gCreateRef } from "gridjs";
+import { Card, Col, Row } from "react-bootstrap";
+
 import { Popup } from "react-leaflet";
 import { SliderWithInputFormControl } from "../components/Utils";
-import Moment from "react-moment";
+
 import moment from "moment";
 import axios from "axios";
 
-// start work
 import dog from "../Images/german-dog.jpg";
-import { testAnimals } from "../components/PropData";
+import { animals, testAnimals } from "../components/PropData";
+
+import { useLoaderData } from "react-router-dom";
 
 import "../css/modal.css";
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
+// new animala add form modal
 function NewAnimal1({
   marker,
   createAnimalModalShow,
   setSelectedMarker,
   setCreateAnimalModalShow,
 }) {
-  // console.log(marker);
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   function NewAnimalForm() {
     const [description, setDescription] = useState(null);
     const [specie, setSpecie] = useState("dog");
@@ -138,7 +133,6 @@ function NewAnimal1({
       const new_animal = {
         species: specie,
         sex: sex,
-        // "breed_id": bread,
         tag_id: tag_id,
         rfid_code: rfid_code,
         age_year: age_year_comp,
@@ -177,7 +171,6 @@ function NewAnimal1({
         .post("http://localhost:8000/api/v1/animal/create", new_animal, config)
         .then((response) => {
           console.log(response);
-          // const file = resize_image(selected_file, 300, 300);
           uploadFile(selected_file, response.data.upload_url);
           uploadFile(resizedImageFile, response.data.upload_url_icon);
           alert("New animal created successfully");
@@ -395,6 +388,7 @@ function NewAnimal1({
             variant="primary"
             onClick={(e) => {
               submit_handler(e);
+              window.location.reload();
             }}
           >
             Save
@@ -407,20 +401,11 @@ function NewAnimal1({
   return <NewAnimalForm />;
 }
 
-function NewAnimal({
-  marker,
-  createAnimalModalShow,
-  setSelectedMarker,
-  setCreateAnimalModalShow,
-}) {
-  // console.log(marker);
-  const [show, setShow] = useState(false);
+// enimall add popup small
+function NewAnimal({ marker, setSelectedMarker, setCreateAnimalModalShow }) {
   const [selected_file, setSelectedFile] = useState(null);
 
   const [fileDataURL, setFileDataURL] = useState(null);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   useEffect(() => {
     if (selected_file !== null) {
@@ -461,10 +446,41 @@ function NewAnimal({
   );
 }
 
+// // load data from server with router_Dom
+// function get_response(response, data) {
+//   if (response.status === 200) {
+//     return response.json();
+//   } else {
+//     return null + " server has some problem";
+//   }
+// }
+// // load data from server with router_Dom
+// async function loader() {
+//   const animalsFromServer = await fetch(
+//     "http://localhost:8000/api/v1/animal/animals",
+//     {
+//       headers: {
+//         Authorization: `Bearer ${localStorage.getItem("token")}`,
+//       },
+//     }
+//   )
+//     .then((response) => get_response(response))
+//     // .then((data) => setUserData(data))
+//     .catch((error) => console.error(error));
+
+//   console.log(animalsFromServer, " from animals loader");
+
+//   return animalsFromServer;
+// }
+
 function Animals() {
-  const [allanimal, setAllenimal] = useState(testAnimals);
-  const wrapperRef = useRef(null);
-  console.log("animals");
+  const [allanimals, setAllenimal] = useState([]);
+
+  // load init animals from server
+  // const animalsResponce = useLoaderData();
+
+  // console.log(animalsResponce, "  from server naimals data Animal.js");
+
   const formatDate = (isoDate, showTime) => {
     const date = new Date(isoDate);
     const options = {
@@ -480,53 +496,6 @@ function Animals() {
     return date.toLocaleDateString(undefined, options);
   };
 
-  const grid = new Grid({
-    sort: true,
-    resizable: true,
-    search: true,
-    columns: [
-      "Address",
-      "Age",
-      "Age Relative",
-      "Created",
-      "Description",
-      "Name",
-      "RFID",
-      "Image",
-      "Sex",
-      "Tag ID",
-    ],
-    // sruliad shesacvlelia
-    server: {
-      url: "http://localhost:8000/api/v1/animal/animals",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      then: (data) => {
-        console.log(data);
-        return data.map((animal) => [
-          animal.address,
-          html(
-            `<strong>${animal.age_year} Year and ${animal.age_month} Month</strong>`
-          ),
-          html(
-            `<strong>From ${animal.age_year_from} Year and ${animal.age_month_from} Month</span>
-          <strong>To ${animal.age_year_to} Year and ${animal.age_month_to} Month</strong>`
-          ),
-          html(`<p>${formatDate(animal.created_at, true)}</p>`),
-          animal.description,
-          animal.name,
-          animal.rfid_code,
-          html(
-            `<img src="${animal.public_url}" alt="Animal Image" width="200" height="300">`
-          ),
-          html(`<h3>${animal.sex === "male" ? "♂" : "♀"}</h3>`),
-          animal.tag_id,
-        ]);
-      },
-
-      total: (data) => data.length,
-    },
-  });
-
   // sort action
   const handleSortClick = (SortBy) => {
     // here request
@@ -537,12 +506,9 @@ function Animals() {
   // load more action
   const handleLoadmoreClick = () => {
     setAllenimal((prev) => [...prev, ...testAnimals]);
+
     console.log("lodad more");
   };
-
-  useEffect(() => {
-    // grid.render(wrapperRef.current);
-  });
 
   const conditonsTyleReturn = (conditon) => {
     if (conditon == "not bad") {
@@ -556,12 +522,44 @@ function Animals() {
     }
   };
 
+  function get_response(response, data) {
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return null + " server has some problem";
+    }
+  }
+  async function initAnimalsLoader() {
+    const animalsFromServer = await fetch(
+      "http://localhost:8000/api/v1/animal/animals",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
+      .then((response) => get_response(response))
+      // .then((data) => setUserData(data))
+      .catch((error) => console.error(error));
+
+    console.log(
+      animalsFromServer,
+      " init  animals loader from Loader/loader.js"
+    );
+
+    return animalsFromServer;
+  }
+  useState(() => {
+    const initAnimal = async () => {
+      const data = await initAnimalsLoader();
+      setAllenimal(data);
+
+      console.log(data, " from useffect");
+    };
+    initAnimal();
+  }, []);
+
   return (
-    // <div
-    //   className="mt-[--margin-top]"
-    //   style={{ "margin-left": "3%", "margin-right": "5%" }}
-    //   ref={wrapperRef}
-    // />
     <div className="flex flex-col">
       <div className="mt-[--margin-top]    ">
         {/* main first container */}
@@ -570,7 +568,7 @@ function Animals() {
           {/* sortedby */}
           <p className="pl-[--pading-left] ">
             <svg
-              class="w-5 h-5 text-gray-800 dark:text-black"
+              className="w-5 h-5 text-gray-800 dark:text-black"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -578,9 +576,9 @@ function Animals() {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"
               />
             </svg>
@@ -607,63 +605,84 @@ function Animals() {
         </div>
 
         {/* main second container */}
-        <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-2">
-          {/* main-div */}
-          <div className=" flex flex-wrap gap-2 items-center justify-center sm:justify-start ">
-            {allanimal.map((animal) => {
-              return (
-                <div class=" h-80  w-[calc(100%-0.5rem)] sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300">
-                  <img class="w-full" src={dog} alt="dog" />
+        {allanimals.length == 0 ? (
+          <p className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+            Loading ...
+          </p>
+        ) : (
+          <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-2">
+            {/* main-div */}
+            <div className=" flex flex-wrap gap-2 items-center justify-center sm:justify-start ">
+              {allanimals.map((animal, i) => {
+                return (
+                  <div
+                    key={i}
+                    className=" h-80  w-[calc(100%-0.5rem)] sm:h-2/3 sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300"
+                  >
+                    {/* img and dog info div */}
+                    <div className=" flex flex-col sm:flex-col lg:flex-row">
+                      <img
+                        className="w-full lg:w-48 lg:h-40"
+                        src={dog}
+                        alt="dog"
+                      />
+                      <div className=" mt-1.5 pl-2">
+                        <div className=" font-semibold text-xs">
+                          <span>Name:</span>&nbsp;
+                          <span className=" ">{animal.name}</span>
+                        </div>
+                        <div className=" font-semibold text-xs">
+                          <span>Age:</span>&nbsp;
+                          <span className=" ">{animal.age_year}</span>
+                        </div>
+                        <div className=" font-semibold text-xs">
+                          <span>Sex:</span>&nbsp;
+                          <span className=" ">{animal.sex}</span>
+                        </div>
+                        <div className=" font-semibold text-xs">
+                          <span>Created:</span>&nbsp;
+                          <span className=" ">{animal.created_at}</span>
+                        </div>
+                        <div className=" font-semibold text-xs">
+                          <span>Updated:</span>&nbsp;
+                          <span className=" ">{animal.updated_at}</span>
+                        </div>
+                        <div className=" font-semibold text-xs">
+                          <span>Condition:</span>&nbsp;
+                          <span
+                            className={conditonsTyleReturn(animal.conditions)}
+                          >
+                            {animal.conditions}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* small container age name sex */}
 
-                  {/* small container age name sex */}
-                  <div className=" mt-1.5 pl-2">
-                    <div className=" font-semibold text-xs">
-                      <span>Name:</span>&nbsp;
-                      <span className=" ">{animal.name}</span>
-                    </div>
-                    <div className=" font-semibold text-xs">
-                      <span>Age:</span>&nbsp;
-                      <span className=" ">{animal.age}</span>
-                    </div>
-                    <div className=" font-semibold text-xs">
-                      <span>Sex:</span>&nbsp;
-                      <span className=" ">{animal.sex}</span>
-                    </div>
-                    <div className=" font-semibold text-xs">
-                      <span>Created:</span>&nbsp;
-                      <span className=" ">{animal.created}</span>
-                    </div>
-                    <div className=" font-semibold text-xs">
-                      <span>Condition:</span>&nbsp;
-                      <span className={conditonsTyleReturn(animal.conditions)}>
-                        {animal.conditions}
-                      </span>
+                    {/* Desc Container */}
+                    <div className=" pl-2 mt-2  text-xs pb-3">
+                      <i className="font-semibold">Description:</i>
+                      <p>{animal.description}</p>
                     </div>
                   </div>
-                  {/* Desc Container */}
-                  <div className=" pl-2 mt-2  text-xs pb-3">
-                    <i className="font-semibold">Description:</i>
-                    <p>{animal.description}</p>
-                  </div>
-                </div>
-              );
-            })}
-            {/* <div className=" absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            Load more
-          </div> */}
+                );
+              })}
+            </div>
           </div>
+        )}
+      </div>
+      {/* Load more */}
+      {allanimals.length > 0 && (
+        <div className="flex items-center justify-center text-center bg-indigo-300 p-3">
+          <button
+            onClick={handleLoadmoreClick}
+            type="button"
+            className="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
+          >
+            Load More
+          </button>
         </div>
-        {/* Load more */}
-      </div>
-      <div className="  flex items-center justify-center text-center bg-indigo-300 p-3  ">
-        <button
-          onClick={handleLoadmoreClick}
-          type="button"
-          class="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
-        >
-          Load More
-        </button>
-      </div>
+      )}
     </div>
   );
 }

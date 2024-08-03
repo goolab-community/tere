@@ -1,4 +1,4 @@
-import { useNavigate, Form, Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Logaut = () => {
   let navigate = useNavigate();
@@ -12,7 +12,7 @@ const Logaut = () => {
   };
 
   return (
-    <div class=" inline-block cursor-pointer" onClick={log_out}>
+    <div className=" inline-block cursor-pointer" onClick={log_out}>
       Logout
     </div>
   );

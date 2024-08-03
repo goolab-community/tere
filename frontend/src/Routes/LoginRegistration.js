@@ -49,18 +49,19 @@ const LogReg = () => {
           console.log(response.data);
           setMessage(response.data.message);
           const { username, email, token, is_active, _id } = response.data;
-          console.log(response.data);
+
           console.log(username, email, token);
           localStorage.setItem("username", username);
           localStorage.setItem("email", email);
           localStorage.setItem("token", token);
           localStorage.setItem("is_active", is_active);
           localStorage.setItem("_id", _id);
+          console.log(localStorage);
           // Redirect to homepage using navigate
           navigate("/map");
 
           // in no reload user not reflected
-          // window.location.reload();
+          window.location.reload();
           // Replace '/' with the homepage URL if needed
           // window.location.href = "/";
         })
