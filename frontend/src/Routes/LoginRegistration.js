@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// for redux
+import { useDispatch } from "react-redux";
+import { updateUser } from "../redux/reducers/user";
+
 const LogReg = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -11,7 +15,10 @@ const LogReg = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleRegister = () => {
+  // for redux
+  const dispatch = useDispatch();
+
+  const handleRegisterLogin = () => {
     console.log(username, email, password);
     if (location.pathname == "/register") {
       axios
@@ -23,12 +30,7 @@ const LogReg = () => {
         .then((response) => {
           setMessage(response.data.message);
           const { username, email, token } = response.data;
-          // localStorage.setItem("username", username);
-          // localStorage.setItem("email", email);
-          // localStorage.setItem("token", token);
-          // Redirect to homepage using navigate
-          //navigate("/"); // Replace '/' with the homepage URL if needed
-          //logout();
+
           alert("Registration successful. Please login to continue.");
           // logout();
           navigate("/login");
@@ -50,6 +52,9 @@ const LogReg = () => {
           setMessage(response.data.message);
           const { username, email, token, is_active, _id } = response.data;
 
+          // for reduxs state update
+          dispatch(updateUser({ _id, token }));
+
           console.log(username, email, token);
           localStorage.setItem("username", username);
           localStorage.setItem("email", email);
@@ -58,10 +63,10 @@ const LogReg = () => {
           localStorage.setItem("_id", _id);
           console.log(localStorage);
           // Redirect to homepage using navigate
-          navigate("/map");
+          navigate("/");
 
           // in no reload user not reflected
-          window.location.reload();
+          // window.location.reload();
           // Replace '/' with the homepage URL if needed
           // window.location.href = "/";
         })
@@ -165,7 +170,7 @@ const LogReg = () => {
 
           <div>
             <button
-              onClick={handleRegister}
+              onClick={() => handleRegisterLogin()}
               type="button"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >

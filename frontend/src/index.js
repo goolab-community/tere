@@ -17,6 +17,13 @@ import { Animals, loader as AnimalLoader } from "./Routes/Animals";
 import History from "./Routes/History";
 import ErrorPage from "./components/Error/error-page";
 
+// load more action
+import { action12 as loadAction } from "./Routes/Animals";
+
+// redux
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -45,7 +52,7 @@ const router = createBrowserRouter([
       {
         path: "animals",
         element: <Animals />,
-        // loader: initAnimalsLoader,
+        action: loadAction,
       },
       {
         path: "history",
@@ -58,9 +65,11 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}>
-      <App />
-    </RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}>
+        <App />
+      </RouterProvider>
+    </Provider>
   </React.StrictMode>
 );
 

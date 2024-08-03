@@ -274,18 +274,6 @@ function MapPage() {
   // animalebi unda vanaxo animal routzee wamoghebuli da savaraudod reduxi dagvchirdeba
 
   useEffect(() => {
-    // $("#save-marker-btn").hide();
-    // $("#cancel-marker-btn").hide();
-    // // Fetch user data from the API endpoint
-    // fetch("http://localhost:8000/api/v1/auth/user", {
-    //   headers: {
-    //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //   },
-    // })
-    // .then((response) => response.json())
-    // .then((data) => setUserData(data))
-    // .catch((error) => console.error(error));
-
     // Fetch markers from the API endpoint
     fetch("http://localhost:8000/api/v1/animal/animals", {
       headers: {
@@ -299,10 +287,6 @@ function MapPage() {
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
-
-  // const LeafIcon = L.Icon.extend({
-  //   options: {}
-  // });
 
   L.Marker.prototype.options.icon = red_icon;
 

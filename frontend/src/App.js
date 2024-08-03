@@ -1,20 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-
-import Map from "./Routes/Map";
-import { Animals } from "./Routes/Animals";
-import Navbar from "./Routes/Navbar";
-import History from "./Routes/History";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { get } from "jquery";
-
-import Home from "./Routes/Home";
-import SiteNavbar from "./Routes/Navbar";
-// import LogReg from "./Routes/LoginRegistration";
-
 function get_response(response, data) {
   if (response.status === 200) {
     return response.json();

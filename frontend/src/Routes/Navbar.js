@@ -1,16 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, NavLink, redirect, Outlet, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../redux/reducers/user";
 
 //i need it for ovveride bootstrap variable
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/navbar.css";
 // //
 
+import { useSelector } from "react-redux";
+
 import Logaut from "../components/Logout";
 
 function SiteNavbar() {
-  console.log(localStorage);
+  const user = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+
+  const localstorage = localStorage;
+
+  useEffect(() => {
+    // if token Update user state from localstorage
+    if (localstorage.token) {
+      dispatch(
+        updateUser({ _id: localstorage._id, token: localstorage.token })
+      );
+    } else {
+      // if not token update again
+      dispatch(updateUser({ _id: null, token: null }));
+    }
+  }, []);
+
   return (
     // <MainNavBar/>
 
@@ -26,7 +47,7 @@ function SiteNavbar() {
               Home
             </NavLink>
 
-            {localStorage.token && (
+            {(user.token || localstorage.token) && (
               <>
                 <NavLink
                   to={"/map"}
@@ -66,7 +87,7 @@ function SiteNavbar() {
               </>
             )}
 
-            {localStorage.token ? (
+            {user.token || localstorage.token ? (
               <Logaut />
             ) : (
               <>

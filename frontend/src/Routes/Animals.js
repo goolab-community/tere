@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+// import Form from "react-bootstrap/Form";
 import { Card, Col, Row } from "react-bootstrap";
 
 import { Popup } from "react-leaflet";
@@ -13,7 +13,7 @@ import axios from "axios";
 import dog from "../Images/german-dog.jpg";
 import { animals, testAnimals } from "../components/PropData";
 
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, Form } from "react-router-dom";
 
 import "../css/modal.css";
 
@@ -446,40 +446,27 @@ function NewAnimal({ marker, setSelectedMarker, setCreateAnimalModalShow }) {
   );
 }
 
-// // load data from server with router_Dom
-// function get_response(response, data) {
-//   if (response.status === 200) {
-//     return response.json();
-//   } else {
-//     return null + " server has some problem";
-//   }
-// }
-// // load data from server with router_Dom
-// async function loader() {
-//   const animalsFromServer = await fetch(
-//     "http://localhost:8000/api/v1/animal/animals",
-//     {
-//       headers: {
-//         Authorization: `Bearer ${localStorage.getItem("token")}`,
-//       },
-//     }
-//   )
-//     .then((response) => get_response(response))
-//     // .then((data) => setUserData(data))
-//     .catch((error) => console.error(error));
+async function action12() {
+  // const contact = await createContact();
+  console.log("load action");
+  const loadAnimals = await fetch(
+    "http://localhost:8000/api/v1/animal/animals",
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  )
+    .then((response) => response.json())
+    // .then((data) => setUserData(data))
+    .catch((error) => console.error(error));
 
-//   console.log(animalsFromServer, " from animals loader");
+  console.log(loadAnimals, "fffff");
 
-//   return animalsFromServer;
-// }
-
+  return null;
+}
 function Animals() {
   const [allanimals, setAllenimal] = useState([]);
-
-  // load init animals from server
-  // const animalsResponce = useLoaderData();
-
-  // console.log(animalsResponce, "  from server naimals data Animal.js");
 
   const formatDate = (isoDate, showTime) => {
     const date = new Date(isoDate);
@@ -522,6 +509,7 @@ function Animals() {
     }
   };
 
+  // init load
   function get_response(response, data) {
     if (response.status === 200) {
       return response.json();
@@ -674,17 +662,19 @@ function Animals() {
       {/* Load more */}
       {allanimals.length > 0 && (
         <div className="flex items-center justify-center text-center bg-indigo-300 p-3">
-          <button
-            onClick={handleLoadmoreClick}
-            type="button"
-            className="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
-          >
-            Load More
-          </button>
+          <Form method="post">
+            <button
+              onClick={handleLoadmoreClick}
+              type="submit"
+              className="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
+            >
+              Load More
+            </button>
+          </Form>
         </div>
       )}
     </div>
   );
 }
 
-export { Animals, NewAnimal, NewAnimal1 };
+export { Animals, NewAnimal, NewAnimal1, action12 };
