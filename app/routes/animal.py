@@ -8,6 +8,8 @@ import schemas
 import models
 from database import get_db
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import or_
 from pydantic import parse_obj_as
 from utils import (
     generate_token,
@@ -31,6 +33,7 @@ router = APIRouter(
 
 @router.get("/animals")
 def animals(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db)):
+    # pagination and search query
     animals = db.query(models.Animal).all()
 
     for animal in animals:
@@ -43,6 +46,45 @@ def animals(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: 
                 icon.url
             )
     return animals
+
+
+@router.get("/animals_paginated")
+def animals_paginated(user: HTTPAuthorizationCredentials = Depends(get_current_user),
+                      offset: int = 0,
+                      limit: int = 10,
+                      search: str = None,
+                      order_by: str = "id",
+                      dir: str = "asc",
+                      db: Session = Depends(get_db)):
+    # pagination and search query
+    # animals = db.query(models.Animal).all()
+    default_resp = {
+        "data": [],
+        "count": 0
+    }
+    try:
+        if search is None:
+            query = db.query(models.Animal)
+        else:
+            query = db.query(models.Animal).filter(or_(
+                models.Animal.tag_id.ilike(f"%{search}%"),
+                models.Animal.rfid_code.ilike(f"%{search}%"),
+                models.Animal.name.ilike(f"%{search}%"),
+                models.Animal.description.ilike(f"%{search}%"),
+                models.Animal.address.ilike(f"%{search}%")
+            ))
+        query = query.order_by(
+            getattr(models.Animal, order_by).asc() if dir == "asc" else getattr(models.Animal, order_by).desc()
+        )
+        count = query.count()
+        query = query.offset(offset).limit(limit).all()
+    except SQLAlchemyError as e:
+        logger.error(e)
+        return default_resp, status.HTTP_500_INTERNAL_SERVER_ERROR
+    return {
+        "data": [animal.to_json() for animal in query],
+        "count": count
+    }
 
 
 @router.get("/animals_open")
