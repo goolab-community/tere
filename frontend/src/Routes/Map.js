@@ -35,6 +35,7 @@ import { SliderWithInputFormControl, uploadFile } from "../components/Utils";
 import axios from "axios";
 
 import { redirect, useNavigate } from "react-router-dom";
+import { animals } from "../components/PropData";
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -226,6 +227,7 @@ function MapPage() {
   const position = [41.799188, 44.797391];
   // const [markers, setMarkers] = useState({"features": animals});
   const [db_animals, setAnimals] = useState([]);
+  console.log(db_animals);
 
   const [selected_animal, setSelectedAnimal] = useState(null);
 
@@ -284,12 +286,27 @@ function MapPage() {
       .then((response) => response.json())
       .then((data) => {
         setAnimals(data);
+
+        // grap marker after render
         icon = document.querySelectorAll(".leaflet-marker-icon");
+
+        // gram hidden div arrai with innerHTM with real animal id from real animals id
+        const attachDiv = document.querySelectorAll(".nadiri");
+
+        // iterate one the hidden dives arrray an grab real id
+        attachDiv.forEach((item, i) => {
+          // attach icons atribute ID  from Hidden div
+          icon[i].setAttribute("GrabID", item.innerHTML);
+        });
+
+        // iterate icons and attach oncklick function event
         icon.forEach(function (element) {
           element.addEventListener("click", function () {
+            // attach URLparams real animal_id
             const params = new URLSearchParams({
-              animal_id: 2,
+              animal_id: element.getAttribute("GrabID"),
             });
+            // after cklcik request for load images
             fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -468,7 +485,7 @@ function MapPage() {
                   <div ref={markersRef.current}>
                     <Marker
                       icon={get_icon(health_to_color(animal.overall_health))}
-                      key={i}
+                      key={animal.id}
                       position={[animal.latitude, animal.longitude]}
                       onClick={() => {
                         setActivePark(animal);
@@ -477,7 +494,7 @@ function MapPage() {
                         setCreateAnimalModalShow((prev) => !prev);
                       }}
                     >
-                      <div>gioooo</div>
+                      <div className="nadiri">{animal.id}</div>
                       {!allow_marker_creation ? (
                         // small popup after click location
                         <Popup>
