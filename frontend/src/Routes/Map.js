@@ -229,9 +229,8 @@ function MapPage() {
 
   const [selected_animal, setSelectedAnimal] = useState(null);
 
-  // read from redux
-
-  // test
+  // for grab location markers
+  const markersRef = useRef();
 
   // console.log(animals);
   function create_new_marker(latlng) {
@@ -276,14 +275,31 @@ function MapPage() {
 
   useEffect(() => {
     // // Fetch markers from the API endpoint
-
+    let icon;
     fetch("http://localhost:8000/api/v1/animal/animals", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((response) => response.json())
-      .then((data) => setAnimals(data))
+      .then((data) => {
+        setAnimals(data);
+        icon = document.querySelectorAll(".leaflet-marker-icon");
+        icon.forEach(function (element) {
+          element.addEventListener("click", function () {
+            const params = new URLSearchParams({
+              animal_id: 2,
+            });
+            fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => console.log(data));
+          });
+        });
+      })
       // .then((data) =>
       //   dispatch(
       //     loadanimals({ allAnimals: [...data] }),
@@ -291,6 +307,10 @@ function MapPage() {
       //   )
       // )
       .catch((error) => console.error(error));
+
+    console.log(icon);
+
+    console.log(markersRef);
   }, []);
 
   const username = localStorage.getItem("username");
@@ -391,6 +411,7 @@ function MapPage() {
       </div>
     );
   }
+
   return (
     <>
       <div className=" mt-[--margin-top]  z-10 relative">
@@ -444,47 +465,53 @@ function MapPage() {
               />
               {db_animals.map(
                 (animal, i) => (
-                  <Marker
-                    icon={get_icon(health_to_color(animal.overall_health))}
-                    key={i}
-                    position={[animal.latitude, animal.longitude]}
-                    onClick={() => {
-                      setActivePark(animal);
-                      // console.log("Active marker:", marker);
-                      setCreateAnimalModalShow((prev) => !prev);
-                    }}
-                  >
-                    {!allow_marker_creation ? (
-                      // small popup after click location
-                      <Popup>
-                        <Card style={{ width: "18rem" }}>
-                          <Card.Img
-                            id={"image_" + animal.id}
-                            variant="top"
-                            src={animal.public_url}
-                          />
-                          <Card.Body>
-                            <Card.Title>{animal.name}</Card.Title>
-                            <Card.Text>{animal.description}</Card.Text>
-                            <Button
-                              variant="primary"
-                              onClick={(e) => show_animal_history_modal(animal)}
-                            >
-                              Status Update
-                            </Button>
-                          </Card.Body>
-                        </Card>
-                      </Popup>
-                    ) : (
-                      // new animal small popup
-                      <NewAnimal
-                        marker={animal}
-                        createAnimalModalShow={createAnimalModalShow}
-                        setSelectedMarker={setSelectedMarker}
-                        setCreateAnimalModalShow={setCreateAnimalModalShow}
-                      />
-                    )}
-                  </Marker>
+                  <div ref={markersRef.current}>
+                    <Marker
+                      icon={get_icon(health_to_color(animal.overall_health))}
+                      key={i}
+                      position={[animal.latitude, animal.longitude]}
+                      onClick={() => {
+                        setActivePark(animal);
+                        console.log("fffff");
+                        // console.log("Active marker:", marker);
+                        setCreateAnimalModalShow((prev) => !prev);
+                      }}
+                    >
+                      <div>gioooo</div>
+                      {!allow_marker_creation ? (
+                        // small popup after click location
+                        <Popup>
+                          <Card style={{ width: "18rem" }}>
+                            <Card.Img
+                              id={"image_" + animal.id}
+                              variant="top"
+                              src={animal.public_url}
+                            />
+                            <Card.Body>
+                              <Card.Title>{animal.name}</Card.Title>
+                              <Card.Text>{animal.description}</Card.Text>
+                              <Button
+                                variant="primary"
+                                onClick={(e) =>
+                                  show_animal_history_modal(animal)
+                                }
+                              >
+                                Status Update
+                              </Button>
+                            </Card.Body>
+                          </Card>
+                        </Popup>
+                      ) : (
+                        // new animal small popup
+                        <NewAnimal
+                          marker={animal}
+                          createAnimalModalShow={createAnimalModalShow}
+                          setSelectedMarker={setSelectedMarker}
+                          setCreateAnimalModalShow={setCreateAnimalModalShow}
+                        />
+                      )}
+                    </Marker>
+                  </div>
                 )
                 // --
               )}
