@@ -13,9 +13,12 @@ import axios from "axios";
 import dog from "../Images/german-dog.jpg";
 import { animals, testAnimals } from "../components/PropData";
 
-import { useLoaderData, Form } from "react-router-dom";
-
 import "../css/modal.css";
+import { Form } from "react-bootstrap";
+
+// redux
+import { useSelector, useDispatch } from "react-redux";
+import { loadanimals, loadMoreAnimals } from "../redux/reducers/animals";
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -446,27 +449,10 @@ function NewAnimal({ marker, setSelectedMarker, setCreateAnimalModalShow }) {
   );
 }
 
-async function action12() {
-  // const contact = await createContact();
-  console.log("load action");
-  const loadAnimals = await fetch(
-    "http://localhost:8000/api/v1/animal/animals",
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  )
-    .then((response) => response.json())
-    // .then((data) => setUserData(data))
-    .catch((error) => console.error(error));
-
-  console.log(loadAnimals, "fffff");
-
-  return null;
-}
 function Animals() {
-  const [allanimals, setAllenimal] = useState([]);
+  const animals = useSelector((state) => state.animals[0].allAnimals);
+  console.log(animals);
+  const dispatch = useDispatch();
 
   const formatDate = (isoDate, showTime) => {
     const date = new Date(isoDate);
@@ -492,7 +478,20 @@ function Animals() {
 
   // load more action
   const handleLoadmoreClick = () => {
-    setAllenimal((prev) => [...prev, ...testAnimals]);
+    // if (localStorage.token) {
+    //   fetch("http://localhost:8000/api/v1/animal/animals", {
+    //     headers: {
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //   })
+    //     .then((response) => response.json())
+    //     .then((data) =>
+    //       dispatch(loadanimals({ allAnimals: [animals, ...allanimals] }))
+    //     )
+
+    //     .catch((error) => console.error(error));
+    // }
+    dispatch(loadMoreAnimals({ loadanimals: [...animals, ...testAnimals] }));
 
     console.log("lodad more");
   };
@@ -509,42 +508,22 @@ function Animals() {
     }
   };
 
-  // init load
-  function get_response(response, data) {
-    if (response.status === 200) {
-      return response.json();
-    } else {
-      return null + " server has some problem";
-    }
-  }
-  async function initAnimalsLoader() {
-    const animalsFromServer = await fetch(
-      "http://localhost:8000/api/v1/animal/animals",
-      {
+  useState(() => {
+    if (animals.length == 0)
+      fetch("http://localhost:8000/api/v1/animal/animals", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
-    )
-      .then((response) => get_response(response))
-      // .then((data) => setUserData(data))
-      .catch((error) => console.error(error));
+      })
+        .then((response) => response.json())
+        .then((data) =>
+          dispatch(
+            loadanimals({ allAnimals: [...data] }),
+            console.log(data + " from animals usefect")
+          )
+        )
 
-    console.log(
-      animalsFromServer,
-      " init  animals loader from Loader/loader.js"
-    );
-
-    return animalsFromServer;
-  }
-  useState(() => {
-    const initAnimal = async () => {
-      const data = await initAnimalsLoader();
-      setAllenimal(data);
-
-      console.log(data, " from useffect");
-    };
-    initAnimal();
+        .catch((error) => console.error(error));
   }, []);
 
   return (
@@ -593,7 +572,7 @@ function Animals() {
         </div>
 
         {/* main second container */}
-        {allanimals.length == 0 ? (
+        {animals.length == 0 ? (
           <p className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
             Loading ...
           </p>
@@ -601,7 +580,7 @@ function Animals() {
           <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-2">
             {/* main-div */}
             <div className=" flex flex-wrap gap-2 items-center justify-center sm:justify-start ">
-              {allanimals.map((animal, i) => {
+              {animals.map((animal, i) => {
                 return (
                   <div
                     key={i}
@@ -660,21 +639,19 @@ function Animals() {
         )}
       </div>
       {/* Load more */}
-      {allanimals.length > 0 && (
+      {animals.length > 0 && (
         <div className="flex items-center justify-center text-center bg-indigo-300 p-3">
-          <Form method="post">
-            <button
-              onClick={handleLoadmoreClick}
-              type="submit"
-              className="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
-            >
-              Load More
-            </button>
-          </Form>
+          <button
+            onClick={handleLoadmoreClick}
+            type="submit"
+            className="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
+          >
+            Load More
+          </button>
         </div>
       )}
     </div>
   );
 }
 
-export { Animals, NewAnimal, NewAnimal1, action12 };
+export { Animals, NewAnimal, NewAnimal1 };

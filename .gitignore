@@ -6,3 +6,5 @@ service_account.json
 
 # test env folder
 junk
+
+frontend/node_modules

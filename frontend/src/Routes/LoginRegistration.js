@@ -64,11 +64,6 @@ const LogReg = () => {
           console.log(localStorage);
           // Redirect to homepage using navigate
           navigate("/");
-
-          // in no reload user not reflected
-          // window.location.reload();
-          // Replace '/' with the homepage URL if needed
-          // window.location.href = "/";
         })
         .catch((error) => {
           console.error(error);

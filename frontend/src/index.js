@@ -18,7 +18,6 @@ import History from "./Routes/History";
 import ErrorPage from "./components/Error/error-page";
 
 // load more action
-import { action12 as loadAction } from "./Routes/Animals";
 
 // redux
 import { Provider } from "react-redux";
@@ -52,7 +51,6 @@ const router = createBrowserRouter([
       {
         path: "animals",
         element: <Animals />,
-        action: loadAction,
       },
       {
         path: "history",

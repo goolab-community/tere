@@ -1,0 +1,4 @@
+/login
+/register
+/Home - all(60) animals initial load
+/ Animals - request will be process after reload animall page, its depend on globalstate animal lengh

@@ -1,13 +1,17 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 import user from "./reducers/user";
+import animals from "./reducers/animals";
+import markers from "./reducers/markers";
 
-const rootReducer = combineReducers({
+const allReducers = combineReducers({
   user: user,
+  animals: animals,
+  markers: markers,
 });
 
 const store = configureStore({
-  reducer: rootReducer,
+  reducer: allReducers,
 });
 
 export default store;

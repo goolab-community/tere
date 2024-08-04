@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { loadanimals } from "../redux/reducers/animals";
+import { update_markers } from "../redux/reducers/markers";
 import $, { data, event } from "jquery";
 // import Navbar from "./Navbar";
 
@@ -120,7 +122,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
   return (
     <div>
       <Modal
-        className="mt-36"
+        // className="mt-36"
         show={show}
         fullscreen={true}
         onHide={handleClose}
@@ -227,28 +229,27 @@ function MapPage() {
 
   const [selected_animal, setSelectedAnimal] = useState(null);
 
+  // read from redux
+
+  // test
+
+  // console.log(animals);
   function create_new_marker(latlng) {
     console.log("Creating new marker");
     console.log(latlng);
-    console.log(db_animals);
+
     if (latlng != null) {
       db_animals.push({
         latitude: latlng.lat,
         longitude: latlng.lng,
       });
     }
-    setAnimals(db_animals);
+    // setAnimals(db_animals);
     setMarkerCount(marker_count + 1);
   }
 
-  function set_animals(data) {
-    console.log("Setting markers");
-    console.log(data);
-    setAnimals(data);
-    // setMarkers(animals);
-  }
-
   function LocationMarker() {
+    console.log("makeeee location");
     const [position, setPosition] = useState(null);
     const map = useMapEvents({
       click(e) {
@@ -274,14 +275,21 @@ function MapPage() {
   // animalebi unda vanaxo animal routzee wamoghebuli da savaraudod reduxi dagvchirdeba
 
   useEffect(() => {
-    // Fetch markers from the API endpoint
+    // // Fetch markers from the API endpoint
+
     fetch("http://localhost:8000/api/v1/animal/animals", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((response) => response.json())
-      .then((data) => set_animals(data))
+      .then((data) => setAnimals(data))
+      // .then((data) =>
+      //   dispatch(
+      //     loadanimals({ allAnimals: [...data] }),
+      //     console.log(data + " from map useffect")
+      //   )
+      // )
       .catch((error) => console.error(error));
   }, []);
 
@@ -318,8 +326,8 @@ function MapPage() {
   }
 
   function set_btn_state(e) {
-    // console.log(e);
-    setAllowMarkerCreation(!allow_marker_creation);
+    console.log("my cklick");
+    setAllowMarkerCreation((prev) => !prev);
     if (allow_marker_creation) {
       console.log("Disable marker creation");
       // hide save/cancel buttons
@@ -435,15 +443,15 @@ function MapPage() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {db_animals.map(
-                (animal) => (
+                (animal, i) => (
                   <Marker
                     icon={get_icon(health_to_color(animal.overall_health))}
-                    key={animal.id}
+                    key={i}
                     position={[animal.latitude, animal.longitude]}
                     onClick={() => {
                       setActivePark(animal);
                       // console.log("Active marker:", marker);
-                      setCreateAnimalModalShow(true);
+                      setCreateAnimalModalShow((prev) => !prev);
                     }}
                   >
                     {!allow_marker_creation ? (
