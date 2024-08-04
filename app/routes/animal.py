@@ -31,20 +31,32 @@ router = APIRouter(
 )
 
 
+@router.get("/animal")
+def animal(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db),
+           animal_id: int = None):
+    try:
+        if animal_id:
+            animal = db.query(models.Animal).filter(models.Animal.id == animal_id).first()
+            if animal:
+                return animal.to_json()
+            else:
+                return {
+                    "message": "Animal not found"
+                }
+        else:
+            return {
+                "message": "Animal ID is required"
+            }
+    except Exception as e:
+        raise e
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
 @router.get("/animals")
 def animals(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db)):
     # pagination and search query
     animals = db.query(models.Animal).all()
-
-    for animal in animals:
-        animal.medias = db.query(models.Media).filter(models.Media.animal_id == animal.id).all()
-        logger.info(animal.medias)
-        icon = [m for m in animal.medias if m.type == models.MediaType.icon][0]
-        if animal.medias and len(animal.medias) > 0:
-            animal.public_url = generate_download_signed_url_v4(
-                "tere-media-bucket",
-                icon.url
-            )
     return animals
 
 
@@ -98,8 +110,8 @@ def create_animal(animal: schemas.Animal,
                   user: HTTPAuthorizationCredentials = Depends(get_current_user),
                   db: Session = Depends(get_db)):
     try:
-        logger.info((animal.species, animal.sex))
-        logger.info(user)
+        # logger.info((animal.species, animal.sex))
+        # logger.info(user)
         new_animal = models.Animal(
             species=animal.species,
             sex=animal.sex,
@@ -195,7 +207,7 @@ def update_animal(animal_id: int, animal: schemas.Animal, db: Session = Depends(
 
 
 @router.get("/media/{media_id}", response_model=dict)
-def read_media(media_type: str, media_id: int, db: Session = Depends(get_db)):
+def read_media(media_id: int, db: Session = Depends(get_db)):
     media = db.query(models.Media).filter(models.Media.id == media_id).first()
     if media:
         try:

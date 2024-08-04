@@ -25,14 +25,6 @@ def generate_upload_signed_url_v4(bucket_name, blob_name):
         method="PUT",
         content_type="application/octet-stream",
     )
-
-    # print("Generated PUT signed URL:")
-    # print(url)
-    # print("You can use this URL with any user agent, for example:")
-    # print(
-    #     "curl -X PUT -H 'Content-Type: application/octet-stream' "
-    #     "--upload-file my-file '{}'".format(url)
-    # )
     return url
 
 
@@ -57,11 +49,6 @@ def generate_download_signed_url_v4(bucket_name, blob_name):
         # Allow GET requests using this URL.
         method="GET",
     )
-
-    print("Generated GET signed URL:")
-    print(url)
-    print("You can use this URL with any user agent, for example:")
-    print(f"curl '{url}'")
     return url
 
 

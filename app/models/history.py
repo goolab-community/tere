@@ -58,6 +58,19 @@ class History(BaseModel):
     media_link = Column(String)
     autocheck = Column(Boolean, default=False)
 
+    def to_json(self):
+        return {
+            "id": self.id,
+            "animal_id": self.animal_id,
+            "type": self.type,
+            "user_id": self.user_id,
+            "health_scale": self.health_scale,
+            "description": self.description,
+            "date": self.date,
+            "media_link": self.media_link,
+            "autocheck": self.autocheck
+        }
+
 
 class Media(BaseModel):
     '''
@@ -76,3 +89,14 @@ class Media(BaseModel):
 
     animal_id = Column(Integer, ForeignKey('animals.id'))
     animal = relationship("Animal", back_populates="medias")
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "url": self.url,
+            "type": self.type,
+            "uploaded_by_user_id": self.uploaded_by_user_id,
+            "date": self.date,
+            "description": self.description,
+            "animal_id": self.animal_id
+        }

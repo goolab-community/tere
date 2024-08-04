@@ -94,6 +94,7 @@ class Animal(BaseModel):
 
     def to_json(self):
         return {
+            "id": self.id,
             "species": self.species,
             "sex": self.sex,
             "breed_id": self.breed_id,
@@ -109,5 +110,7 @@ class Animal(BaseModel):
             "description": self.description,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "address": self.address
+            "address": self.address,
+            "medias": [m.to_json() for m in self.medias],
+            "events": [e.to_json() for e in self.events],
         }

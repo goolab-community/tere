@@ -459,7 +459,7 @@ function MapPage() {
                       <Popup>
                         <Card style={{ width: "18rem" }}>
                           <Card.Img
-                            id={"image_" + animal.medias.id}
+                            id={"image_" + animal.id}
                             variant="top"
                             src={animal.public_url}
                           />
