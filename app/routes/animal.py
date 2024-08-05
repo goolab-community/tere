@@ -48,7 +48,6 @@ def animal(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: S
                 "message": "Animal ID is required"
             }
     except Exception as e:
-        raise e
         logger.error(e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 

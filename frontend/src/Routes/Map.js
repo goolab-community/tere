@@ -357,9 +357,9 @@ function MapPage() {
       // )
       .catch((error) => console.error(error));
 
-    console.log(icon);
+    // console.log(icon);
 
-    console.log(markersRef);
+    // console.log(markersRef);
   }, []);
 
   const username = localStorage.getItem("username");

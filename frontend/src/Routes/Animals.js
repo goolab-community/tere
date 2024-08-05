@@ -391,7 +391,6 @@ function NewAnimal1({
             variant="primary"
             onClick={(e) => {
               submit_handler(e);
-              window.location.reload();
             }}
           >
             Save
