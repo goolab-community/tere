@@ -178,6 +178,7 @@ function NewAnimal1({
           uploadFile(resizedImageFile, response.data.upload_url_icon);
           alert("New animal created successfully");
           setCreateAnimalModalShow(false);
+          window.location.reload();
         })
         .catch((error) => {
           console.error(error);

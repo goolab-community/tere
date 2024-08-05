@@ -40,7 +40,14 @@ import { animals } from "../components/PropData";
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 // update modal
-function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
+function StatusUpdateModal({
+  handleShow,
+  handleClose,
+  show,
+  animal,
+  edit = false,
+}) {
+  console.log(animal);
   const [health_scale, setHealthScale] = useState(0);
 
   const [fileDataURL, setFileDataURL] = useState(null);
@@ -122,82 +129,199 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
 
   return (
     <div>
-      <Modal
-        // className="mt-36"
-        show={show}
-        fullscreen={true}
-        onHide={handleClose}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Status Update</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea4">
-            <Form.Label>Event Type</Form.Label>
-            <Form.Control
-              as="select"
-              placeholder="Event Type"
-              onChange={(e) => {
-                setEventType(e.target.value);
-              }}
-            >
-              <option value={"feed"}>Feed</option>
-              <option value={"lost"}>Lost</option>
-              <option value={"found"}>Found</option>
-              <option value={"sighting"}>Seen</option>
-              <option value={"adoption"}>Adopted</option>
-              <option value={"death"}>Death</option>
-              <option value={"other"}>Other</option>
-            </Form.Control>
-            <p></p>
-            <SliderWithInputFormControl
-              id="health_scale"
-              name="Health Scale"
-              value={health_scale}
-              min="0"
-              max="10"
-              setValue={setHealthScale}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea2">
-            <Form.Label>Date</Form.Label>
-            <p></p>
-            <input
-              type="datetime-local"
-              id="eventdate"
-              name="eventdate"
-              onChange={(e) => setEventDate(e.target.value)}
-            ></input>
-            <p></p>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              onChange={(e) => setEventDescription(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea3">
-            <Form.Label>Media</Form.Label>
-            <Card.Img src={fileDataURL} />
+      {edit ? (
+        <div>
+          {" "}
+          <Modal
+            // className="mt-36"
+            show={show}
+            fullscreen={true}
+            onHide={handleClose}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {" "}
+                <p className=" text-red-500">Edit Mode</p>
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea4"
+              >
+                <Form.Label>Event Type</Form.Label>
+                <Form.Control
+                  as="select"
+                  placeholder="Event Type"
+                  onChange={(e) => {
+                    setEventType(e.target.value);
+                  }}
+                >
+                  <option value={"feed"}>Feed</option>
+                  <option value={"lost"}>Lost</option>
+                  <option value={"found"}>Found</option>
+                  <option value={"sighting"}>Seen</option>
+                  <option value={"adoption"}>Adopted</option>
+                  <option value={"death"}>Death</option>
+                  <option value={"other"}>Other</option>
+                </Form.Control>
+                <p></p>
+                <SliderWithInputFormControl
+                  id="health_scale"
+                  name="Health Scale"
+                  value={health_scale}
+                  min="0"
+                  max="10"
+                  setValue={setHealthScale}
+                />
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea2"
+              >
+                <Form.Label>Date</Form.Label>
+                <p></p>
+                <input
+                  type="datetime-local"
+                  id="eventdate"
+                  name="eventdate"
+                  onChange={(e) => setEventDate(e.target.value)}
+                ></input>
+                <p></p>
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
+              >
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  onChange={(e) => setEventDescription(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea3"
+              >
+                <Form.Label>Media</Form.Label>
+                <Card.Img src={fileDataURL} />
+                <Form.Group
+                  style={{ marginTop: "10px" }}
+                  controlId="formFile"
+                  className="mb-3"
+                >
+                  <Form.Control onChange={(e) => file_handler(e)} type="file" />
+                </Form.Group>
+                <Button
+                  className="mr-3"
+                  variant="secondary"
+                  onClick={handleClose}
+                >
+                  Close
+                </Button>
+                <Button variant="primary" onClick={(a) => submit_history(a)}>
+                  Save Changes
+                </Button>
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>{" "}
+        </div>
+      ) : (
+        <Modal
+          // className="mt-36"
+          show={show}
+          fullscreen={true}
+          onHide={handleClose}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Status Update</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
             <Form.Group
-              style={{ marginTop: "10px" }}
-              controlId="formFile"
               className="mb-3"
+              controlId="exampleForm.ControlTextarea4"
             >
-              <Form.Control onChange={(e) => file_handler(e)} type="file" />
+              <Form.Label>Event Type</Form.Label>
+              <Form.Control
+                as="select"
+                placeholder="Event Type"
+                onChange={(e) => {
+                  setEventType(e.target.value);
+                }}
+              >
+                <option value={"feed"}>Feed</option>
+                <option value={"lost"}>Lost</option>
+                <option value={"found"}>Found</option>
+                <option value={"sighting"}>Seen</option>
+                <option value={"adoption"}>Adopted</option>
+                <option value={"death"}>Death</option>
+                <option value={"other"}>Other</option>
+              </Form.Control>
+              <p></p>
+              <SliderWithInputFormControl
+                id="health_scale"
+                name="Health Scale"
+                value={health_scale}
+                min="0"
+                max="10"
+                setValue={setHealthScale}
+              />
             </Form.Group>
-            <Button className="mr-3" variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={(a) => submit_history(a)}>
-              Save Changes
-            </Button>
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea2"
+            >
+              <Form.Label>Date</Form.Label>
+              <p></p>
+              <input
+                type="datetime-local"
+                id="eventdate"
+                name="eventdate"
+                onChange={(e) => setEventDate(e.target.value)}
+              ></input>
+              <p></p>
+            </Form.Group>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                onChange={(e) => setEventDescription(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea3"
+            >
+              <Form.Label>Media</Form.Label>
+              <Card.Img src={fileDataURL} />
+              <Form.Group
+                style={{ marginTop: "10px" }}
+                controlId="formFile"
+                className="mb-3"
+              >
+                <Form.Control onChange={(e) => file_handler(e)} type="file" />
+              </Form.Group>
+              <Button
+                className="mr-3"
+                variant="secondary"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button variant="primary" onClick={(a) => submit_history(a)}>
+                Save Changes
+              </Button>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer></Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 }
@@ -216,6 +340,9 @@ function MapPage() {
 
   // modal controls
   const [show, setShow] = useState(false);
+
+  // for edit
+  const [edit, setEdit] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -469,6 +596,7 @@ function MapPage() {
           handleClose={handleClose}
           show={show}
           animal={selected_animal}
+          edit={edit}
         />
         <div>
           <div
@@ -538,18 +666,30 @@ function MapPage() {
                               src={animal.public_url}
                             /> */}
 
-                            <img id={animal.id} />
+                            <img id={animal.id} alt="Doge Image" />
                             <Card.Body>
                               <Card.Title>{animal.name}</Card.Title>
                               <Card.Text>{animal.description}</Card.Text>
-                              <Button
-                                variant="primary"
-                                onClick={(e) =>
-                                  show_animal_history_modal(animal)
-                                }
-                              >
-                                Status Update
-                              </Button>
+                              <div className=" flex gap-3 mt-6">
+                                <Button
+                                  variant="primary"
+                                  onClick={(e) => {
+                                    show_animal_history_modal(animal);
+                                    setEdit(false);
+                                  }}
+                                >
+                                  Status Update
+                                </Button>
+                                <Button
+                                  variant="primary"
+                                  onClick={(e) => {
+                                    show_animal_history_modal(animal);
+                                    setEdit(true);
+                                  }}
+                                >
+                                  Edit
+                                </Button>
+                              </div>
                             </Card.Body>
                           </Card>
                         </Popup>
