@@ -309,14 +309,23 @@ function MapPage() {
               .then((response) => response.json())
               // .then((data) => console.log(data))
               .then((data) => {
-                let imageElement = document.getElementById(item.innerHTML);
-                console.log(data);
-                imageElement.setAttribute(
-                  "src",
-                  `${data.medias[0].url || null}`
-                );
-
-                console.log(imageElement);
+                fetch(
+                  `http://localhost:8000/api/v1/animal/media/${data.medias[0].id}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  }
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log(data.media.url);
+                    let imageElement = document.getElementById(item.innerHTML);
+                    imageElement.setAttribute(
+                      "src",
+                      `${data.media.url || null}`
+                    );
+                  });
               });
           });
         });
