@@ -92,6 +92,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
       history_type: event_type,
       health_scale: parseInt(health_scale),
       media_link: "",
+      media_available: selected_file != null,
       description: event_description,
       date: event_date,
       autocheck: true,
@@ -108,8 +109,13 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
       .post("http://localhost:8000/api/v1/history/history", history, config)
       .then((response) => {
         console.log(response);
-        uploadFile(selected_file, response.data.upload_url);
-        alert("History updated successfully");
+        if (response.data.upload_url != null || selected_file != null) {
+          uploadFile(selected_file, response.data.upload_url);
+          alert("History updated successfully");
+        }
+        else {
+          alert("History updated without media");
+        }
         // goto home page
         window.location.href = "/history";
       })
