@@ -297,25 +297,48 @@ function MapPage() {
         attachDiv.forEach((item, i) => {
           // attach icons atribute ID  from Hidden div
           icon[i].setAttribute("GrabID", item.innerHTML);
-        });
-
-        // iterate icons and attach oncklick function event
-        icon.forEach(function (element) {
-          element.addEventListener("click", function () {
-            // attach URLparams real animal_id
-            const params = new URLSearchParams({
-              animal_id: element.getAttribute("GrabID"),
-            });
-            // after cklcik request for load images
+          const params = new URLSearchParams({
+            animal_id: item.innerHTML,
+          });
+          icon[i].addEventListener("click", () => {
             fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             })
               .then((response) => response.json())
-              .then((data) => console.log(data));
+              // .then((data) => console.log(data))
+              .then((data) => {
+                let imageElement = document.getElementById(item.innerHTML);
+                console.log(data);
+                imageElement.setAttribute(
+                  "src",
+                  `${data.medias[0].url || null}`
+                );
+
+                console.log(imageElement);
+              });
           });
         });
+
+        // iterate icons and attach oncklick function event
+        // icon.forEach(function (element) {
+        //   element.addEventListener("click", function () {
+        //     // const id_FromImg = document.getElementById()
+        //     // attach URLparams real animal_id
+        //     const params = new URLSearchParams({
+        //       animal_id: element.getAttribute("GrabID"),
+        //     });
+        //     // after cklcik request for load images
+        //     fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
+        //       headers: {
+        //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //       },
+        //     })
+        //       .then((response) => response.json())
+        //       .then((data) => console.log(data));
+        //   });
+        // });
       })
       // .then((data) =>
       //   dispatch(
@@ -499,11 +522,14 @@ function MapPage() {
                         // small popup after click location
                         <Popup>
                           <Card style={{ width: "18rem" }}>
-                            <Card.Img
-                              id={"image_" + animal.id}
+                            {/* <Card.Img
+                              className="test"
+                              id={animal.id}
                               variant="top"
                               src={animal.public_url}
-                            />
+                            /> */}
+
+                            <img id={animal.id} />
                             <Card.Body>
                               <Card.Title>{animal.name}</Card.Title>
                               <Card.Text>{animal.description}</Card.Text>
