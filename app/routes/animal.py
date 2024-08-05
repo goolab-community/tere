@@ -9,7 +9,7 @@ import models
 from database import get_db
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from pydantic import parse_obj_as
 from utils import (
     generate_token,
@@ -32,7 +32,7 @@ router = APIRouter(
 
 
 @router.get("/animal")
-def animal(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db),
+def animal(db: Session = Depends(get_db),
            animal_id: int = None):
     try:
         if animal_id:
@@ -53,7 +53,7 @@ def animal(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: S
 
 
 @router.get("/animals")
-def animals(user: HTTPAuthorizationCredentials = Depends(get_current_user), db: Session = Depends(get_db)):
+def animals(db: Session = Depends(get_db)):
     # pagination and search query
     animals = db.query(models.Animal).all()
     return animals
@@ -161,6 +161,25 @@ def create_animal(animal: schemas.Animal,
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
+@router.delete("/delete/{animal_id}", response_model=dict)
+def delete_animal(animal_id: int, user: HTTPAuthorizationCredentials = Depends(get_current_user),
+                  db: Session = Depends(get_db)):
+    try:
+        if user.get("is_superuser"):
+            animal = db.query(models.Animal).filter(models.Animal.id == animal_id).first()
+        if animal:
+            db.delete(animal)
+            db.commit()
+            return {
+                "message": "Animal deleted successfully"
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Animal not found")
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
 @router.get("/read/{animal_id}", response_model=dict)
 def read_animal(animal_id: int, db: Session = Depends(get_db)):
     animal = db.query(models.Animal).filter(models.Animal.id == animal_id).first()
@@ -173,34 +192,69 @@ def read_animal(animal_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/update/{animal_id}", response_model=dict)
-def update_animal(animal_id: int, animal: schemas.Animal, db: Session = Depends(get_db)):
+def update_animal(animal_id: int, animal: schemas.Animal, 
+                  user: HTTPAuthorizationCredentials = Depends(get_current_user),
+                  db: Session = Depends(get_db)):
     try:
-        db_animal = db.query(models.Animal).filter(models.Animal.id == animal_id).first()
-        if db_animal:
-            db_animal.species = animal.species
-            db_animal.sex = animal.sex
-            db_animal.breed_id = animal.breed_id
-            db_animal.tag_id = animal.tag_id
-            db_animal.rfid_code = animal.rfid_code
-            db_animal.age_year = animal.age_year
-            db_animal.age_month = animal.age_month
-            db_animal.age_year_from = animal.age_year_from
-            db_animal.age_month_from = animal.age_month_from
-            db_animal.age_year_to = animal.age_year_to
-            db_animal.age_month_to = animal.age_month_to
-            db_animal.name = animal.name
-            db_animal.description = animal.description
-            db_animal.latitude = animal.latitude
-            db_animal.longitude = animal.longitude
-            db_animal.address = animal.address
+        for user_animal in user.animals:
+            if user_animal.id == animal_id:
+                break
+        # db_animal = db.query(models.Animal).filter(models.Animal.id == animal_id).first()
+        if user_animal:
+            user_animal.species = animal.species
+            user_animal.sex = animal.sex
+            user_animal.breed_id = animal.breed_id
+            user_animal.tag_id = animal.tag_id
+            user_animal.rfid_code = animal.rfid_code
+            user_animal.age_year = animal.age_year
+            user_animal.age_month = animal.age_month
+            user_animal.age_year_from = animal.age_year_from
+            user_animal.age_month_from = animal.age_month_from
+            user_animal.age_year_to = animal.age_year_to
+            user_animal.age_month_to = animal.age_month_to
+            user_animal.name = animal.name
+            user_animal.description = animal.description
+            user_animal.latitude = animal.latitude
+            user_animal.longitude = animal.longitude
+            user_animal.address = animal.address
             db.commit()
             return {
-                "animal": db_animal.to_json()
+                "animal": user_animal.to_json()
             }
         else:
             raise HTTPException(status_code=404, detail="Animal not found")
     except Exception as e:
-        # raise e
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.put("/update_icon/{animal_id}", response_model=dict)
+def update_icon(animal_id: int, media_id: int, user: HTTPAuthorizationCredentials = Depends(get_current_user),
+                db: Session = Depends(get_db)):
+    try:
+        for animal in user.animals:
+            if animal.id == animal_id:
+                break
+        if animal:
+            db_media = db.query(models.Media).filter(and_(
+                models.Media.id == media_id,
+                models.Media.type == "icon"
+                )).first()
+            if db_media:
+                image_index = None
+                for i, m in enumerate(animal.medias):
+                    if m.type == "icon":
+                        image_index = i
+                if image_index is not None:
+                    animal.medias.pop(image_index)
+                    animal.medias.append(db_media)
+                db.commit()
+                return {
+                    "media": db_media.to_json()
+                }
+            else:
+                raise HTTPException(status_code=404, detail="Media not found")
+    except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -221,3 +275,30 @@ def read_media(media_id: int, db: Session = Depends(get_db)):
         }
     else:
         raise HTTPException(status_code=404, detail="Media not found")
+
+
+@router.post("/media/{animal_id}", response_model=dict)
+def create_media(animal_id: int, media: schemas.Media, user: HTTPAuthorizationCredentials = Depends(get_current_user),
+                 db: Session = Depends(get_db)):
+    try:
+        for animal in user.animals:
+            if animal.id == animal_id:
+                break
+        if animal:
+            new_media = models.Media(
+                url=media.url,
+                type=media.type,
+                uploaded_by_user_id=user.get("user_id"),
+                date=datetime.now(),
+                animal_id=animal_id
+            )
+            db.add(new_media)
+            db.commit()
+            return {
+                "media": new_media.to_json()
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Animal not found")
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")

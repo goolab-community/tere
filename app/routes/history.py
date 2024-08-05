@@ -77,6 +77,24 @@ def create_history(
                 "upload_url":  url
         }
     except Exception as e:
-        raise e
         logger.error(e)
         raise HTTPException(status_code=400, detail="Error creating history")
+
+
+@router.delete("/history/{history_id}")
+def delete_history(
+    history_id: int,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        if user.is_superuser:
+            history = db.query(models.History).filter(models.History.id == history_id).first()
+            if not history:
+                raise HTTPException(status_code=404, detail="History not found")
+            db.delete(history)
+            db.commit()
+        return {"message": "History deleted successfully"}
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=400, detail="Error deleting history")

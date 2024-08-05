@@ -41,6 +41,7 @@ class Animal(BaseModel):
     age_month_to: int = None
     name: str = None
     description: str = None
+    profile_image: Optional[str] = None
 
     medias: Optional[List[Media]] = None
 
