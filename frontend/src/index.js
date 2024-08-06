@@ -12,7 +12,7 @@ import Home from "./Routes/Home";
 import LogReg from "./Routes/LoginRegistration";
 import MapPage from "./Routes/Map";
 
-import { Animals, loader as AnimalLoader } from "./Routes/Animals";
+import { Animals } from "./Routes/Animals";
 // import { initAnimalsLoader } from "./loaders/loader";
 import History from "./Routes/History";
 import ErrorPage from "./components/Error/error-page";

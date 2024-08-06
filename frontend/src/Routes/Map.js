@@ -5,6 +5,9 @@ import { update_markers } from "../redux/reducers/markers";
 import $, { data, event } from "jquery";
 // import Navbar from "./Navbar";
 
+// edit
+import Edit from "../components/Edit/Edit";
+
 import {
   MapContainer,
   TileLayer,
@@ -40,14 +43,8 @@ import { animals } from "../components/PropData";
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 // update modal
-function StatusUpdateModal({
-  handleShow,
-  handleClose,
-  show,
-  animal,
-  edit = false,
-}) {
-  console.log(animal);
+function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
+  console.log(edit);
   const [health_scale, setHealthScale] = useState(0);
 
   const [fileDataURL, setFileDataURL] = useState(null);
@@ -80,7 +77,7 @@ function StatusUpdateModal({
   });
 
   function submit_history(e) {
-    handleClose();
+    // handleClose();
     console.log(
       `------- Submitting history for animal ${animal.name} --------`
     );
@@ -104,6 +101,47 @@ function StatusUpdateModal({
       autocheck: true,
     };
 
+    const editInfo = {
+      species: "string",
+      sex: "string",
+      breed_id: "string",
+      tag_id: "string",
+      rfid_code: "string",
+      age_year: 0,
+      age_month: 0,
+      age_year_from: 0,
+      age_month_from: 0,
+      age_year_to: 0,
+      age_month_to: 0,
+      name: "string",
+      description: "string",
+      medias: [
+        {
+          url: "string",
+          type: "image",
+          uploaded_by_user_id: 0,
+          date: "2024-08-06T09:45:40.885Z",
+          description: "string",
+          animal_id: 0,
+        },
+      ],
+      latitude: 0,
+      longitude: 0,
+      address: "string",
+      history: [
+        {
+          animal_id: animal.id,
+          history_type: event_type,
+          user_id: parseInt(localStorage.getItem("_id")),
+          health_scale: parseInt(health_scale),
+          description: event_description,
+          date: event_date,
+          media_link: "",
+          autocheck: true,
+        },
+      ],
+    };
+
     const config = {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -111,20 +149,43 @@ function StatusUpdateModal({
       },
     };
 
-    axios
-      .post("http://localhost:8000/api/v1/history/history", history, config)
-      .then((response) => {
-        console.log(response);
-        uploadFile(selected_file, response.data.upload_url);
-        alert("History updated successfully");
-        // goto home page
-        window.location.href = "/history";
-      })
-      .catch((error) => {
-        console.log(history);
-        console.log(error);
-        alert("Error updating history");
-      });
+    if (!edit) {
+      axios
+        .post("http://localhost:8000/api/v1/history/history", history, config)
+        .then((response) => {
+          console.log(response);
+          uploadFile(selected_file, response.data.upload_url);
+          alert("History updated successfully");
+          // goto home page
+          window.location.href = "/history";
+        })
+        .catch((error) => {
+          console.log(history);
+          console.log(error);
+          alert("Error updating history");
+        });
+    } else {
+      console.log("edit here");
+      console.log(animal);
+      axios
+        .put(
+          `http://localhost:8000/api/v1/history/${animal.id}`,
+          editInfo,
+          config
+        )
+        .then((response) => {
+          console.log(response);
+          uploadFile(selected_file, response.data.upload_url);
+          alert("Edit successfully");
+          // goto home page
+          // window.location.href = "/history";
+        })
+        .catch((error) => {
+          console.log(editInfo);
+          console.log(error);
+          alert("Error Edit history");
+        });
+    }
   }
 
   return (
@@ -132,7 +193,7 @@ function StatusUpdateModal({
       {edit ? (
         <div>
           {" "}
-          <Modal
+          {/* <Modal
             // className="mt-36"
             show={show}
             fullscreen={true}
@@ -140,7 +201,6 @@ function StatusUpdateModal({
           >
             <Modal.Header closeButton>
               <Modal.Title>
-                {" "}
                 <p className=" text-red-500">Edit Mode</p>
               </Modal.Title>
             </Modal.Header>
@@ -149,6 +209,7 @@ function StatusUpdateModal({
                 className="mb-3"
                 controlId="exampleForm.ControlTextarea4"
               >
+                <div>aqedan daviwyeb damatebas</div>
                 <Form.Label>Event Type</Form.Label>
                 <Form.Control
                   as="select"
@@ -175,6 +236,7 @@ function StatusUpdateModal({
                   setValue={setHealthScale}
                 />
               </Form.Group>
+
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlTextarea2"
@@ -226,7 +288,8 @@ function StatusUpdateModal({
               </Form.Group>
             </Modal.Body>
             <Modal.Footer></Modal.Footer>
-          </Modal>{" "}
+          </Modal>{" "} */}
+          <Edit animal_id={animal.id} />
         </div>
       ) : (
         <Modal
@@ -436,6 +499,7 @@ function MapPage() {
               .then((response) => response.json())
               // .then((data) => console.log(data))
               .then((data) => {
+                console.log(data);
                 fetch(
                   `http://localhost:8000/api/v1/animal/media/${data.medias[0].id}`,
                   {
@@ -456,32 +520,8 @@ function MapPage() {
               });
           });
         });
-
-        // iterate icons and attach oncklick function event
-        // icon.forEach(function (element) {
-        //   element.addEventListener("click", function () {
-        //     // const id_FromImg = document.getElementById()
-        //     // attach URLparams real animal_id
-        //     const params = new URLSearchParams({
-        //       animal_id: element.getAttribute("GrabID"),
-        //     });
-        //     // after cklcik request for load images
-        //     fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
-        //       headers: {
-        //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //       },
-        //     })
-        //       .then((response) => response.json())
-        //       .then((data) => console.log(data));
-        //   });
-        // });
       })
-      // .then((data) =>
-      //   dispatch(
-      //     loadanimals({ allAnimals: [...data] }),
-      //     console.log(data + " from map useffect")
-      //   )
-      // )
+
       .catch((error) => console.error(error));
 
     // console.log(icon);
