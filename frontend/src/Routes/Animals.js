@@ -584,7 +584,7 @@ function Animals() {
                 return (
                   <div
                     key={i}
-                    className=" h-80  w-[calc(100%-0.5rem)] sm:h-2/3 sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300"
+                    className=" h-80 w-[calc(100%-0.5rem)] sm:h-80 sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300"
                   >
                     {/* img and dog info div */}
                     <div className=" flex flex-col sm:flex-col lg:flex-row">
