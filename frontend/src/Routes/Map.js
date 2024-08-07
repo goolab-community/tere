@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { editStateAction } from "../redux/reducers/nessesaryState";
 import { loadanimals } from "../redux/reducers/animals";
 import { update_markers } from "../redux/reducers/markers";
 import $, { data, event } from "jquery";
@@ -45,6 +46,8 @@ const fileTypes = /image\/(png|jpg|jpeg)/i;
 // update modal
 function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
   console.log(edit);
+  const _edit = useSelector((state) => state.nessesary.edit);
+  const dispatch = useDispatch();
   const [health_scale, setHealthScale] = useState(0);
 
   const [fileDataURL, setFileDataURL] = useState(null);
@@ -101,46 +104,46 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
       autocheck: true,
     };
 
-    const editInfo = {
-      species: "string",
-      sex: "string",
-      breed_id: "string",
-      tag_id: "string",
-      rfid_code: "string",
-      age_year: 0,
-      age_month: 0,
-      age_year_from: 0,
-      age_month_from: 0,
-      age_year_to: 0,
-      age_month_to: 0,
-      name: "string",
-      description: "string",
-      medias: [
-        {
-          url: "string",
-          type: "image",
-          uploaded_by_user_id: 0,
-          date: "2024-08-06T09:45:40.885Z",
-          description: "string",
-          animal_id: 0,
-        },
-      ],
-      latitude: 0,
-      longitude: 0,
-      address: "string",
-      history: [
-        {
-          animal_id: animal.id,
-          history_type: event_type,
-          user_id: parseInt(localStorage.getItem("_id")),
-          health_scale: parseInt(health_scale),
-          description: event_description,
-          date: event_date,
-          media_link: "",
-          autocheck: true,
-        },
-      ],
-    };
+    // const editInfo = {
+    //   species: "string",
+    //   sex: "string",
+    //   breed_id: "string",
+    //   tag_id: "string",
+    //   rfid_code: "string",
+    //   age_year: 0,
+    //   age_month: 0,
+    //   age_year_from: 0,
+    //   age_month_from: 0,
+    //   age_year_to: 0,
+    //   age_month_to: 0,
+    //   name: "string",
+    //   description: "string",
+    //   medias: [
+    //     {
+    //       url: "string",
+    //       type: "image",
+    //       uploaded_by_user_id: 0,
+    //       date: "2024-08-06T09:45:40.885Z",
+    //       description: "string",
+    //       animal_id: 0,
+    //     },
+    //   ],
+    //   latitude: 0,
+    //   longitude: 0,
+    //   address: "string",
+    //   history: [
+    //     {
+    //       animal_id: animal.id,
+    //       history_type: event_type,
+    //       user_id: parseInt(localStorage.getItem("_id")),
+    //       health_scale: parseInt(health_scale),
+    //       description: event_description,
+    //       date: event_date,
+    //       media_link: "",
+    //       autocheck: true,
+    //     },
+    //   ],
+    // };
 
     const config = {
       headers: {
@@ -149,157 +152,47 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
       },
     };
 
-    if (!edit) {
-      axios
-        .post("http://localhost:8000/api/v1/history/history", history, config)
-        .then((response) => {
-          console.log(response);
-          uploadFile(selected_file, response.data.upload_url);
-          alert("History updated successfully");
-          // goto home page
-          window.location.href = "/history";
-        })
-        .catch((error) => {
-          console.log(history);
-          console.log(error);
-          alert("Error updating history");
-        });
-    } else {
-      console.log("edit here");
-      console.log(animal);
-      axios
-        .put(
-          `http://localhost:8000/api/v1/history/${animal.id}`,
-          editInfo,
-          config
-        )
-        .then((response) => {
-          console.log(response);
-          uploadFile(selected_file, response.data.upload_url);
-          alert("Edit successfully");
-          // goto home page
-          // window.location.href = "/history";
-        })
-        .catch((error) => {
-          console.log(editInfo);
-          console.log(error);
-          alert("Error Edit history");
-        });
-    }
+    axios
+      .post("http://localhost:8000/api/v1/history/history", history, config)
+      .then((response) => {
+        console.log(response);
+        uploadFile(selected_file, response.data.upload_url);
+        alert("History updated successfully");
+        // goto home page
+        window.location.href = "/history";
+      })
+      .catch((error) => {
+        console.log(history);
+        console.log(error);
+        alert("Error updating history");
+      });
   }
 
   return (
     <div>
-      {edit ? (
+      {_edit == true && (
         <div>
-          {" "}
-          {/* <Modal
-            // className="mt-36"
-            show={show}
-            fullscreen={true}
-            onHide={handleClose}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>
-                <p className=" text-red-500">Edit Mode</p>
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea4"
-              >
-                <div>aqedan daviwyeb damatebas</div>
-                <Form.Label>Event Type</Form.Label>
-                <Form.Control
-                  as="select"
-                  placeholder="Event Type"
-                  onChange={(e) => {
-                    setEventType(e.target.value);
-                  }}
-                >
-                  <option value={"feed"}>Feed</option>
-                  <option value={"lost"}>Lost</option>
-                  <option value={"found"}>Found</option>
-                  <option value={"sighting"}>Seen</option>
-                  <option value={"adoption"}>Adopted</option>
-                  <option value={"death"}>Death</option>
-                  <option value={"other"}>Other</option>
-                </Form.Control>
-                <p></p>
-                <SliderWithInputFormControl
-                  id="health_scale"
-                  name="Health Scale"
-                  value={health_scale}
-                  min="0"
-                  max="10"
-                  setValue={setHealthScale}
-                />
-              </Form.Group>
-
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea2"
-              >
-                <Form.Label>Date</Form.Label>
-                <p></p>
-                <input
-                  type="datetime-local"
-                  id="eventdate"
-                  name="eventdate"
-                  onChange={(e) => setEventDate(e.target.value)}
-                ></input>
-                <p></p>
-              </Form.Group>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  onChange={(e) => setEventDescription(e.target.value)}
-                />
-              </Form.Group>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea3"
-              >
-                <Form.Label>Media</Form.Label>
-                <Card.Img src={fileDataURL} />
-                <Form.Group
-                  style={{ marginTop: "10px" }}
-                  controlId="formFile"
-                  className="mb-3"
-                >
-                  <Form.Control onChange={(e) => file_handler(e)} type="file" />
-                </Form.Group>
-                <Button
-                  className="mr-3"
-                  variant="secondary"
-                  onClick={handleClose}
-                >
-                  Close
-                </Button>
-                <Button variant="primary" onClick={(a) => submit_history(a)}>
-                  Save Changes
-                </Button>
-              </Form.Group>
-            </Modal.Body>
-            <Modal.Footer></Modal.Footer>
-          </Modal>{" "} */}
           <Edit animal_id={animal.id} />
         </div>
-      ) : (
+      )}
+
+      {_edit == false && (
         <Modal
           // className="mt-36"
-          show={show}
+          show={!_edit || false}
           fullscreen={true}
           onHide={handleClose}
         >
-          <Modal.Header closeButton>
-            <Modal.Title>Status Update</Modal.Title>
+          <Modal.Header>
+            <Modal.Title>
+              {" "}
+              <p
+                className=" cursor-pointer"
+                onClick={() => dispatch(editStateAction({ bool: null }))}
+              >
+                X
+              </p>
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group
@@ -421,8 +314,9 @@ function MapPage() {
 
   const [selected_animal, setSelectedAnimal] = useState(null);
 
-  // for grab location markers
-  const markersRef = useRef();
+  //  redux
+  const _edit = useSelector((state) => state.nessesary.edit);
+  const dispatch = useDispatch();
 
   // console.log(animals);
   function create_new_marker(latlng) {
@@ -634,7 +528,7 @@ function MapPage() {
         <StatusUpdateModal
           handleShow={handleShow}
           handleClose={handleClose}
-          show={show}
+          show={_edit || false}
           animal={selected_animal}
           edit={edit}
         />
@@ -682,14 +576,14 @@ function MapPage() {
               />
               {db_animals.map(
                 (animal, i) => (
-                  <div ref={markersRef.current}>
+                  <div>
                     <Marker
                       icon={get_icon(health_to_color(animal.overall_health))}
                       key={animal.id}
                       position={[animal.latitude, animal.longitude]}
                       onClick={() => {
                         setActivePark(animal);
-                        console.log("fffff");
+
                         // console.log("Active marker:", marker);
                         setCreateAnimalModalShow((prev) => !prev);
                       }}
@@ -698,24 +592,26 @@ function MapPage() {
                       {!allow_marker_creation ? (
                         // small popup after click location
                         <Popup>
-                          <Card style={{ width: "18rem" }}>
-                            {/* <Card.Img
-                              className="test"
-                              id={animal.id}
-                              variant="top"
-                              src={animal.public_url}
-                            /> */}
+                          <Card style={{ width: "15rem" }}>
+                            <div className=" flex items-start justify-center imagewrapper_loading ">
+                              <img
+                                className="imagee  "
+                                src={""}
+                                id={animal.id}
+                                alt="Doge Image"
+                              />
+                            </div>
 
-                            <img id={animal.id} alt="Doge Image" />
-                            <Card.Body>
-                              <Card.Title>{animal.name}</Card.Title>
+                            <Card.Body className=" ">
+                              <Card.Title>{"name " + animal.name}</Card.Title>
                               <Card.Text>{animal.description}</Card.Text>
                               <div className=" flex gap-3 mt-6">
                                 <Button
                                   variant="primary"
                                   onClick={(e) => {
                                     show_animal_history_modal(animal);
-                                    setEdit(false);
+                                    // setEdit(false);
+                                    dispatch(editStateAction({ bool: false }));
                                   }}
                                 >
                                   Status Update
@@ -724,7 +620,8 @@ function MapPage() {
                                   variant="primary"
                                   onClick={(e) => {
                                     show_animal_history_modal(animal);
-                                    setEdit(true);
+                                    // setEdit(true);
+                                    dispatch(editStateAction({ bool: true }));
                                   }}
                                 >
                                   Edit
