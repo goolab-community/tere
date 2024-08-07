@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   edit: null,
+  load: null,
 };
 
 export const nessesary = createSlice({
@@ -11,9 +12,12 @@ export const nessesary = createSlice({
     editStateAction: (state, action) => {
       state.edit = action.payload.bool;
     },
+    loadStateAction: (state, action) => {
+      state.load = action.payload.bool;
+    },
   },
 });
 
-export const { editStateAction } = nessesary.actions;
+export const { editStateAction, loadStateAction } = nessesary.actions;
 
 export default nessesary.reducer;
