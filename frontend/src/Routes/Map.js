@@ -599,7 +599,13 @@ function MapPage() {
                       {!allow_marker_creation ? (
                         // small popup after click location
                         <Popup>
-                          <Card style={{ width: "15rem", marginTop: "1.5rem" }}>
+                          <Card
+                            style={{
+                              width: "15rem",
+                              marginTop: "1.5rem",
+                              border: "none",
+                            }}
+                          >
                             <div className=" relative  min-h-40 flex items-center w-full justify-center imagewrapper_loading ">
                               <div
                                 className={` w-48 h-32 flex items-center justify-center ${
@@ -626,7 +632,7 @@ function MapPage() {
                                 </div>
                               </div>
                               <img
-                                className={`imagee ${
+                                className={`imagee rounded-md ${
                                   _load ? " invisible" : "visible"
                                 } `}
                                 src={""}
@@ -636,8 +642,49 @@ function MapPage() {
                             </div>
 
                             <Card.Body className=" ">
-                              <Card.Title>{"name " + animal.name}</Card.Title>
-                              <Card.Text>{animal.description}</Card.Text>
+                              {/* <Card.Title>{"name " + animal.name}</Card.Title> */}
+                              <div className=" font-font1">
+                                <span className=" font-medium">Species:</span>
+                                &nbsp;
+                                <span className=" text-gray-600">
+                                  {animal.species || "Not Known"}
+                                </span>
+                              </div>
+                              <div className=" font-font1">
+                                <span className=" font-medium">Name: </span>
+                                &nbsp;
+                                <span className=" text-gray-600">
+                                  {animal.name || "Not Known"}
+                                </span>
+                              </div>
+                              <div className=" font-font1">
+                                <span className=" font-medium">Sex: </span>
+                                &nbsp;
+                                <span className=" text-gray-600">
+                                  {animal.sex || "Not Known"}
+                                </span>
+                              </div>
+                              <div className=" font-font1">
+                                <span className=" font-medium">Rfid_code:</span>
+                                &nbsp;
+                                <span className=" text-gray-600">
+                                  {animal.rfid_code || "Not Known"}
+                                </span>
+                              </div>
+                              <div className=" font-font1">
+                                <span className=" font-medium">Tag_id:</span>
+                                &nbsp;
+                                <span className=" text-gray-600">
+                                  {animal.tag_id || "Not Known"}
+                                </span>
+                              </div>
+                              <div className=" font-font1">
+                                <p className=" font-medium">Description:</p>
+                                <p className=" text-gray-600 mt-1">
+                                  {animal.description}
+                                </p>
+                              </div>
+
                               <div className=" flex gap-3 mt-6">
                                 <Button
                                   variant="primary"
