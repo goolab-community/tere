@@ -680,8 +680,9 @@ function MapPage() {
                               </div>
                               <div className=" font-font1">
                                 <p className=" font-medium">Description:</p>
-                                <p className=" text-gray-600 mt-1">
-                                  {animal.description}
+                                <p className=" text-gray-600 mt-1 max-h-14 overflow-y-scroll">
+                                  {animal.description ||
+                                    "Unfortunately we don't have any description at the moment"}
                                 </p>
                               </div>
 
