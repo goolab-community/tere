@@ -3,6 +3,9 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadanimals } from "../redux/reducers/animals";
 
+// test
+import CustomerLocation from "../components/CustomerLocation/CustomerLocation";
+
 const Home = () => {
   const user = useSelector((state) => state.user);
   const animals = useSelector((state) => state.animals[0].allAnimals);
@@ -27,6 +30,7 @@ const Home = () => {
       <p className=" font-font1 italic text-center text-gray-600 font-semibold bg-indigo-50 p-2 rounded-md">
         "Every dog deserves a home and every home deserves a dog."
       </p>
+      {/* <CustomerLocation /> */}
       <img src={dog} alt="dog" />
     </div>
   );

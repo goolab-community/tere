@@ -52,6 +52,7 @@ const LogReg = () => {
           setMessage(response.data.message);
           const { username, email, token, is_active, _id } = response.data;
 
+          console.log(_id, token);
           // for reduxs state update
           dispatch(updateUser({ _id, token }));
 

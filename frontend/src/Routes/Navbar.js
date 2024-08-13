@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import Logaut from "../components/Logout";
 
 function SiteNavbar() {
+  console.log("navbar");
   const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();

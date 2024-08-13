@@ -43,12 +43,13 @@ import axios from "axios";
 
 import { redirect, useNavigate } from "react-router-dom";
 import { animals } from "../components/PropData";
+import Update from "../components/Update/Update";
+import CustomerLocation from "../components/CustomerLocation/CustomerLocation";
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 // update modal
 function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
-  console.log(edit);
   const _edit = useSelector((state) => state.nessesary.edit);
   const dispatch = useDispatch();
   const [health_scale, setHealthScale] = useState(0);
@@ -280,6 +281,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
           </Modal.Body>
           <Modal.Footer></Modal.Footer>
         </Modal>
+        // <Update />
       )}
     </div>
   );
@@ -360,9 +362,6 @@ function MapPage() {
       </Marker>
     );
   }
-
-  //  aq moaqvs yvela animali.
-  // animalebi unda vanaxo animal routzee wamoghebuli da savaraudod reduxi dagvchirdeba
 
   useEffect(() => {
     // // Fetch markers from the API endpoint
@@ -491,7 +490,7 @@ function MapPage() {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Animal Form 2
+            Add New Animal
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -507,9 +506,6 @@ function MapPage() {
             setCreateAnimalModalShow={setCreateAnimalModalShow}
           />
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={props.onHide}>Close</Button>
-        </Modal.Footer>
       </Modal>
     );
   }
@@ -544,7 +540,7 @@ function MapPage() {
             className=" h-14   w-full fixed  bottom-0 left-0  content-center
            "
           >
-            <div className="bg-indigo-300 pl-3  pt-2 h-full">
+            <div className="flex  bg-indigo-300 pl-3   pt-2 h-full">
               <button
                 disabled={allow_marker_creation && true}
                 type="button"
@@ -566,6 +562,12 @@ function MapPage() {
                 }}
               >
                 Cancel
+              </button>
+              <button
+                type="button"
+                className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-1.5 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+              >
+                <CustomerLocation />
               </button>
             </div>
           </div>
