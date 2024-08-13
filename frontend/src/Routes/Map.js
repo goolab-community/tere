@@ -566,20 +566,20 @@ function MapPage() {
               >
                 Cancel
               </button>
-              {/* {allow_marker_creation && (
+              {allow_marker_creation && (
                 <button
                   type="button"
                   className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-1.5 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
                 >
                   <CustomerLocation />
                 </button>
-              )} */}
-              <button
+              )}
+              {/* <button
                 type="button"
                 className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-2 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
               >
                 <CustomerLocation />
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="h-[calc(100vh-6rem)] overflow-scroll">

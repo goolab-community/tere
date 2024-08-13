@@ -1,19 +1,36 @@
+import { useDispatch, useSelector } from "react-redux";
+import { editLocationStateAction } from "../../redux/reducers/userLocation";
+
 const CustomerLocation = () => {
+  const dispatch = useDispatch();
   const handleClick = () => {
     console.log("give me location");
-    getLocation();
-  };
-
-  function getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         console.log(position.coords.latitude, position.coords.longitude);
+        dispatch(
+          editLocationStateAction({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          })
+        );
       });
     } else {
       // x.innerHTML = "Geolocation is not supported by this browser.";
       console.log("Geolocation is not supported by this browser.");
     }
-  }
+  };
+
+  // function getLocation() {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       console.log(position.coords.latitude, position.coords.longitude);
+  //     });
+  //   } else {
+  //     // x.innerHTML = "Geolocation is not supported by this browser.";
+  //     console.log("Geolocation is not supported by this browser.");
+  //   }
+  // }
 
   // function showPosition(position) {
   //   console.log(position.coords.latitude, position.coords.longitude);
