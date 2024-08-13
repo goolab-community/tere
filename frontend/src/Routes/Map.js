@@ -313,6 +313,7 @@ function MapPage() {
   const popupElRef = useRef(null);
 
   const position = [41.799188, 44.797391];
+  // const position = [54.5160336, -6.7599752];
   // const [markers, setMarkers] = useState({"features": animals});
   const [db_animals, setAnimals] = useState([]);
   console.log(db_animals);
@@ -540,7 +541,7 @@ function MapPage() {
             className=" h-14   w-full fixed  bottom-0 left-0  content-center
            "
           >
-            <div className="flex  bg-indigo-300 pl-3   pt-2 h-full">
+            <div className="flex font-font1  bg-indigo-300 pl-3   pt-2 h-full">
               <button
                 disabled={allow_marker_creation && true}
                 type="button"
@@ -563,9 +564,17 @@ function MapPage() {
               >
                 Cancel
               </button>
+              {/* {allow_marker_creation && (
+                <button
+                  type="button"
+                  className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-1.5 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+                >
+                  <CustomerLocation />
+                </button>
+              )} */}
               <button
                 type="button"
-                className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-1.5 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+                className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-2 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
               >
                 <CustomerLocation />
               </button>
