@@ -1,0 +1,21 @@
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  lat: 41.799188,
+  lon: 44.797391,
+};
+
+export const user_location = createSlice({
+  name: "user_location",
+  initialState: initialState,
+  reducers: {
+    editLocationStateAction: (state, action) => {
+      state.lat = action.payload.lat;
+      state.lon = action.payload.lon;
+    },
+  },
+});
+
+export const { editLocationStateAction } = user_location.actions;
+
+export default user_location.reducer;

@@ -312,8 +312,10 @@ function MapPage() {
   const [map, setMap] = useState(null);
   const popupElRef = useRef(null);
 
-  const position = [41.799188, 44.797391];
-  // const position = [54.5160336, -6.7599752];
+  // redux
+  const state_location = useSelector((state) => state.user_location);
+  const position = [state_location.lat, state_location.lon];
+
   // const [markers, setMarkers] = useState({"features": animals});
   const [db_animals, setAnimals] = useState([]);
   console.log(db_animals);
