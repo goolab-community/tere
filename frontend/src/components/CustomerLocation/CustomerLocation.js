@@ -1,8 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { editLocationStateAction } from "../../redux/reducers/userLocation";
+import L from "leaflet";
+import { useEffect } from "react";
 
-const CustomerLocation = () => {
+const CustomerLocation = ({ mapRefProp }) => {
+  const { lat, lon, defaultZoom } = useSelector((state) => state.user_location);
   const dispatch = useDispatch();
+
+  // mapRefProp.setView(new L.LatLng(lat, lon), 8, {
+  //   animate: true,
+  //   duration: 3.0,
+  // });
+
   const handleClick = () => {
     console.log("give me location");
     if (navigator.geolocation) {
@@ -12,6 +21,7 @@ const CustomerLocation = () => {
           editLocationStateAction({
             lat: position.coords.latitude,
             lon: position.coords.longitude,
+            defaultZoom: 16,
           })
         );
       });
@@ -21,20 +31,19 @@ const CustomerLocation = () => {
     }
   };
 
-  // function getLocation() {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       console.log(position.coords.latitude, position.coords.longitude);
-  //     });
-  //   } else {
-  //     // x.innerHTML = "Geolocation is not supported by this browser.";
-  //     console.log("Geolocation is not supported by this browser.");
-  //   }
-  // }
-
-  // function showPosition(position) {
-  //   console.log(position.coords.latitude, position.coords.longitude);
-  // }
+  // bug -> after change route state is same and zoomed without click,
+  // need spiner before first location apload due long time
+  useEffect(() => {
+    mapRefProp.setView(new L.LatLng(lat, lon), defaultZoom, {
+      pan: {
+        animate: true,
+        duration: 1.5,
+      },
+      zoom: {
+        animate: true,
+      },
+    });
+  }, [lat, lon, defaultZoom]);
 
   return (
     <div className=" flex items-end font-font1 text-xs" onClick={handleClick}>

@@ -291,6 +291,11 @@ function MapPage() {
   const [userData, setUserData] = useState(null);
   const [marker_positions, setMarkerPosition] = useState([]);
 
+  // map ref
+  // const mapRef = useRef();
+  const [mapRef, setMapRef] = useState(null);
+  //
+
   const [activePark, setActivePark] = useState(null);
   const [marker_created, setMarkerCreated] = useState(false);
   const [marker_count, setMarkerCount] = useState(0);
@@ -571,7 +576,7 @@ function MapPage() {
                   type="button"
                   className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-1.5 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
                 >
-                  <CustomerLocation />
+                  <CustomerLocation mapRefProp={mapRef} />
                 </button>
               )}
               {/* <button
@@ -584,6 +589,7 @@ function MapPage() {
           </div>
           <div className="h-[calc(100vh-6rem)] overflow-scroll">
             <MapContainer
+              ref={setMapRef}
               center={position}
               zoom={7.5}
               scrollWheelZoom={true}
