@@ -591,7 +591,7 @@ function MapPage() {
             <MapContainer
               ref={setMapRef}
               center={position}
-              zoom={7.5}
+              zoom={state_location.defaultZoom}
               scrollWheelZoom={true}
               whenCreated={setMap}
               style={{ height: "100vh", width: "100vw" }}

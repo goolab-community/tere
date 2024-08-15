@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // for redux
+import { editLocationStateAction } from "../redux/reducers/userLocation";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../redux/reducers/user";
 
@@ -51,6 +52,27 @@ const LogReg = () => {
           console.log(response.data);
           setMessage(response.data.message);
           const { username, email, token, is_active, _id } = response.data;
+          if (token) {
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition((position) => {
+                console.log(
+                  position.coords.latitude,
+                  position.coords.longitude
+                );
+                dispatch(
+                  editLocationStateAction({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude,
+
+                    defaultZoom: 7.5,
+                  })
+                );
+              });
+            } else {
+              // x.innerHTML = "Geolocation is not supported by this browser.";
+              console.log("Geolocation is not supported by this browser.");
+            }
+          }
 
           console.log(_id, token);
           // for reduxs state update

@@ -13,37 +13,54 @@ const CustomerLocation = ({ mapRefProp }) => {
   // });
 
   const handleClick = () => {
-    console.log("give me location");
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position.coords.latitude, position.coords.longitude);
-        dispatch(
-          editLocationStateAction({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-            defaultZoom: 16,
-          })
-        );
-      });
-    } else {
-      // x.innerHTML = "Geolocation is not supported by this browser.";
-      console.log("Geolocation is not supported by this browser.");
-    }
+    // console.log("give me location");
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition((position) => {
+    //     console.log(position.coords.latitude, position.coords.longitude);
+    //     dispatch(
+    //       editLocationStateAction({
+    //         lat: position.coords.latitude,
+    //         lon: position.coords.longitude,
+    //         defaultZoom: 16,
+    //       })
+    //     );
+    //   });
+    // } else {
+    //   // x.innerHTML = "Geolocation is not supported by this browser.";
+    //   console.log("Geolocation is not supported by this browser.");
+    // }
+    dispatch(
+      editLocationStateAction({
+        lat: lat,
+        lon: lon,
+        defaultZoom: 16,
+      })
+    );
+    // mapRefProp.setView(new L.LatLng(lat, lon), defaultZoom, {
+    //   pan: {
+    //     animate: true,
+    //     duration: 2,
+    //   },
+    //   zoom: {
+    //     animate: true,
+    //   },
+    // });
   };
 
-  // bug -> after change route state is same and zoomed without click,
-  // need spiner before first location apload due long time
+  // need redux persist for evoid lost data after user refresh page
   useEffect(() => {
     mapRefProp.setView(new L.LatLng(lat, lon), defaultZoom, {
       pan: {
         animate: true,
-        duration: 1.5,
+        duration: 2,
       },
       zoom: {
         animate: true,
       },
     });
-  }, [lat, lon, defaultZoom]);
+
+    console.log("bleeeeeeeeee");
+  }, [defaultZoom]);
 
   return (
     <div className=" flex items-end font-font1 text-xs" onClick={handleClick}>
