@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     container_name: tere_api
-    command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
+    # command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
     env_file:
       - ./.env
     ports:
