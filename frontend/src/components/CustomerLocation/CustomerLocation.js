@@ -52,7 +52,7 @@ const CustomerLocation = ({ mapRefProp }) => {
     mapRefProp.setView(new L.LatLng(lat, lon), defaultZoom, {
       pan: {
         animate: true,
-        duration: 2,
+        duration: 0.4,
       },
       zoom: {
         animate: true,

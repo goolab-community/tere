@@ -595,6 +595,7 @@ function MapPage() {
               scrollWheelZoom={true}
               whenCreated={setMap}
               style={{ height: "100vh", width: "100vw" }}
+              zoomAnimation={true}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

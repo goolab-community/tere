@@ -67,6 +67,8 @@ const LogReg = () => {
                     defaultZoom: 7.5,
                   })
                 );
+                localStorage.setItem("lat", position.coords.latitude);
+                localStorage.setItem("lon", position.coords.longitude);
               });
             } else {
               // x.innerHTML = "Geolocation is not supported by this browser.";
