@@ -9,9 +9,10 @@ if DB_CONNECTION_TYPE == "local":
 else:
     SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?host=/cloudsql/{DB_HOST}&port={DB_PORT}"
 
-# print("=========================================")
-# print(SQLALCHEMY_DATABASE_URL)
-# print("=========================================")
+print("=========================================")
+print("DB_CONNECTION_TYPE: ", DB_CONNECTION_TYPE)
+print(SQLALCHEMY_DATABASE_URL)
+print("=========================================")
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
