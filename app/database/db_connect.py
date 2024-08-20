@@ -11,7 +11,7 @@ else:
 
 print("=========================================")
 print("DB_CONNECTION_TYPE: ", DB_CONNECTION_TYPE)
-print(SQLALCHEMY_DATABASE_URL)
+# print(SQLALCHEMY_DATABASE_URL)
 print("=========================================")
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
