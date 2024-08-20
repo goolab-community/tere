@@ -1,24 +1,29 @@
-# Dockerfile
+# Stage 1: Build the React app
+FROM node:18-slim AS build
 
-# Use an existing node alpine image as a base image.
-FROM node:18-slim
-
-# Set the working directory.
+# Set the working directory
 WORKDIR /app
 
-# Copy the package.json file.
+# Copy the package.json and yarn.lock files
 COPY frontend/package.json frontend/yarn.lock ./
 
-# Install application dependencies.
-RUN yarn install
- 
-# Copy the rest of the application files.
+# Install dependencies
+RUN yarn install --frozen-lockfile
+
+# Copy the rest of the application files
 COPY ./frontend/ .
 
-ENV PORT=3000
+# Build the React app
+RUN yarn build
 
-# Expose the port.
-EXPOSE $PORT
+# Stage 2: Serve the React app using Nginx
+FROM nginx:stable-alpine
 
-# Run the application.
-CMD yarn start-watch
+# Copy the build output to the Nginx HTML directory
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 8080 for GCP Cloud Run
+EXPOSE 8080
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
