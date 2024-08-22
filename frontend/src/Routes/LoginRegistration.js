@@ -18,11 +18,14 @@ const LogReg = () => {
   // for redux
   const dispatch = useDispatch();
 
+  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
+                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
+
   const handleRegisterLogin = () => {
     console.log(username, email, password);
     if (location.pathname == "/register") {
       axios
-        .post("http://localhost:8000/api/v1/auth/register", {
+        .post(`${api_url}/auth/register`, {
           username: username,
           email: email,
           password: password,
@@ -45,7 +48,7 @@ const LogReg = () => {
       // it's name need change to inside backEnd
       const login = email;
       axios
-        .post("http://localhost:8000/api/v1/auth/login", { login, password })
+        .post(`${api_url}/auth/login`, { login, password })
         .then(function (response) {
           console.log(response);
           console.log(response.data);

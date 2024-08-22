@@ -6,10 +6,14 @@ function get_response(response, data) {
     return null + " server has some problem";
   }
 }
+
+const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
+                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
+
 // load data from server with router_Dom
 async function initAnimalsLoader() {
   const animalsFromServer = await fetch(
-    "http://localhost:8000/api/v1/animal/animals",
+    `${api_url}/animal/animals`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -10,9 +10,12 @@ const Home = () => {
 
   const dispatch = useDispatch();
 
+  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
+                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
+
   useEffect(() => {
     if (localStorage.token)
-      fetch("http://localhost:8000/api/v1/animal/animals", {
+      fetch(`${api_url}/animal/animals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

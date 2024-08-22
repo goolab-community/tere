@@ -1,5 +1,6 @@
 # Environment Files
 .env
+.app_env
 
 # GCP service account key
 service_account.json

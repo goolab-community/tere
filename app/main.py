@@ -17,7 +17,7 @@ from utils import (
     get_current_user
 )
 # from typing import Annotated
-from settings import BASE_URL
+from settings import BASE_URL, FRONTEND_APP_ADDRESS, FRONTEND_APP_PORT
 from routes import auth, animal, history
 
 
@@ -29,9 +29,13 @@ app = FastAPI(
     version="0.1",
 )
 
+frontend_url = f"http://{FRONTEND_APP_ADDRESS}:{FRONTEND_APP_PORT}"
+
+logger.info(f"Frontend URL: {frontend_url}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "https://storage.googleapis.com"],
+    allow_origins=[f"http://{FRONTEND_APP_ADDRESS}:{FRONTEND_APP_PORT}", "https://storage.googleapis.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

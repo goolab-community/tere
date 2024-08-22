@@ -38,6 +38,9 @@ function History() {
     return chart;
   }
 
+  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
+                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
+
   const grid = new Grid({
     sort: true,
     resizable: true,
@@ -71,7 +74,7 @@ function History() {
       },
     ],
     server: {
-      url: "http://localhost:8000/api/v1/history/list",
+      url: `${api_url}/history/list`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       then: (data) =>
         data.map((history) => [
