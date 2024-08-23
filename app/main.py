@@ -28,14 +28,16 @@ app = FastAPI(
     title="Tere API",
     version="0.1",
 )
-
-frontend_url = f"http://{FRONTEND_APP_ADDRESS}:{FRONTEND_APP_PORT}"
+if FRONTEND_APP_PORT:
+    frontend_url = f"http://{FRONTEND_APP_ADDRESS}:{FRONTEND_APP_PORT}"
+else:
+    frontend_url = FRONTEND_APP_ADDRESS
 
 logger.info(f"Frontend URL: {frontend_url}")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[f"http://{FRONTEND_APP_ADDRESS}:{FRONTEND_APP_PORT}", "https://storage.googleapis.com"],
+    allow_origins=[frontend_url, "https://storage.googleapis.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
