@@ -26,5 +26,3 @@ EXPOSE $PORT
 
 # Run the application.
 CMD yarn start-watch
-
-
