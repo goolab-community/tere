@@ -1,3 +1,5 @@
+import { API_URL } from "../config";
+
 // load data from server with router_Dom
 function get_response(response, data) {
   if (response.status === 200) {
@@ -7,13 +9,10 @@ function get_response(response, data) {
   }
 }
 
-const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
-
 // load data from server with router_Dom
 async function initAnimalsLoader() {
   const animalsFromServer = await fetch(
-    `${api_url}/animal/animals`,
+    `${API_URL}/animal/animals`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

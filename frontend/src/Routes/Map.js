@@ -37,6 +37,9 @@ import axios from "axios";
 import { redirect, useNavigate } from "react-router-dom";
 import { animals } from "../components/PropData";
 
+import { API_URL } from "../config";
+
+
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 // update modal
@@ -72,8 +75,6 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
     }
   });
 
-  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
 
   function submit_history(e) {
     handleClose();
@@ -109,7 +110,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal }) {
     };
 
     axios
-      .post(`${api_url}/history/history`, history, config)
+      .post(`${API_URL}/history/history`, history, config)
       .then((response) => {
         console.log(response);
         if (response.data.upload_url != null || selected_file != null) {
@@ -281,16 +282,13 @@ function MapPage() {
     );
   }
 
-  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
-
   // aq moaqvs yvela animali.
   // animalebi unda vanaxo animal routzee wamoghebuli da savaraudod reduxi dagvchirdeba
 
   useEffect(() => {
     // // Fetch markers from the API endpoint
     let icon;
-    fetch(`${api_url}/animal/animals`, {
+    fetch(`${API_URL}/animal/animals`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

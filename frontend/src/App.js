@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
+import { API_URL } from "./config";
 
 function get_response(response, data) {
   if (response.status === 200) {
@@ -9,13 +9,10 @@ function get_response(response, data) {
     return null + " user not registered";
   }
 }
-console.log(process.env);
-const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
 
-console.log(api_url);
+console.log(API_URL);
 export async function loader() {
-  const user = await fetch(`${api_url}/auth/user`, {
+  const user = await fetch(`${API_URL}/auth/user`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },

@@ -6,6 +6,8 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../redux/reducers/user";
 
+import { API_URL } from "../config";
+
 const LogReg = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -18,14 +20,12 @@ const LogReg = () => {
   // for redux
   const dispatch = useDispatch();
 
-  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
 
   const handleRegisterLogin = () => {
     console.log(username, email, password);
     if (location.pathname == "/register") {
       axios
-        .post(`${api_url}/auth/register`, {
+        .post(`${API_URL}/auth/register`, {
           username: username,
           email: email,
           password: password,
@@ -48,7 +48,7 @@ const LogReg = () => {
       // it's name need change to inside backEnd
       const login = email;
       axios
-        .post(`${api_url}/auth/login`, { login, password })
+        .post(`${API_URL}/auth/login`, { login, password })
         .then(function (response) {
           console.log(response);
           console.log(response.data);

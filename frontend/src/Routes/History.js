@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Grid, h, createRef as gCreateRef } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
+import { API_URL } from "../config";
+
 
 function History() {
   const wrapperRef = useRef(null);
@@ -38,9 +40,7 @@ function History() {
     return chart;
   }
 
-  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
-
+  
   const grid = new Grid({
     sort: true,
     resizable: true,
@@ -74,7 +74,7 @@ function History() {
       },
     ],
     server: {
-      url: `${api_url}/history/list`,
+      url: `${API_URL}/history/list`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       then: (data) =>
         data.map((history) => [

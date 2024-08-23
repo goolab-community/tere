@@ -2,6 +2,8 @@ import dog from "../Images/german-dog.jpg";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadanimals } from "../redux/reducers/animals";
+import { API_URL } from "../config";
+
 
 const Home = () => {
   const user = useSelector((state) => state.user);
@@ -10,12 +12,9 @@ const Home = () => {
 
   const dispatch = useDispatch();
 
-  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
-
   useEffect(() => {
     if (localStorage.token)
-      fetch(`${api_url}/animal/animals`, {
+      fetch(`${API_URL}/animal/animals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

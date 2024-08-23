@@ -20,6 +20,9 @@ import { Form } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { loadanimals, loadMoreAnimals } from "../redux/reducers/animals";
 
+import { API_URL } from "../config";
+
+
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 // new animala add form modal
@@ -29,8 +32,6 @@ function NewAnimal1({
   setSelectedMarker,
   setCreateAnimalModalShow,
 }) {
-  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
 
   function NewAnimalForm() {
     const [description, setDescription] = useState(null);
@@ -174,7 +175,7 @@ function NewAnimal1({
       };
 
       axios
-        .post(`${api_url}/animal/create`, new_animal, config)
+        .post(`${API_URL}/animal/create`, new_animal, config)
         .then((response) => {
           console.log(response);
           uploadFile(selected_file, response.data.upload_url);
@@ -481,7 +482,7 @@ function Animals() {
   // load more action
   const handleLoadmoreClick = () => {
     // if (localStorage.token) {
-    //   fetch(`${process.env.BACKEND_API_ADDRESS}${process.env.BACKEND_API_PORT}/api/v1/animal/animals`, {
+    //   fetch(`${API_URL}/animal/animals`, {
     //     headers: {
     //       Authorization: `Bearer ${localStorage.getItem("token")}`,
     //     },
@@ -510,12 +511,9 @@ function Animals() {
     }
   };
 
-  const api_url = `${process.env.REACT_APP_BACKEND_API_ADDRESS}:` + 
-                `${process.env.REACT_APP_BACKEND_API_PORT}${process.env.REACT_APP_BACKEND_API_BASE_URL}`;
-
   useState(() => {
     if (animals.length == 0)
-      fetch(`${api_url}/animal/animals`, {
+      fetch(`${API_URL}/animal/animals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
