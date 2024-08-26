@@ -295,20 +295,23 @@ function MapPage() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setAnimals(data);
 
         // grap marker after render
         icon = document.querySelectorAll(".leaflet-marker-icon");
 
         // gram hidden div arrai with innerHTM with real animal id from real animals id
-        const attachDiv = document.querySelectorAll(".nadiri");
+        // const attachDiv = document.querySelectorAll(".nadiri");
 
         // iterate one the hidden dives arrray an grab real id
-        attachDiv.forEach((item, i) => {
-          // attach icons atribute ID  from Hidden div
-          icon[i].setAttribute("GrabID", item.innerHTML);
+        // console.log(attachDiv);
+        data.forEach((item, i) => {
+          // attach icons attribute ID  from Hidden div
+          icon[i].setAttribute("GrabID", item.id);
+          console.log(i, item.id);
           const params = new URLSearchParams({
-            animal_id: item.innerHTML,
+            animal_id: item.id,
           });
           icon[i].addEventListener("click", () => {
             fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
@@ -330,13 +333,13 @@ function MapPage() {
                   .then((response) => response.json())
                   .then((data) => {
                     console.log(data.media.url);
-                    let imageElement = document.getElementById(item.innerHTML);
+                    let imageElement = document.getElementById(item.id);
                     imageElement.setAttribute(
                       "src",
                       `${data.media.url || null}`
                     );
                   });
-              });
+              }).catch((error) => console.error(error));
           });
         });
 

@@ -17,7 +17,7 @@ from utils import (
     get_current_user
 )
 # from typing import Annotated
-from settings import BASE_URL, FRONTEND_APP_ADDRESS, FRONTEND_APP_PORT
+from settings import BASE_URL, FRONTEND_APP_ADDRESS, FRONTEND_APP_PORT, DOMAIN_NAME
 from routes import auth, animal, history
 
 
@@ -35,9 +35,21 @@ else:
 
 logger.info(f"Frontend URL: {frontend_url}")
 
+cors_origins = [frontend_url, "https://storage.googleapis.com"]
+
+if DOMAIN_NAME:
+    cors_origins.append(f"https://{DOMAIN_NAME}")
+
+logger.info("")
+logger.info("............................................")
+logger.info(f"CORS origins: {cors_origins}")
+logger.info("............................................")
+logger.info("")
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url, "https://storage.googleapis.com"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
