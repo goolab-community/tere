@@ -46,24 +46,31 @@ def create_history(
         logger.info(history_data)
         history_data["type"] = models.HistoryType[history_data["history_type"]]
         history_data.pop("history_type")
+        media_available = history_data.pop("media_available")
         history = models.History(
             **history_data,
         )
         db.add(history)
+
+        # Update animal overall health
+        db.query(models.Animal).filter(models.Animal.id == history.animal_id).update(
+            {"overall_health": history.health_scale}
+        )
+        # history.animal.overall_health = history.health_scale
         db.commit()
         db.refresh(history)
-        media = models.Media(
-            url=f"images/animal_history_image_{history.id}.jpg",
-            type="image",
-            uploaded_by_user_id=user.get("user_id"),
-            date=datetime.now(),
-            animal_id=history.animal_id,
-        )
-        db.add(media)
-        # Update animal overall health
-        history.animal.overall_health = history.health_scale
+        url = None
+        if media_available:
+            media = models.Media(
+                url=f"images/animal_history_image_{history.id}.jpg",
+                type="image",
+                uploaded_by_user_id=user.get("user_id"),
+                date=datetime.now(),
+                animal_id=history.animal_id,
+            )
+            db.add(media)
+            url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_history_image_{history.id}.jpg")
         db.commit()
-        url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_history_image_{history.id}.jpg")
         return {
                 # "history": history,
                 "message": "Animal created successfully",
@@ -72,3 +79,22 @@ def create_history(
     except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=400, detail="Error creating history")
+
+
+@router.delete("/history/{history_id}")
+def delete_history(
+    history_id: int,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        if user.is_superuser:
+            history = db.query(models.History).filter(models.History.id == history_id).first()
+            if not history:
+                raise HTTPException(status_code=404, detail="History not found")
+            db.delete(history)
+            db.commit()
+        return {"message": "History deleted successfully"}
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=400, detail="Error deleting history")

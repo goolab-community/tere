@@ -46,6 +46,9 @@ import { animals } from "../components/PropData";
 import Update from "../components/Update/Update";
 import CustomerLocation from "../components/CustomerLocation/CustomerLocation";
 
+import { API_URL } from "../config";
+
+
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 // update modal
@@ -83,6 +86,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
     }
   });
 
+
   function submit_history(e) {
     // handleClose();
     console.log(
@@ -103,6 +107,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
       history_type: event_type,
       health_scale: parseInt(health_scale),
       media_link: "",
+      media_available: selected_file != null,
       description: event_description,
       date: event_date,
       autocheck: true,
@@ -157,11 +162,16 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
     };
 
     axios
-      .post("http://localhost:8000/api/v1/history/history", history, config)
+      .post(`${API_URL}/history/history`, history, config)
       .then((response) => {
         console.log(response);
-        uploadFile(selected_file, response.data.upload_url);
-        alert("History updated successfully");
+        if (response.data.upload_url != null || selected_file != null) {
+          uploadFile(selected_file, response.data.upload_url);
+          alert("History updated successfully");
+        }
+        else {
+          alert("History updated without media");
+        }
         // goto home page
         window.location.href = "/history";
       })
@@ -323,6 +333,7 @@ function MapPage() {
 
   // const [markers, setMarkers] = useState({"features": animals});
   const [db_animals, setAnimals] = useState([]);
+  const [isDomReady, setIsDomReady] = useState(false);
   console.log(db_animals);
 
   const [selected_animal, setSelectedAnimal] = useState(null);
@@ -372,70 +383,64 @@ function MapPage() {
   }
 
   useEffect(() => {
-    // // Fetch markers from the API endpoint
-    let icon;
-    fetch("http://localhost:8000/api/v1/animal/animals", {
+    fetch(`${API_URL}/animal/animals`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        setAnimals(data);
-
-        // grap marker after render
-        icon = document.querySelectorAll(".leaflet-marker-icon");
-
-        // gram hidden div arrai with innerHTM with real animal id from real animals id
-        const attachDiv = document.querySelectorAll(".nadiri");
-
-        // iterate one the hidden dives arrray an grab real id
-        attachDiv.forEach((item, i) => {
-          // attach icons atribute ID  from Hidden div
-          icon[i].setAttribute("GrabID", item.innerHTML);
-          const params = new URLSearchParams({
-            animal_id: item.innerHTML,
-          });
-          icon[i].addEventListener("click", () => {
-            dispatch(loadStateAction({ bool: true }));
-            fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            })
-              .then((response) => response.json())
-              // .then((data) => console.log(data))
-              .then((data) => {
-                console.log(data);
-                fetch(
-                  `http://localhost:8000/api/v1/animal/media/${data.medias[0].id}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  }
-                  // dispatch(loadStateAction({ bool: true }))
-                )
-                  .then((response) => response.json())
-
-                  .then((data) => {
-                    console.log(data.media.url);
-
-                    let imageElement = document.getElementById(item.innerHTML);
-                    imageElement.setAttribute("src", `${data.media.url || ""}`);
-                    dispatch(loadStateAction({ bool: null }));
-                  });
-              });
-          });
-        });
+        setAnimals(data); // Set animals data
+        setIsDomReady(true); // Signal that animals data is ready
       })
-
       .catch((error) => console.error(error));
-
-    // console.log(icon);
-
-    // console.log(markersRef);
   }, []);
+
+  // Execute after DOM is updated with `.nadiri` elements
+  useEffect(() => {
+    if (!isDomReady) return;
+
+    const icon = document.querySelectorAll(".leaflet-marker-icon");
+    const attachDiv = document.querySelectorAll(".nadiri");
+
+    if (attachDiv.length === 0) {
+      console.warn(".nadiri elements are not present in the DOM");
+      return;
+    }
+
+    attachDiv.forEach((item, i) => {
+      icon[i].setAttribute("GrabID", item.innerHTML);
+      const params = new URLSearchParams({
+        animal_id: item.innerHTML,
+      });
+
+      icon[i].addEventListener("click", () => {
+        fetch(`${API_URL}/animal/animal?${params}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            fetch(
+              `${API_URL}/animal/media/${data.medias[0].id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                let imageElement = document.getElementById(item.innerHTML);
+                console.log(data);
+                imageElement.setAttribute("src", `${data.media.url || null}`);
+              });
+          })
+          .catch((error) => console.error(error));
+      });
+    });
+  }, [isDomReady, db_animals]);  
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");

@@ -20,6 +20,9 @@ import { Form } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { loadanimals, loadMoreAnimals } from "../redux/reducers/animals";
 
+import { API_URL } from "../config";
+
+
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
 // new animala add form modal
@@ -29,6 +32,7 @@ function NewAnimal1({
   setSelectedMarker,
   setCreateAnimalModalShow,
 }) {
+
   function NewAnimalForm() {
     const [description, setDescription] = useState(null);
     const [specie, setSpecie] = useState("dog");
@@ -171,7 +175,7 @@ function NewAnimal1({
       };
 
       axios
-        .post("http://localhost:8000/api/v1/animal/create", new_animal, config)
+        .post(`${API_URL}/animal/create`, new_animal, config)
         .then((response) => {
           console.log(response);
           uploadFile(selected_file, response.data.upload_url);
@@ -479,7 +483,7 @@ function Animals() {
   // load more action
   const handleLoadmoreClick = () => {
     // if (localStorage.token) {
-    //   fetch("http://localhost:8000/api/v1/animal/animals", {
+    //   fetch(`${API_URL}/animal/animals`, {
     //     headers: {
     //       Authorization: `Bearer ${localStorage.getItem("token")}`,
     //     },
@@ -510,7 +514,7 @@ function Animals() {
 
   useState(() => {
     if (animals.length == 0)
-      fetch("http://localhost:8000/api/v1/animal/animals", {
+      fetch(`${API_URL}/animal/animals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

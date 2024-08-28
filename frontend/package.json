@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@preact/signals-react": "^2.0.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@testing-library/jest-dom": "^5.14.1",
@@ -11,6 +12,7 @@
     "antd": "^5.16.2",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
+    "gridjs": "^6.2.0",
     "gridjs-react": "^6.1.1",
     "jquery": "^3.7.1",
     "leaflet": "^1.9.4",
@@ -52,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/jquery": "^3.5.29",
     "tailwindcss": "^3.4.7"
   }

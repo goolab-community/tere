@@ -2,6 +2,8 @@ import dog from "../Images/german-dog.jpg";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadanimals } from "../redux/reducers/animals";
+import { API_URL } from "../config";
+
 
 // test
 import CustomerLocation from "../components/CustomerLocation/CustomerLocation";
@@ -15,7 +17,7 @@ const Home = () => {
 
   useEffect(() => {
     if (localStorage.token)
-      fetch("http://localhost:8000/api/v1/animal/animals", {
+      fetch(`${API_URL}/animal/animals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

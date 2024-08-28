@@ -6,11 +6,11 @@ services:
       context: .
       dockerfile: ./Dockerfile
     container_name: tere_api
-    command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
+    # command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
     env_file:
       - ./.env
     ports:
-      - "8000:80"
+      - "8000:8080"
     volumes:
       - ./app:/app
     depends_on:
@@ -19,14 +19,17 @@ services:
   tere-react:
     build:
       context: .
-      dockerfile: ./Dockerfile_frontend
+      dockerfile: ./Dockerfile_frontend_local
     ports:
-      - "3000:3000"
+      - "8080:8080"
+      - "3001:3001"
     env_file:
-      - ./.env
+      - ./.app_env
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true 
+      - WATCHPACK_POLLING=true
+      - BACKEND_API_ADDRESS=http://localhost
+      - BACKEND_API_PORT=8000
     # REACT_APP_SYNCFUSION_LICENSE_KEY: ${REACT_APP_SYNCFUSION_LICENSE_KEY}
     depends_on:
       - tere-api

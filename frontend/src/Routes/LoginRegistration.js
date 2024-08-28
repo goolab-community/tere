@@ -7,6 +7,8 @@ import { editLocationStateAction } from "../redux/reducers/userLocation";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../redux/reducers/user";
 
+import { API_URL } from "../config";
+
 const LogReg = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -19,11 +21,12 @@ const LogReg = () => {
   // for redux
   const dispatch = useDispatch();
 
+
   const handleRegisterLogin = () => {
     console.log(username, email, password);
     if (location.pathname == "/register") {
       axios
-        .post("http://localhost:8000/api/v1/auth/register", {
+        .post(`${API_URL}/auth/register`, {
           username: username,
           email: email,
           password: password,
@@ -46,7 +49,7 @@ const LogReg = () => {
       // it's name need change to inside backEnd
       const login = email;
       axios
-        .post("http://localhost:8000/api/v1/auth/login", { login, password })
+        .post(`${API_URL}/auth/login`, { login, password })
         .then(function (response) {
           console.log(response);
           console.log(response.data);

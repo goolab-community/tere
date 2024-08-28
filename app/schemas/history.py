@@ -42,5 +42,6 @@ class History(BaseModel):
     health_scale: Optional[int] = None
     description: Optional[str] = None
     date: str
+    media_available: bool = False
     media_link: Optional[str] = None
     autocheck: bool

@@ -2,6 +2,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Grid, h, html, createRef as gCreateRef } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
+import { API_URL } from "../config";
 
 
 function History () {
@@ -16,7 +17,7 @@ function History () {
     axisX: {showGrid: false, showLabel: false, offset: 0},
     axisY: {showGrid: false, showLabel: false, offset: 0}
   };
-  
+
   const grid = new Grid({
     sort: true,
     columns: [
@@ -42,7 +43,7 @@ function History () {
         "updated_at"
       ],
     server: {
-      url: "http://localhost:8000/api/v1/animal/animals",
+      url: `${API_URL}/animal/animals`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

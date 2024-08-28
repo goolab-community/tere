@@ -1,5 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import { API_URL } from "./config";
+
 function get_response(response, data) {
   if (response.status === 200) {
     return response.json();
@@ -7,8 +9,10 @@ function get_response(response, data) {
     return null + " user not registered";
   }
 }
+
+console.log(API_URL);
 export async function loader() {
-  const user = await fetch("http://localhost:8000/api/v1/auth/user", {
+  const user = await fetch(`${API_URL}/auth/user`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },

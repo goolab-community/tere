@@ -1,6 +1,19 @@
 import datetime
-
+import os
 from google.cloud import storage
+from google.oauth2.service_account import Credentials
+import json
+
+
+def storage_client():
+    if os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        return storage.Client()
+    else:
+        # Load the manually downloaded credentials
+        service_account_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+        credentials = Credentials.from_service_account_info(service_account_info)
+        # Initialize the Google Cloud Storage client with the manually loaded credentials
+        return storage.Client(credentials=credentials)
 
 
 def generate_upload_signed_url_v4(bucket_name, blob_name):
@@ -10,11 +23,7 @@ def generate_upload_signed_url_v4(bucket_name, blob_name):
     this if you are using Application Default Credentials from Google Compute
     Engine or from the Google Cloud SDK.
     """
-    # bucket_name = 'your-bucket-name'
-    # blob_name = 'your-object-name'
-
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
+    bucket = storage_client().bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
     url = blob.generate_signed_url(
@@ -35,11 +44,7 @@ def generate_download_signed_url_v4(bucket_name, blob_name):
     this if you are using Application Default Credentials from Google Compute
     Engine or from the Google Cloud SDK.
     """
-    # bucket_name = 'your-bucket-name'
-    # blob_name = 'your-object-name'
-
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
+    bucket = storage_client().bucket(bucket_name)
     blob = bucket.blob(blob_name)
 
     url = blob.generate_signed_url(
@@ -54,8 +59,7 @@ def generate_download_signed_url_v4(bucket_name, blob_name):
 
 def list_blobs(bucket_name, folder):
     """Lists all the blobs in the bucket."""
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
+    bucket = storage_client().bucket(bucket_name)
 
     blobs = bucket.list_blobs(prefix=folder)
     return [blob.name for blob in blobs]

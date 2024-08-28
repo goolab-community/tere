@@ -1,3 +1,5 @@
+import { API_URL } from "../config";
+
 // load data from server with router_Dom
 function get_response(response, data) {
   if (response.status === 200) {
@@ -6,10 +8,11 @@ function get_response(response, data) {
     return null + " server has some problem";
   }
 }
+
 // load data from server with router_Dom
 async function initAnimalsLoader() {
   const animalsFromServer = await fetch(
-    "http://localhost:8000/api/v1/animal/animals",
+    `${API_URL}/animal/animals`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

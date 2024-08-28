@@ -69,11 +69,10 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
         else:
             raise HTTPException(status_code=400, detail="User is not active")
     except Exception as e:
-        raise e
         return HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/api/user")
+@router.get("/user")
 def get_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     # Extract the token from the Authorization header
     token = credentials.credentials
@@ -83,8 +82,3 @@ def get_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     if user_data["email"]:
         return user_data
     raise HTTPException(status_code=401, detail="Invalid token")
-
-
-@router.get("/user")
-def read_users_me(user: HTTPAuthorizationCredentials = Depends(get_current_user)):
-    return {"str": "Do anything what you want", "user_email": user}
