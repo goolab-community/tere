@@ -33,8 +33,6 @@ if FRONTEND_APP_PORT:
 else:
     frontend_url = FRONTEND_APP_ADDRESS
 
-logger.info(f"Frontend URL: {frontend_url}")
-
 cors_origins = [frontend_url, "https://storage.googleapis.com"]
 
 if DOMAIN_NAME:
@@ -42,7 +40,6 @@ if DOMAIN_NAME:
 
 logger.info("")
 logger.info("............................................")
-logger.info(f"CORS origins: {cors_origins}")
 logger.info("............................................")
 logger.info("")
 

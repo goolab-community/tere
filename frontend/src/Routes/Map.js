@@ -237,6 +237,7 @@ function MapPage() {
   const position = [41.799188, 44.797391];
   // const [markers, setMarkers] = useState({"features": animals});
   const [db_animals, setAnimals] = useState([]);
+  const [isDomReady, setIsDomReady] = useState(false);
   console.log(db_animals);
 
   const [selected_animal, setSelectedAnimal] = useState(null);
@@ -282,12 +283,7 @@ function MapPage() {
     );
   }
 
-  // aq moaqvs yvela animali.
-  // animalebi unda vanaxo animal routzee wamoghebuli da savaraudod reduxi dagvchirdeba
-
   useEffect(() => {
-    // // Fetch markers from the API endpoint
-    let icon;
     fetch(`${API_URL}/animal/animals`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -295,85 +291,57 @@ function MapPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setAnimals(data);
-
-        // grap marker after render
-        icon = document.querySelectorAll(".leaflet-marker-icon");
-
-        // gram hidden div arrai with innerHTM with real animal id from real animals id
-        // const attachDiv = document.querySelectorAll(".nadiri");
-
-        // iterate one the hidden dives arrray an grab real id
-        // console.log(attachDiv);
-        data.forEach((item, i) => {
-          // attach icons attribute ID  from Hidden div
-          icon[i].setAttribute("GrabID", item.id);
-          console.log(i, item.id);
-          const params = new URLSearchParams({
-            animal_id: item.id,
-          });
-          icon[i].addEventListener("click", () => {
-            fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            })
-              .then((response) => response.json())
-              // .then((data) => console.log(data))
-              .then((data) => {
-                fetch(
-                  `http://localhost:8000/api/v1/animal/media/${data.medias[0].id}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  }
-                )
-                  .then((response) => response.json())
-                  .then((data) => {
-                    console.log(data.media.url);
-                    let imageElement = document.getElementById(item.id);
-                    imageElement.setAttribute(
-                      "src",
-                      `${data.media.url || null}`
-                    );
-                  });
-              }).catch((error) => console.error(error));
-          });
-        });
-
-        // iterate icons and attach oncklick function event
-        // icon.forEach(function (element) {
-        //   element.addEventListener("click", function () {
-        //     // const id_FromImg = document.getElementById()
-        //     // attach URLparams real animal_id
-        //     const params = new URLSearchParams({
-        //       animal_id: element.getAttribute("GrabID"),
-        //     });
-        //     // after cklcik request for load images
-        //     fetch(`http://localhost:8000/api/v1/animal/animal?${params}`, {
-        //       headers: {
-        //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //       },
-        //     })
-        //       .then((response) => response.json())
-        //       .then((data) => console.log(data));
-        //   });
-        // });
+        setAnimals(data); // Set animals data
+        setIsDomReady(true); // Signal that animals data is ready
       })
-      // .then((data) =>
-      //   dispatch(
-      //     loadanimals({ allAnimals: [...data] }),
-      //     console.log(data + " from map useffect")
-      //   )
-      // )
       .catch((error) => console.error(error));
-
-    // console.log(icon);
-
-    // console.log(markersRef);
   }, []);
+
+  // Execute after DOM is updated with `.nadiri` elements
+  useEffect(() => {
+    if (!isDomReady) return;
+
+    const icon = document.querySelectorAll(".leaflet-marker-icon");
+    const attachDiv = document.querySelectorAll(".nadiri");
+
+    if (attachDiv.length === 0) {
+      console.warn(".nadiri elements are not present in the DOM");
+      return;
+    }
+
+    attachDiv.forEach((item, i) => {
+      icon[i].setAttribute("GrabID", item.innerHTML);
+      const params = new URLSearchParams({
+        animal_id: item.innerHTML,
+      });
+
+      icon[i].addEventListener("click", () => {
+        fetch(`${API_URL}/animal/animal?${params}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            fetch(
+              `${API_URL}/animal/media/${data.medias[0].id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                let imageElement = document.getElementById(item.innerHTML);
+                console.log(data);
+                imageElement.setAttribute("src", `${data.media.url || null}`);
+              });
+          })
+          .catch((error) => console.error(error));
+      });
+    });
+  }, [isDomReady, db_animals]);  
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
