@@ -97,6 +97,7 @@ function History() {
     wrapperRef.current.innerHTML = "";
     grid.render(wrapperRef.current);
   });
+
   return (
     <div
       className="mt-[--margin-top]"

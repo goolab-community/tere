@@ -9,14 +9,17 @@ export default function ErrorPage() {
   const handleCklick = () => {
     navigate("/");
   };
+
   useEffect(() => {
     // localStorage.clear();
     // window.location.reload();
+    console.log("error", error);
   }, []);
+
   return (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-14">
       <Link to={"login"} onClick={handleCklick}>
-        <h2> Back to Login {"<--"} </h2>
+        <h2> Back to Login </h2>
       </Link>
 
       <h1>Oops!</h1>

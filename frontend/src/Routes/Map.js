@@ -81,6 +81,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
     if (selected_file !== null) {
       const reader = new FileReader();
       reader.onload = (e) => {
+        console.log(e);
         setFileDataURL(e.target.result);
       };
       reader.readAsDataURL(selected_file);
@@ -89,6 +90,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
 
 
   function submit_history(e) {
+    console.log(e);
     // handleClose();
     console.log(
       `------- Submitting history for animal ${animal.name} --------`
@@ -219,6 +221,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
                 as="select"
                 placeholder="Event Type"
                 onChange={(e) => {
+                  console.log(e);
                   setEventType(e.target.value);
                 }}
               >
@@ -369,7 +372,7 @@ function MapPage() {
   }
 
   function LocationMarker() {
-    console.log("makeeee location");
+    console.log("make location");
     const [position, setPosition] = useState(null);
     const map = useMapEvents({
       click(e) {
@@ -378,9 +381,11 @@ function MapPage() {
         }
       },
       locationfound(e) {
-        setPosition(e.latlng);
-        map.flyTo(e.latlng, map.getZoom());
-        // console.log("Location found:", e.latlng);
+        if (e.latlng != undefined) {
+          setPosition(e.latlng);
+          map.flyTo(e.latlng, map.getZoom());
+          // console.log("Location found:", e.latlng);
+        }
       },
     });
 
@@ -507,7 +512,7 @@ function MapPage() {
   }
 
   function set_btn_state(e) {
-    console.log("my cklick");
+    console.log("Toggle marker creation");
     setAllowMarkerCreation((prev) => !prev);
     if (allow_marker_creation) {
       console.log("Disable marker creation");
@@ -560,7 +565,9 @@ function MapPage() {
     setSelectedAnimal(animal);
     handleShow();
   }
+
   let navigate = useNavigate();
+
   if (!localStorage.token) {
     navigate("/login");
     return (
@@ -577,8 +584,6 @@ function MapPage() {
           edit={edit}
         />
       <div>
-          
-          
           
         {/*
           <div className="h-14 w-full fixed bottom-0 left-0 content-center">
@@ -655,14 +660,11 @@ function MapPage() {
               )}
           </div>
 
-
-
-
           <div className="h-[calc(100vh-6rem)] overflow-scroll">
             <MapContainer
               ref={setMapRef}
-              center={position}
-              zoom={state_location.defaultZoom}
+              center={[41.92157741866657, 45.47760172158832]}
+              zoom={7.5}
               scrollWheelZoom={true}
               whenCreated={setMap}
               style={{ height: "100vh", width: "100vw" }}
