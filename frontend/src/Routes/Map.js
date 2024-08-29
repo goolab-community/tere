@@ -565,7 +565,7 @@ function MapPage() {
     navigate("/login");
     return (
       <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-14">
-        please logi in
+        Please login first
       </div>
     );
   }
@@ -573,18 +573,15 @@ function MapPage() {
   return (
     <>
       <div className=" mt-[--margin-top]  z-10 relative">
-        <StatusUpdateModal
-          handleShow={handleShow}
-          handleClose={handleClose}
-          show={_edit || false}
-          animal={selected_animal}
+        <StatusUpdateModal handleShow={handleShow} handleClose={handleClose}  show={_edit || false} animal={selected_animal}
           edit={edit}
         />
-        <div>
-          <div
-            className=" h-14   w-full fixed  bottom-0 left-0  content-center
-           "
-          >
+      <div>
+          
+          
+          
+        {/*
+          <div className="h-14 w-full fixed bottom-0 left-0 content-center">
             <div className="flex font-font1  bg-indigo-300 pl-3   pt-2 h-full">
               <button
                 disabled={allow_marker_creation && true}
@@ -602,7 +599,6 @@ function MapPage() {
                 className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3.5 py-2.5 text-center me-2 mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
                 onClick={(e) => {
                   console.log("Cancel markers creation");
-
                   window.location.reload();
                 }}
               >
@@ -616,14 +612,52 @@ function MapPage() {
                   <CustomerLocation mapRefProp={mapRef} />
                 </button>
               )}
-              {/* <button
-                type="button"
-                className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-2 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
-              >
-                <CustomerLocation />
-              </button> */}
+
             </div>
           </div>
+
+              */}
+
+          <div>
+            <Button
+                id="toggle-marker-creation-btn"
+                style={{zIndex: 10000, "marginBottom": "70px", "marginLeft": "10px"}}
+                className="btn-sm btn-danger position-absolute bottom-0 start-0"
+                value="disabled"
+                onClick={
+                  (e) => {
+                    set_btn_state(e);
+                  }
+                }>
+                {allow_marker_creation? "-": "+"}
+            </Button>
+            <Button
+                id="cancel-marker-btn"
+                style={{zIndex: 10000, "marginBottom": "70px", "marginLeft": "50px"}}
+                className="btn-sm btn-secondary position-absolute bottom-0 start-0"
+                value="disabled"
+                onClick={
+                  (e) => {
+                    console.log("Cancel markers creation");
+                    window.location.reload();
+                  }
+                }>
+                Cancel
+            </Button>
+            {allow_marker_creation && (
+                <Button
+                  id="save-marker-btn"
+                  style={{zIndex: 10000, "marginBottom": "70px", "marginLeft": "125px"}}
+                  className="btn-sm btn-primary position-absolute bottom-0 start-0"
+                >
+                  <CustomerLocation mapRefProp={mapRef} />
+                </Button>
+              )}
+          </div>
+
+
+
+
           <div className="h-[calc(100vh-6rem)] overflow-scroll">
             <MapContainer
               ref={setMapRef}
