@@ -9,6 +9,7 @@ import { updateUser } from "../redux/reducers/user";
 
 import { API_URL } from "../config";
 
+
 const LogReg = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -20,7 +21,6 @@ const LogReg = () => {
 
   // for redux
   const dispatch = useDispatch();
-
 
   const handleRegisterLogin = () => {
     console.log(username, email, password);
@@ -44,7 +44,7 @@ const LogReg = () => {
           setMessage("Error registering. Please try again.");
         });
     } else if (location.pathname == "/login") {
-      console.log("log reqqqq");
+      console.log("login");
 
       // it's name need change to inside backEnd
       const login = email;
@@ -55,27 +55,35 @@ const LogReg = () => {
           console.log(response.data);
           setMessage(response.data.message);
           const { username, email, token, is_active, _id } = response.data;
-          if (token) {
-            if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition((position) => {
-                console.log(
-                  position.coords.latitude,
-                  position.coords.longitude
-                );
-                dispatch(
-                  editLocationStateAction({
-                    lat: position.coords.latitude,
-                    lon: position.coords.longitude,
 
-                    defaultZoom: 7.5,
-                  })
-                );
-              });
-            } else {
-              // x.innerHTML = "Geolocation is not supported by this browser.";
-              console.log("Geolocation is not supported by this browser.");
-            }
-          }
+          //if (token) {
+          //  if (navigator.geolocation) {
+          //    navigator.geolocation.getCurrentPosition((position) => {
+          //      console.log(
+          //        position.coords.latitude,
+          //        position.coords.longitude
+          //      );
+          //      dispatch(
+          //        editLocationStateAction({
+          //          lat: position.coords.latitude,
+          //          lon: position.coords.longitude,
+          //          defaultZoom: 7.5,
+          //        })
+          //      );
+          //    });
+          //  } else {
+          //    // x.innerHTML = "Geolocation is not supported by this browser.";
+          //    console.log("Geolocation is not supported by this browser.");
+          //  }
+          //}
+
+          dispatch(
+            editLocationStateAction({
+              lat: 41.92157741866657,
+              lon: 45.47760172158832,
+              defaultZoom: 12,
+            })
+          );
 
           console.log(_id, token);
           // for reduxs state update

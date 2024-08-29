@@ -45,6 +45,7 @@ import { redirect, useNavigate } from "react-router-dom";
 import { animals } from "../components/PropData";
 import Update from "../components/Update/Update";
 import CustomerLocation from "../components/CustomerLocation/CustomerLocation";
+import { editLocationStateAction, defaultGeoLocation } from "../redux/reducers/userLocation";
 
 import { API_URL } from "../config";
 
@@ -344,6 +345,14 @@ function MapPage() {
   console.log(_load);
   const dispatch = useDispatch();
 
+  dispatch(
+    editLocationStateAction({
+      lat: 41.92157741866657,
+      lon: 45.47760172158832,
+      defaultZoom: 12,
+    })
+  );
+
   // console.log(animals);
   function create_new_marker(latlng) {
     console.log("Creating new marker");
@@ -382,6 +391,28 @@ function MapPage() {
     );
   }
 
+  function geolocateMap() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        // alert(`Location found: ${position.coords.latitude}, ${position.coords.longitude}`);
+        dispatch(
+          editLocationStateAction({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+            defaultZoom: 10.5,
+          })
+        );
+      });
+    } else {
+      // x.innerHTML = "Geolocation is not supported by this browser.";
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }
+
   useEffect(() => {
     fetch(`${API_URL}/animal/animals`, {
       headers: {
@@ -400,6 +431,7 @@ function MapPage() {
   useEffect(() => {
     if (!isDomReady) return;
 
+    geolocateMap();
     const icon = document.querySelectorAll(".leaflet-marker-icon");
     const attachDiv = document.querySelectorAll(".nadiri");
 
@@ -639,7 +671,7 @@ function MapPage() {
                                 <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                   <svg
                                     aria-hidden="true"
-                                    class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 "
+                                    className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 "
                                     viewBox="0 0 100 101"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
