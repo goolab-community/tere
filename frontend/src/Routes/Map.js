@@ -584,45 +584,6 @@ function MapPage() {
           edit={edit}
         />
       <div>
-          
-        {/*
-          <div className="h-14 w-full fixed bottom-0 left-0 content-center">
-            <div className="flex font-font1  bg-indigo-300 pl-3   pt-2 h-full">
-              <button
-                disabled={allow_marker_creation && true}
-                type="button"
-                className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-1 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm px-3 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 w-12"
-                onClick={(e) => {
-                  set_btn_state(e);
-                }}
-              >
-                {allow_marker_creation ? "-" : "+"}
-              </button>
-
-              <button
-                type="button"
-                className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3.5 py-2.5 text-center me-2 mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
-                onClick={(e) => {
-                  console.log("Cancel markers creation");
-                  window.location.reload();
-                }}
-              >
-                Cancel
-              </button>
-              {allow_marker_creation && (
-                <button
-                  type="button"
-                  className=" hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-3xl text-sm px-1.5 text-center  mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
-                >
-                  <CustomerLocation mapRefProp={mapRef} />
-                </button>
-              )}
-
-            </div>
-          </div>
-
-              */}
-
           <div>
             <Button
                 id="toggle-marker-creation-btn"

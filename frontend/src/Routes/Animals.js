@@ -535,7 +535,7 @@ function Animals() {
       <div className="mt-[--margin-top]    ">
         {/* main first container */}
 
-        <div className="  mt-16 flex items-center gap-2 font-font1 font-medium bg-gradient-to-r from-indigo-200 to-indigo-300 p-1 leading-8 ">
+        <div className="  mt-16 flex items-center gap-2 font-font1 font-medium bg-gradient-to-r from-slate-300 to-slate-400 p-1 leading-8 ">
           {/* sortedby */}
           <p className="pl-[--pading-left] ">
             <svg
@@ -581,14 +581,14 @@ function Animals() {
             Loading ...
           </p>
         ) : (
-          <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-indigo-300 pb-2">
+          <div className=" font-font1  mt-16 pl-[--pading-left] pr-[--pading-right] bg-slate-300 pb-2">
             {/* main-div */}
             <div className=" flex flex-wrap gap-2 items-center justify-center sm:justify-start ">
               {animals.map((animal, i) => {
                 return (
                   <div
                     key={i}
-                    className=" h-80 w-[calc(100%-0.5rem)] sm:h-80 sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-indigo-200 to-indigo-300"
+                    className=" h-80 w-[calc(100%-0.5rem)] sm:h-80 sm:w-[calc((100%/3)-0.5rem)] rounded overflow-scroll shadow-lg bg-gradient-to-r from-slate-200 to-slate-300"
                   >
                     {/* img and dog info div */}
                     <div className=" flex flex-col sm:flex-col lg:flex-row">
@@ -644,12 +644,11 @@ function Animals() {
       </div>
       {/* Load more */}
       {animals.length > 0 && (
-        <div className="flex items-center justify-center text-center bg-indigo-300 p-3">
+        <div className="flex items-center justify-center text-center bg-stone-100 p-3">
           <button
             onClick={handleLoadmoreClick}
             type="submit"
-            className="  text-white bg-gradient-to-r from-indigo-200 via-indigo-300 to-blue-300 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-300 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-900/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 "
-          >
+            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             Load More
           </button>
         </div>

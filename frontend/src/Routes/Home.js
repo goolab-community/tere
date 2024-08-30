@@ -1,4 +1,5 @@
-import dog from "../Images/german-dog.jpg";
+import stray_help from "../Images/help_stray_animals.webp";
+import tere from "../Images/tere.jpg";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadanimals } from "../redux/reducers/animals";
@@ -29,11 +30,14 @@ const Home = () => {
   }, []);
   return (
     <div className="flex mt-[--margin-top] pl-[--pading-left] pr-[--pading-right] items-center justify-center flex-col gap-y-20 w-full ">
-      <p className=" font-font1 italic text-center text-gray-600 font-semibold bg-indigo-50 p-2 rounded-md">
-        "Every dog deserves a home and every home deserves a dog."
+      <p className="font-font1 italic text-center text-gray-600 font-semibold bg-indigo-50 p-2 rounded-md">
+        Changing the world for strays starts with us. Register, Rescue, Rehome.
+        <br />
+        Join the mission!
       </p>
+
       {/* <CustomerLocation /> */}
-      <img src={dog} alt="dog" />
+        <img src={tere} width="300px" height="400px" alt="Stray Help" />
     </div>
   );
 };

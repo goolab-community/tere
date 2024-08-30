@@ -36,8 +36,9 @@ function SiteNavbar() {
   return (
     // <MainNavBar/>
 
-    <div className="flex  h-screen bg-indigo-300">
-      <nav className=" pl-[--pading-left] flex-1 font-font1 font-semibold flex items-center flex-wrap bg-gradient-to-r from-indigo-200 to-indigo-300 fixed top-0 w-full h-10 z-30">
+    <div className="flex h-screen bg-stone-200">
+      <nav className="pl-[--pading-left] flex-1 font-font1 font-semibold flex items-center flex-wrap bg-gradient-to-r
+                        from-slate-400 to-slate-500 fixed top-0 w-full h-10 z-30">
         <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto ">
           <div className=" font-font1 text-xs sm:text-sm     lg:flex-grow">
             <NavLink
