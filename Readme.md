@@ -104,3 +104,43 @@ Airflow scheduler
 ---------------------
 
 The system periodically checks/ iterates over animals (airflow pipeline), finds that the animal has not fed for more than two days, sets the status to hungry, and adds a new event in the history with an auto check as an event type.
+
+
+# For Developers (Backend)
+
+#### Step 1: Install Docker and Docker Compose
+To work properly, this project requires Docker and Docker Compose. You can install them from Docker's official website - https://www.docker.com/.
+
+#### step 2: Create a .env File
+To launch the project locally, you need to create a .env file in the root directory. This file should contain environment variables for Python, such as:
+
+    DB_NAME="example_name"
+    DB_USER="example_user"
+    DB_PASSWORD="example_password"
+    DB_HOST="example_db"
+    DB_PORT="5432"
+    API_SECRET_KEY="example_secret_key"
+
+- Note: You also need to create an .app_env file in the root directory for the frontend to prevent Docker Compose from failing (file can be empty).
+
+#### Step 3: Modify docker-compose.yaml for Local Database Usage
+Comment out the "tere-cloud-proxy" service and uncomment the "tere-db" service in docker-compose.yaml to use a local PostgreSQL database.
+
+#### Step 4: Adjust Service Dependencies in docker-compose.yaml
+Change the line:
+
+    depends_on:
+        - tere-cloud-proxy
+to:
+
+    depends_on:
+        - tere-db
+in "tere-api" and "tere-pgadmin" services
+
+#### Step 5: Launch the Project Locally
+    docker compose build
+    docker compose up
+or launch it via Docker Desktop
+
+#### Optional: Stop the Project
+To stop the project, press CTRL+C.
