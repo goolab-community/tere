@@ -1,0 +1,63 @@
+services:
+  tere-db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+  tere-minio:
+    image: 'bitnami/minio:latest'
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      - MINIO_ROOT_USER=minio-tere
+      - MINIO_ROOT_PASSWORD=minio-teremere
+  tere-api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: tere_api
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8080"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - tere-db
+      - tere-minio
+    restart: always
+  tere-react:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_frontend_local
+    ports:
+      - "8080:8080"
+      - "3001:3001"
+    env_file:
+      - ./.app_env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - BACKEND_API_ADDRESS=http://localhost
+      - BACKEND_API_PORT=8000
+    depends_on:
+      - tere-api
+    volumes:
+      - ./frontend:/app:delegated
+      - /app/node_modules
+  tere-pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: tere@tere.ge
+      PGADMIN_DEFAULT_PASSWORD: tere
+    depends_on:
+      - tere-db
