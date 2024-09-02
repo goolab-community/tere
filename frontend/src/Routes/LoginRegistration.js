@@ -9,12 +9,11 @@ import { updateUser } from "../redux/reducers/user";
 
 import { API_URL } from "../config";
 
-
 const LogReg = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(null);
+  const [Errmessage, setMessage] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,6 +55,8 @@ const LogReg = () => {
           setMessage(response.data.message);
           const { username, email, token, is_active, _id } = response.data;
 
+          // aq tokeni unda shevamowmot
+
           //if (token) {
           //  if (navigator.geolocation) {
           //    navigator.geolocation.getCurrentPosition((position) => {
@@ -77,31 +78,40 @@ const LogReg = () => {
           //  }
           //}
 
-          dispatch(
-            editLocationStateAction({
-              lat: 41.92157741866657,
-              lon: 45.47760172158832,
-              defaultZoom: 12,
-            })
-          );
+          if (token) {
+            console.log("access");
+            console.log(_id, token);
+            dispatch(updateUser({ _id, token }));
+            console.log(username, email, token);
+            localStorage.setItem("username", username);
+            localStorage.setItem("email", email);
+            localStorage.setItem("token", token);
+            localStorage.setItem("is_active", is_active);
+            localStorage.setItem("_id", _id);
+            console.log(localStorage);
+            // Redirect to homepage using navigate
+            navigate("/");
+          } else {
+            console.log("Not access");
+            console.log(token);
+            setMessage("Invalid credentials or try to register");
+            navigate("/login");
+          }
 
-          console.log(_id, token);
+          // dispatch(
+          //   editLocationStateAction({
+          //     lat: 41.92157741866657,
+          //     lon: 45.47760172158832,
+          //     defaultZoom: 12,
+          //   })
+          // );
+
           // for reduxs state update
-          dispatch(updateUser({ _id, token }));
-
-          console.log(username, email, token);
-          localStorage.setItem("username", username);
-          localStorage.setItem("email", email);
-          localStorage.setItem("token", token);
-          localStorage.setItem("is_active", is_active);
-          localStorage.setItem("_id", _id);
-          console.log(localStorage);
-          // Redirect to homepage using navigate
-          navigate("/");
         })
         .catch((error) => {
           console.error(error);
           setMessage("Error logging in. Please try again.");
+          navigate("/login");
         });
     }
   };
@@ -115,7 +125,9 @@ const LogReg = () => {
             : "Sign in to your account"}
         </h2>
       </div>
-
+      {location.pathname == "/login" && (
+        <p className=" text-red-700">{Errmessage}</p>
+      )}
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form
           // action="#"

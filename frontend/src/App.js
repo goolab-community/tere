@@ -3,6 +3,7 @@ import "./App.css";
 import { API_URL } from "./config";
 
 function get_response(response, data) {
+  console.log(response);
   if (response.status === 200) {
     return response.json();
   } else {
@@ -18,6 +19,7 @@ export async function loader() {
     },
   })
     .then((response) => get_response(response))
+
     // .then((data) => setUserData(data))
     .catch((error) => console.error(error));
 
