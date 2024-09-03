@@ -45,10 +45,12 @@ import { redirect, useNavigate } from "react-router-dom";
 import { animals } from "../components/PropData";
 import Update from "../components/Update/Update";
 import CustomerLocation from "../components/CustomerLocation/CustomerLocation";
-import { editLocationStateAction, defaultGeoLocation } from "../redux/reducers/userLocation";
+import {
+  editLocationStateAction,
+  user_location,
+} from "../redux/reducers/userLocation";
 
 import { API_URL } from "../config";
-
 
 const fileTypes = /image\/(png|jpg|jpeg)/i;
 
@@ -87,7 +89,6 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
       reader.readAsDataURL(selected_file);
     }
   });
-
 
   function submit_history(e) {
     console.log(e);
@@ -171,8 +172,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
         if (response.data.upload_url != null || selected_file != null) {
           uploadFile(selected_file, response.data.upload_url);
           alert("History updated successfully");
-        }
-        else {
+        } else {
           alert("History updated without media");
         }
         // goto home page
@@ -348,13 +348,13 @@ function MapPage() {
   console.log(_load);
   const dispatch = useDispatch();
 
-  dispatch(
-    editLocationStateAction({
-      lat: 41.92157741866657,
-      lon: 45.47760172158832,
-      defaultZoom: 12,
-    })
-  );
+  // dispatch(
+  //   editLocationStateAction({
+  //     lat: 41.92157741866657,
+  //     lon: 45.47760172158832,
+  //     defaultZoom: 12,
+  //   })
+  // );
 
   // console.log(animals);
   function create_new_marker(latlng) {
@@ -399,16 +399,15 @@ function MapPage() {
   function geolocateMap() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(
-          position.coords.latitude,
-          position.coords.longitude
-        );
+        console.log(position.coords.latitude, position.coords.longitude);
         // alert(`Location found: ${position.coords.latitude}, ${position.coords.longitude}`);
+        localStorage.setItem("lat", position.coords.latitude);
+        localStorage.setItem("lon", position.coords.longitude);
         dispatch(
           editLocationStateAction({
             lat: position.coords.latitude,
             lon: position.coords.longitude,
-            defaultZoom: 10.5,
+            defaultZoom: 7.5,
           })
         );
       });
@@ -459,14 +458,11 @@ function MapPage() {
         })
           .then((response) => response.json())
           .then((data) => {
-            fetch(
-              `${API_URL}/animal/media/${data.medias[0].id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              }
-            )
+            fetch(`${API_URL}/animal/media/${data.medias[0].id}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
               .then((response) => response.json())
               .then((data) => {
                 let imageElement = document.getElementById(item.innerHTML);
@@ -477,7 +473,7 @@ function MapPage() {
           .catch((error) => console.error(error));
       });
     });
-  }, [isDomReady, db_animals]);  
+  }, [isDomReady, db_animals]);
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
@@ -514,18 +510,19 @@ function MapPage() {
   function set_btn_state(e) {
     console.log("Toggle marker creation");
     setAllowMarkerCreation((prev) => !prev);
-    if (allow_marker_creation) {
-      console.log("Disable marker creation");
-      // hide save/cancel buttons
-      $("#save-marker-btn").hide();
-      $("#cancel-marker-btn").hide();
-    } else {
-      console.log("Enable marker creation");
-      // enable save/cancel buttons
-      $("#save-marker-btn").show();
-      $("#cancel-marker-btn").show();
-    }
-    $("#toggle-marker-creation-btn").hide();
+    console.log(allow_marker_creation);
+    // if (allow_marker_creation) {
+    //   console.log("Disable marker creation");
+    //   // hide save/cancel buttons
+    //   $("#save-marker-btn").hide();
+    //   $("#cancel-marker-btn").hide();
+    // } else {
+    //   console.log("Enable marker creation");
+    //   // enable save/cancel buttons
+    //   $("#save-marker-btn").show();
+    //   $("#cancel-marker-btn").show();
+    // }
+    // $("#toggle-marker-creation-btn").hide();
   }
 
   function MyVerticallyCenteredModal(props) {
@@ -580,51 +577,66 @@ function MapPage() {
   return (
     <>
       <div className=" mt-[--margin-top]  z-10 relative">
-        <StatusUpdateModal handleShow={handleShow} handleClose={handleClose}  show={_edit || false} animal={selected_animal}
+        <StatusUpdateModal
+          handleShow={handleShow}
+          handleClose={handleClose}
+          show={_edit || false}
+          animal={selected_animal}
           edit={edit}
         />
-      <div>
+        <div>
           <div>
             <Button
-                id="toggle-marker-creation-btn"
-                style={{zIndex: 10000, "marginBottom": "70px", "marginLeft": "10px"}}
-                className="btn-sm btn-danger position-absolute bottom-0 start-0"
-                value="disabled"
-                onClick={
-                  (e) => {
-                    set_btn_state(e);
-                  }
-                }>
-                {allow_marker_creation? "-": "+"}
+              id="toggle-marker-creation-btn"
+              style={{
+                zIndex: 10000,
+                marginBottom: "70px",
+                marginLeft: "10px",
+              }}
+              className="btn-sm btn-danger position-absolute bottom-0 start-0"
+              value="disabled"
+              onClick={(e) => {
+                set_btn_state(e);
+              }}
+            >
+              {allow_marker_creation ? "-" : "+"}
             </Button>
             <Button
-                id="cancel-marker-btn"
-                style={{zIndex: 10000, "marginBottom": "70px", "marginLeft": "50px"}}
-                className="btn-sm btn-secondary position-absolute bottom-0 start-0"
-                value="disabled"
-                onClick={
-                  (e) => {
-                    console.log("Cancel markers creation");
-                    window.location.reload();
-                  }
-                }>
-                Cancel
+              id="cancel-marker-btn"
+              style={{
+                zIndex: 10000,
+                marginBottom: "70px",
+                marginLeft: "50px",
+              }}
+              className="btn-sm btn-secondary position-absolute bottom-0 start-0"
+              value="disabled"
+              onClick={(e) => {
+                console.log("Cancel markers creation");
+                window.location.reload();
+              }}
+            >
+              Cancel
             </Button>
             {allow_marker_creation && (
-                <Button
-                  id="save-marker-btn"
-                  style={{zIndex: 10000, "marginBottom": "70px", "marginLeft": "125px"}}
-                  className="btn-sm btn-primary position-absolute bottom-0 start-0"
-                >
-                  <CustomerLocation mapRefProp={mapRef} />
-                </Button>
-              )}
+              <Button
+                id="save-marker-btn"
+                style={{
+                  zIndex: 10000,
+                  marginBottom: "70px",
+                  marginLeft: "125px",
+                }}
+                className="btn-sm btn-primary position-absolute bottom-0 start-0"
+              >
+                <CustomerLocation mapRefProp={mapRef} />
+              </Button>
+            )}
           </div>
 
           <div className="h-[calc(100vh-6rem)] overflow-scroll">
             <MapContainer
               ref={setMapRef}
-              center={[41.92157741866657, 45.47760172158832]}
+              // center={[41.92157741866657, 45.47760172158832]}
+              center={position}
               zoom={7.5}
               scrollWheelZoom={true}
               whenCreated={setMap}
