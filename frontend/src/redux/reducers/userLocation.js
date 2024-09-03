@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  // lat: 41.799188,
-  // lon: 44.797391,
-  lat: null,
-  lon: null,
+  // lat: 41.92157741866657 || localStorage.getItem("lat"),
+  // lon: 45.47760172158832 || localStorage.getItem("lon"),
+  lat: 41.92157741866657,
+  lon: 45.47760172158832,
+  // lat: null,
+  // lon: null,
   defaultZoom: 7.5,
 };
 
