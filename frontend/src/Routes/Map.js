@@ -333,8 +333,9 @@ function MapPage() {
 
   // redux
   const state_location = useSelector((state) => state.user_location);
+  const user_token = useSelector((state) => state.user.token);
   const position = [state_location.lat, state_location.lon];
-
+  // console.log("WWWWWWWWW", user_token);
   // const [markers, setMarkers] = useState({"features": animals});
   const [db_animals, setAnimals] = useState([]);
   const [isDomReady, setIsDomReady] = useState(false);
@@ -565,14 +566,14 @@ function MapPage() {
 
   let navigate = useNavigate();
 
-  if (!localStorage.token) {
-    navigate("/login");
-    return (
-      <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-14">
-        Please login first
-      </div>
-    );
-  }
+  // if (!localStorage.token) {
+  //   navigate("/login");
+  //   return (
+  //     <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-14">
+  //       Please login first
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -586,21 +587,24 @@ function MapPage() {
         />
         <div>
           <div>
-            <Button
-              id="toggle-marker-creation-btn"
-              style={{
-                zIndex: 10000,
-                marginBottom: "70px",
-                marginLeft: "10px",
-              }}
-              className="btn-sm btn-danger position-absolute bottom-0 start-0"
-              value="disabled"
-              onClick={(e) => {
-                set_btn_state(e);
-              }}
-            >
-              {allow_marker_creation ? "-" : "+"}
-            </Button>
+            {user_token && (
+              <Button
+                id="toggle-marker-creation-btn"
+                style={{
+                  zIndex: 10000,
+                  marginBottom: "70px",
+                  marginLeft: "10px",
+                }}
+                className="btn-sm btn-danger position-absolute bottom-0 start-0"
+                value="disabled"
+                onClick={(e) => {
+                  set_btn_state(e);
+                }}
+              >
+                {allow_marker_creation ? "-" : "+"}
+              </Button>
+            )}
+
             <Button
               id="cancel-marker-btn"
               style={{
