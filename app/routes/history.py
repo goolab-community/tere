@@ -8,7 +8,7 @@ import schemas
 import models
 from database import get_db
 from sqlalchemy.orm import Session
-from gcp import generate_upload_signed_url_v4
+from bucket import Bucket
 from utils import (
     generate_token,
     verify_password,
@@ -26,6 +26,9 @@ router = APIRouter(
     prefix=f"{BASE_URL}/history",
     tags=["History"],
 )
+
+
+bucket_client = Bucket()
 
 
 @router.get("/list")
@@ -69,7 +72,7 @@ def create_history(
                 animal_id=history.animal_id,
             )
             db.add(media)
-            url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_history_image_{history.id}.jpg")
+            url = bucket_client.generate_upload_signed_url("tere-media-bucket", f"images/animal_history_image_{history.id}.jpg")
         db.commit()
         return {
                 # "history": history,

@@ -21,7 +21,8 @@ from utils import (
 )
 # from typing import Annotated
 from settings import BASE_URL
-from gcp import generate_upload_signed_url_v4, generate_download_signed_url_v4
+# from gcp import generate_upload_signed_url_v4, generate_download_signed_url_v4
+from bucket import Bucket
 from datetime import datetime
 
 
@@ -148,8 +149,9 @@ def create_animal(animal: schemas.Animal,
         db.add(image_media)
         db.add(icon_media)
         db.commit()
-        url = generate_upload_signed_url_v4("tere-media-bucket", f"images/animal_main_image_{new_animal.id}.jpg")
-        url_icon = generate_upload_signed_url_v4("tere-media-bucket", f"icons/animal_main_image_{new_animal.id}.jpg")
+        bucket_client = Bucket()
+        url = bucket_client.generate_upload_signed_url("tere-media-bucket", f"images/animal_main_image_{new_animal.id}.jpg")
+        url_icon = bucket_client.generate_upload_signed_url("tere-media-bucket", f"icons/animal_main_image_{new_animal.id}.jpg")
         return {
             "animal": new_animal.to_json(),
             "message": "Animal created successfully",
@@ -157,6 +159,7 @@ def create_animal(animal: schemas.Animal,
             "upload_url_icon": url_icon
         }
     except Exception as e:
+        raise e
         logger.error(e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -264,7 +267,8 @@ def read_media(media_id: int, db: Session = Depends(get_db)):
     media = db.query(models.Media).filter(models.Media.id == media_id).first()
     if media:
         try:
-            url = generate_download_signed_url_v4("tere-media-bucket", media.url)
+            bucket_client = Bucket()
+            url = bucket_client.generate_download_signed_url("tere-media-bucket", media.url)
         except Exception as e:
             logger.error(e)
             raise HTTPException(status_code=404, detail="Media not found")

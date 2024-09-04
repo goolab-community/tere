@@ -7,5 +7,7 @@ service_account.json
 
 # test env folder
 junk
-
 node_modules
+
+# Credentials
+credentials.json

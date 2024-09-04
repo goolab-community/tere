@@ -12,12 +12,15 @@ services:
       - "5432:5432"
   tere-minio:
     image: 'bitnami/minio:latest'
+    container_name: tere_minio
     ports:
       - '9000:9000'
       - '9001:9001'
     environment:
       - MINIO_ROOT_USER=minio-tere
       - MINIO_ROOT_PASSWORD=minio-teremere
+    volumes:
+      - minio_data:/data
   tere-api:
     build:
       context: .
@@ -61,3 +64,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: tere
     depends_on:
       - tere-db
+
+volumes:
+  minio_data:
