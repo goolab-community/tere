@@ -40,7 +40,7 @@ function uploadFile(file, signedUrl) {
   console.log("Uploading file to S3:", file.type, "URL:", signedUrl);
   const config = {
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem("token")}`,
+      // 'Authorization': `Bearer ${localStorage.getItem("token")}`,
       'Content-Type': 'application/octet-stream',
     },
   };
