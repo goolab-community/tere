@@ -8,3 +8,4 @@ bcrypt==4.0.1
 passlib[bcrypt]
 google-cloud
 google-cloud-storage
+minio

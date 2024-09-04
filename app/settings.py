@@ -14,3 +14,10 @@ DB_CONNECTION_TYPE = os.getenv("DB_CONNECTION_TYPE", "local")
 FRONTEND_APP_ADDRESS = os.getenv("FRONTEND_APP_ADDRESS", "localhost")
 FRONTEND_APP_PORT = os.getenv("FRONTEND_APP_PORT")
 DOMAIN_NAME = os.getenv("DOMAIN_NAME")
+
+# minio
+DEV_TYPE = os.getenv("DEV_TYPE")
+MINIO_ADDRESS = os.getenv("MINIO_ADDRESS")
+MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
+HOST_IP = os.getenv("HOST_IP")
