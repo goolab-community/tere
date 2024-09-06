@@ -1,4 +1,26 @@
 services:
+  tere-db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+  tere-minio:
+    image: 'bitnami/minio:latest'
+    container_name: tere_minio
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      - MINIO_ROOT_USER=minio-tere
+      - MINIO_ROOT_PASSWORD=minio-teremere
+    volumes:
+      - minio_data:/data
   tere-api:
     build:
       context: .
@@ -11,7 +33,8 @@ services:
     volumes:
       - ./app:/app
     depends_on:
-      - tere-cloudsql-proxy
+      - tere-db
+      - tere-minio
     restart: always
   tere-react:
     build:
@@ -27,23 +50,11 @@ services:
       - WATCHPACK_POLLING=true
       - BACKEND_API_ADDRESS=http://localhost
       - BACKEND_API_PORT=8000
-    # REACT_APP_SYNCFUSION_LICENSE_KEY: ${REACT_APP_SYNCFUSION_LICENSE_KEY}
     depends_on:
       - tere-api
-    # restart: always
-    # volumes:
-    #    - ./frontend:/usr/src/app/:delegated
-    #    - /usr/src/app/node_modules/
     volumes:
       - ./frontend:/app:delegated
       - /app/node_modules
-  tere-cloudsql-proxy:
-      container_name: tere-cloudsql-proxy
-      image: gcr.io/cloudsql-docker/gce-proxy:1.31.1
-      command: /cloud_sql_proxy --dir=/cloudsql -instances=tere-421617:europe-north1:tere-db=tcp:0.0.0.0:5432 -credential_file=/secrets/cloudsql/credentials.json -verbose=true
-      volumes:
-        - ./app/service_account.json:/secrets/cloudsql/credentials.json:ro
-      restart: always
   tere-pgadmin:
     image: dpage/pgadmin4
     ports:
@@ -52,4 +63,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: tere@tere.ge
       PGADMIN_DEFAULT_PASSWORD: tere
     depends_on:
-      - tere-cloudsql-proxy
+      - tere-db
+
+volumes:
+  minio_data:

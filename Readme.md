@@ -1,61 +1,45 @@
-# Stray animal monitoring api
+# Tere
+
+  The project started to organize some orders around stray animal rescue and welfare. 
 
 
-## app docs is located at
+## Table of Contents
 
-http://localhost:8080/docs
+- [About](#about)
+- [Tech Stack](#tech-stack)
+- [Use Cases](#usecases)
+- [Prerequisites](#prerequisites)
+- [Clone the Repository](#clonetherepository)
+- [Environment Variables](#environment-variables)
+- [Build and Run](#build_and_run)
+- [Database Setup](#database-setup)
+- [Minio Setup](#miniosetup)
+- [Running Tests](#running-tests)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
 
-# For Developers (Backend)
+## About
 
-#### Step 1: Install Docker and Docker Compose
-To work properly, this project requires Docker and Docker Compose. You can install them from Docker's official website - https://www.docker.com/.
+ We see all mess around social network groups, and day to day, it became clear that we need to change something about it. Random people in social networks organize multiple activities, like:
+Gathering money to buy food or cover medical expenses, rescue, find and relocate, etcetera. But all this isn't easy to do if you don't have the right tools around your hand. 
+ I thought I could do something about it but didn't take a step forward until I met the happiest, kindest, and friendliest dog I had ever seen on the street. When I first saw her,
+I immediately noticed how social and friendly she was.
+She even adopted puppies from another dog; I named her Teresa, Tere, in short. Later, I decided to adopt her, and after some time, I started this project with the help of my friends.
 
-#### step 2: Create a .env File
-To launch the project locally, you need to create a .env file in the root directory. This file should contain environment variables for Python, such as:
+I hope this project impacts lives too dependent on humans to leave and gives you endless loyalty and love.
 
-    DB_NAME="example_name"
-    DB_USER="example_user"
-    DB_PASSWORD="example_password"
-    DB_HOST="example_db"
-    DB_PORT="5432"
-    API_SECRET_KEY="example_secret_key"
+## Tech Stack
 
-- Note: You also need to create an .app_env file in the root directory for the frontend to prevent Docker Compose from failing (file can be empty).
-
-#### Step 3: Modify docker-compose.yaml for Local Database Usage
-Comment out the "tere-cloud-proxy" service and uncomment the "tere-db" service in docker-compose.yaml to use a local PostgreSQL database.
-
-#### Step 4: Adjust Service Dependencies in docker-compose.yaml
-Change the line:
-
-    depends_on:
-        - tere-cloud-proxy
-to:
-
-    depends_on:
-        - tere-db
-in "tere-api" and "tere-pgadmin" services
-
-#### Step 5: Launch the Project Locally
-    docker compose build
-    docker compose up
-or launch it via Docker Desktop
-
-#### Optional: Stop the Project
-To stop the project, press CTRL+C.
+- **Frontend**: [React](https://reactjs.org/)
+- **Backend**: [FastAPI](https://fastapi.tiangolo.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/)
+- **Object Storage**: Cloud Storage, Minio
+- **Env**: Docker, Docker Compose, etc.
 
 
-## Test minio setup
+## Use Cases
 
-connect with:
-```bash
-mc alias set myminio http://tere-minio:9000 minio-tere minio-teremere
-```
-
-
-
-
-# Use Cases
 View mode
 ---------
 
@@ -144,5 +128,179 @@ Tables
 
 Airflow scheduler
 ---------------------
-
 The system periodically checks/ iterates over animals (airflow pipeline), finds that the animal has not fed for more than two days, sets the status to hungry, and adds a new event in the history with an auto check as an event type.
+
+
+## Prerequisites
+
+Make sure you have Docker and docker-compose installed
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/goolab-community/tere.git
+cd tere
+```
+## Environment Variables
+
+### Local environment
+Prepare ENV files for local development with the following backend environment variables
+
+```conf
+DB_NAME=<your_database_name>
+DB_USER=<database_default_username>
+DB_PASSWORD=<database_default_user_password>
+
+DB_HOST=<database_service_name>
+DB_PORT=5432
+DB_CONNECTION_TYPE=local
+
+# fastapi settings
+API_SECRET_KEY=<some_random_key_for_backend_api>
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+BASE_URL=/api/v1
+
+# frontend
+FRONTEND_APP_ADDRESS=localhost
+FRONTEND_APP_PORT=8080
+
+DEV_TYPE="local"
+# Minio address in docker-compose network
+MINIO_ADDRESS=tere-minio
+# First Create minio bucket, named for example: "tere-media-bucket" with minio web interface
+# Access key and secret key is set on minio web interface
+MINIO_ACCESS_KEY=<your_minio_access_key>
+MINIO_SECRET_KEY=<your_minio_secret_key>
+# Your local IP address
+HOST_IP=<your_local_ip_address>
+```
+Save it into the .env file
+
+
+ENV file for frontend environment variables
+
+```conf
+REACT_APP_DB_CONNECTION_TYPE=local
+
+REACT_APP_BACKEND_API_BASE_URL=/api/v1
+REACT_APP_BACKEND_API_ADDRESS=http://localhost
+REACT_APP_BACKEND_API_PORT=8000
+PORT=8080
+HTTP_PROXY="http://<your_local_ip_address>:8080"
+```
+
+Save it into the .app_env
+
+### Cloud Resource environment
+
+Prepare ENV files for GCP.
+The following environment variables are required to use GCP CloudSQL and  Cloud Storage.
+
+```conf
+DB_NAME=<your_database_name>
+DB_USER=<database_default_username>
+DB_PASSWORD=<database_default_user_password>
+
+DB_HOST=<cloudsql-proxy-service-name>
+DB_PORT=5432
+DB_CONNECTION_TYPE=local
+
+# fastapi settings
+API_SECRET_KEY=<some_random_key_for_backend_api>
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+BASE_URL=/api/v1
+
+# frontend
+FRONTEND_APP_ADDRESS=localhost
+FRONTEND_APP_PORT=8080
+```
+Save it into the .env file
+
+ENV file for frontend environment variables
+```conf
+REACT_APP_DB_CONNECTION_TYPE=local
+
+REACT_APP_BACKEND_API_BASE_URL=/api/v1
+REACT_APP_BACKEND_API_ADDRESS=http://localhost
+REACT_APP_BACKEND_API_PORT=8000
+PORT=8080
+```
+
+### minio
+Connect minio with:
+```bash
+mc alias set myminio http://tere-minio:9000 minio-tere minio-teremere
+```
+
+## Build and Run
+
+### Build
+```bash
+docker-compose build
+```
+
+### Run
+```bash
+docker-compose up
+```
+
+### Stop and clear volumes
+
+Stop all containers 
+```bash
+docker-compose stop
+```
+
+Remove all volumes
+```bash
+docker-compose down -v
+```
+
+## Database Setup
+To add connection to PgAdmin, access to:
+
+http://localhost:5050/
+
+use default PgAdmin credentials:
+login: tere@tere.ge
+password: tere
+
+### Add database
+From the left side menu, right-click and choose Register > Sever...
+In the "Register - Server" modal, fill in appropriate fields like:
+- Name - In the General tab, name it whatever you like
+- In the connection tab, fill in the database port; it's 5432 by default
+- In the Maintenance database, Fill database name you set in the .env file
+- In username, fill in the database user name you set in the .env file
+- In the password, fill in the database user password you set in the .env file
+Click submit, database will appear in left side menu
+
+## Minio Setup
+
+Minio web interface is accessible from: 
+
+http://localhost:9001/login
+
+login with default username and password: 
+username: minio-tere 
+password: minio-teremere
+
+### Create default bucket
+Click on the Object Browser tab and click to Create a bucket, name bucket: tere-media-bucket
+The newly created bucket will appear in the left-side menu.
+
+### Add access key and password for minio
+Click on Access Keys, and click Create access key. As you can see, the access key and secret key are generated automatically for you. Copy these keys into a .env file with variable names like:
+```
+MINIO_ACCESS_KEY=<your_minio_access_key>
+MINIO_SECRET_KEY=<your_minio_secret_key>
+```
+After creating you newly created key appears in list.
+
+### Minio Access IP
+To access a Minio service from frontend and set a proxy to overcome the CORS policy, Set your local IP address
+in .env file like:
+ HOST_IP=<your-local-ip-address>
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
