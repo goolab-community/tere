@@ -9,6 +9,8 @@ import { update_markers } from "../redux/reducers/markers";
 import $, { data, event } from "jquery";
 // import Navbar from "./Navbar";
 
+import { jwtDecode } from "jwt-decode";
+
 // edit
 import Edit from "../components/Edit/Edit";
 
@@ -575,6 +577,20 @@ function MapPage() {
   //   );
   // }
 
+  // reduxzea gasatani expiration errori da kai iqneba loginsac tu gavitan
+  if (localStorage.getItem("token")) {
+    const { exp } = jwtDecode(localStorage.getItem("token"));
+    const expirationTime = exp * 1000 - 60000;
+    if (Date.now() >= expirationTime) {
+      localStorage.clear();
+      window.location.reload();
+      navigate("/logout");
+    } else {
+      console.log("from  jwt expiration logic", expirationTime);
+    }
+  }
+  // let token = localStorage.getItem("token") || "";
+
   return (
     <>
       <div className=" mt-[--margin-top]  z-10 relative">
@@ -588,39 +604,41 @@ function MapPage() {
         <div>
           <div>
             {user_token && (
-              <Button
-                id="toggle-marker-creation-btn"
-                style={{
-                  zIndex: 10000,
-                  marginBottom: "70px",
-                  marginLeft: "10px",
-                }}
-                className="btn-sm btn-danger position-absolute bottom-0 start-0"
-                value="disabled"
-                onClick={(e) => {
-                  set_btn_state(e);
-                }}
-              >
-                {allow_marker_creation ? "-" : "+"}
-              </Button>
+              <>
+                <Button
+                  id="toggle-marker-creation-btn"
+                  style={{
+                    zIndex: 10000,
+                    marginBottom: "70px",
+                    marginLeft: "10px",
+                  }}
+                  className="btn-sm btn-danger position-absolute bottom-0 start-0"
+                  value="disabled"
+                  onClick={(e) => {
+                    set_btn_state(e);
+                  }}
+                >
+                  {allow_marker_creation ? "-" : "+"}
+                </Button>
+                <Button
+                  id="cancel-marker-btn"
+                  style={{
+                    zIndex: 10000,
+                    marginBottom: "70px",
+                    marginLeft: "50px",
+                  }}
+                  className="btn-sm btn-secondary position-absolute bottom-0 start-0"
+                  value="disabled"
+                  onClick={(e) => {
+                    console.log("Cancel markers creation");
+                    window.location.reload();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </>
             )}
 
-            <Button
-              id="cancel-marker-btn"
-              style={{
-                zIndex: 10000,
-                marginBottom: "70px",
-                marginLeft: "50px",
-              }}
-              className="btn-sm btn-secondary position-absolute bottom-0 start-0"
-              value="disabled"
-              onClick={(e) => {
-                console.log("Cancel markers creation");
-                window.location.reload();
-              }}
-            >
-              Cancel
-            </Button>
             {allow_marker_creation && (
               <Button
                 id="save-marker-btn"
@@ -756,26 +774,34 @@ function MapPage() {
                               </div>
 
                               <div className=" flex gap-3 mt-6">
-                                <Button
-                                  variant="primary"
-                                  onClick={(e) => {
-                                    show_animal_history_modal(animal);
-                                    // setEdit(false);
-                                    dispatch(editStateAction({ bool: false }));
-                                  }}
-                                >
-                                  Status Update
-                                </Button>
-                                <Button
-                                  variant="primary"
-                                  onClick={(e) => {
-                                    show_animal_history_modal(animal);
-                                    // setEdit(true);
-                                    dispatch(editStateAction({ bool: true }));
-                                  }}
-                                >
-                                  Edit
-                                </Button>
+                                {user_token && (
+                                  <>
+                                    <Button
+                                      variant="primary"
+                                      onClick={(e) => {
+                                        show_animal_history_modal(animal);
+                                        // setEdit(false);
+                                        dispatch(
+                                          editStateAction({ bool: false })
+                                        );
+                                      }}
+                                    >
+                                      Status Update
+                                    </Button>
+                                    <Button
+                                      variant="primary"
+                                      onClick={(e) => {
+                                        show_animal_history_modal(animal);
+                                        // setEdit(true);
+                                        dispatch(
+                                          editStateAction({ bool: true })
+                                        );
+                                      }}
+                                    >
+                                      Edit
+                                    </Button>
+                                  </>
+                                )}
                               </div>
                             </Card.Body>
                           </Card>

@@ -22,6 +22,7 @@ import ErrorPage from "./components/Error/error-page";
 // redux
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import Logaut from "./components/Logout";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: "history",
         element: <History />,
+      },
+      {
+        path: "logout",
+        element: <Logaut />,
       },
     ],
   },
