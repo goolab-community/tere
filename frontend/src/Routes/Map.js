@@ -588,39 +588,41 @@ function MapPage() {
         <div>
           <div>
             {user_token && (
-              <Button
-                id="toggle-marker-creation-btn"
-                style={{
-                  zIndex: 10000,
-                  marginBottom: "70px",
-                  marginLeft: "10px",
-                }}
-                className="btn-sm btn-danger position-absolute bottom-0 start-0"
-                value="disabled"
-                onClick={(e) => {
-                  set_btn_state(e);
-                }}
-              >
-                {allow_marker_creation ? "-" : "+"}
-              </Button>
+              <>
+                <Button
+                  id="toggle-marker-creation-btn"
+                  style={{
+                    zIndex: 10000,
+                    marginBottom: "70px",
+                    marginLeft: "10px",
+                  }}
+                  className="btn-sm btn-danger position-absolute bottom-0 start-0"
+                  value="disabled"
+                  onClick={(e) => {
+                    set_btn_state(e);
+                  }}
+                >
+                  {allow_marker_creation ? "-" : "+"}
+                </Button>
+                <Button
+                  id="cancel-marker-btn"
+                  style={{
+                    zIndex: 10000,
+                    marginBottom: "70px",
+                    marginLeft: "50px",
+                  }}
+                  className="btn-sm btn-secondary position-absolute bottom-0 start-0"
+                  value="disabled"
+                  onClick={(e) => {
+                    console.log("Cancel markers creation");
+                    window.location.reload();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </>
             )}
 
-            <Button
-              id="cancel-marker-btn"
-              style={{
-                zIndex: 10000,
-                marginBottom: "70px",
-                marginLeft: "50px",
-              }}
-              className="btn-sm btn-secondary position-absolute bottom-0 start-0"
-              value="disabled"
-              onClick={(e) => {
-                console.log("Cancel markers creation");
-                window.location.reload();
-              }}
-            >
-              Cancel
-            </Button>
             {allow_marker_creation && (
               <Button
                 id="save-marker-btn"
@@ -754,29 +756,32 @@ function MapPage() {
                                     "Unfortunately we don't have any description at the moment"}
                                 </p>
                               </div>
-
-                              <div className=" flex gap-3 mt-6">
-                                <Button
-                                  variant="primary"
-                                  onClick={(e) => {
-                                    show_animal_history_modal(animal);
-                                    // setEdit(false);
-                                    dispatch(editStateAction({ bool: false }));
-                                  }}
-                                >
-                                  Status Update
-                                </Button>
-                                <Button
-                                  variant="primary"
-                                  onClick={(e) => {
-                                    show_animal_history_modal(animal);
-                                    // setEdit(true);
-                                    dispatch(editStateAction({ bool: true }));
-                                  }}
-                                >
-                                  Edit
-                                </Button>
-                              </div>
+                              {user_token && (
+                                <div className=" flex gap-3 mt-6">
+                                  <Button
+                                    variant="primary"
+                                    onClick={(e) => {
+                                      show_animal_history_modal(animal);
+                                      // setEdit(false);
+                                      dispatch(
+                                        editStateAction({ bool: false })
+                                      );
+                                    }}
+                                  >
+                                    Status Update
+                                  </Button>
+                                  <Button
+                                    variant="primary"
+                                    onClick={(e) => {
+                                      show_animal_history_modal(animal);
+                                      // setEdit(true);
+                                      dispatch(editStateAction({ bool: true }));
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                </div>
+                              )}
                             </Card.Body>
                           </Card>
                         </Popup>
