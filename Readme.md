@@ -7,13 +7,13 @@
 
 - [About](#about)
 - [Tech Stack](#tech-stack)
-- [Use Cases](#usecases)
+- [Use Cases](#use-cases)
 - [Prerequisites](#prerequisites)
-- [Clone the Repository](#clonetherepository)
+- [Clone the Repository](#clone-the-repository)
 - [Environment Variables](#environment-variables)
-- [Build and Run](#build_and_run)
+- [Build and Run](#build-and-run)
 - [Database Setup](#database-setup)
-- [Minio Setup](#miniosetup)
+- [Minio Setup](#minio-setup)
 - [Running Tests](#running-tests)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
@@ -224,12 +224,6 @@ REACT_APP_BACKEND_API_BASE_URL=/api/v1
 REACT_APP_BACKEND_API_ADDRESS=http://localhost
 REACT_APP_BACKEND_API_PORT=8000
 PORT=8080
-```
-
-### minio
-Connect minio with:
-```bash
-mc alias set myminio http://tere-minio:9000 minio-tere minio-teremere
 ```
 
 ## Build and Run
