@@ -256,11 +256,15 @@ function NewAnimal1({
           >
             <option value={"pitbull"}>Pitbull</option>
             <option value={"poodle"}>Poodle</option>
-            <option value={"georgian-sheppard"}>Georgian Sheppard</option>
-            <option value={"german-sheppard"}>German Sheppard</option>
+            <option value={"georgian-shepherd"}>Georgian Shepherd</option>
+            <option value={"german-shepherd"}>German Shepherd</option>
             <option value={"labrador-retriever"}>Labrador Retriever</option>
+            <option value={"husky"}>Husky</option>
+            <option value={"rottweiler"}>Rottweiler</option>
             <option value={"Mixed"}>Mixed</option>
             <option value={"british-shorthair"}>British Shorthair</option>
+            <option value={"siamese"}>Siamese</option>
+            <option value={"persian"}>Persian</option>
           </Form.Control>
         </Form.Group>
         {!age_approx ? (
