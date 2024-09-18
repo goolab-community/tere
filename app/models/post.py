@@ -8,7 +8,7 @@ from sqlalchemy import (
     Enum,
     func,
 )
-from .base import BaseModel
+from .base import BaseModel, Base
 import enum
 
 # from utils import logger
@@ -78,13 +78,14 @@ class PostComment(BaseModel):
     updated_at = Column(DateTime, onupdate=func.now(), default=func.now())
 
 
-class PostLikes(BaseModel):
+class PostLikes(Base):
     """
     Likes model for Posts
     """
 
     __tablename__ = "post_likes"
 
+    id = Column(Integer, primary_key=True)
     post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
     post = relationship("Post", back_populates="likes")
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
@@ -143,13 +144,14 @@ class PostCategories(BaseModel):
         }
 
 
-class PostCategoriesAssociation(BaseModel):
+class PostCategoriesAssociation(Base):
     """
     Posts and their categories (Many to Many association)
     """
 
     __tablename__ = "post_categories_association"
 
+    id = Column(Integer, primary_key=True)
     post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
     post = relationship("Post", back_populates="category_association")
     category_id = Column(
@@ -190,13 +192,14 @@ class PostTags(BaseModel):
         }
 
 
-class PostTagsAssociation(BaseModel):
+class PostTagsAssociation(Base):
     """
     Posts and their tags (Many to Many association)
     """
 
     __tablename__ = "post_tags_association"
 
+    id = Column(Integer, primary_key=True)
     post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
     post = relationship("Post", back_populates="tag_association")
     tag_id = Column(Integer, ForeignKey("post_tags.id"), nullable=False)
