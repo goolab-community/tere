@@ -36,10 +36,10 @@ class Post(BaseModel):
     likes = relationship("PostLikes", back_populates="post", lazy="dynamic")
     saves = relationship("PostSaves", back_populates="post", lazy="dynamic")
     category_association = relationship(
-        "PostCategoriesAssociation", back_populates="posts", lazy="dynamic"
+        "PostCategoriesAssociation", back_populates="post", lazy="dynamic"
     )
     tag_association = relationship(
-        "PostTagsAssociation", back_populates="posts", lazy="dynamic"
+        "PostTagsAssociation", back_populates="post", lazy="dynamic"
     )
 
     updated_at = Column(DateTime, onupdate=func.now(), default=func.now())

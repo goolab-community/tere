@@ -7,9 +7,9 @@ from .post import ( # noqa
     PostLikes,
     PostSaves,
     PostCategories,
-    PostCategoriesAssociacion,
+    PostCategoriesAssociation,
     PostTags,
-    PostTagsAssociacion
+    PostTagsAssociation
 )
 from .base import BaseModel # noqa
 
