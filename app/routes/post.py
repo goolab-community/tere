@@ -128,7 +128,7 @@ def add_post(
         db.add(new_post)
         db.commit()
 
-        return {"message": "Post added successfully"}, status.HTTP_200_OK
+        return {"message": "Post added successfully"}, status.HTTP_201_CREATED
 
     except Exception as e:
         db.rollback()
@@ -142,53 +142,249 @@ def edit_post(
     user: HTTPAuthorizationCredentials = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    query = (
-        db.query(models.Post)
-        .filter_by(post_id=post_id, user_id=user.get("user_id"))
-        .one_or_none()
-    )
-    if query is None:
-        raise HTTPException(status_code=404, detail="Post not found")
-    query.title = post.title
-    query.content = post.content
-    query.status = post.status
-    if post.categories:
-        category_names = [category.name for category in post.categories]
-        db_categories = (
+    try:
+        if user.get("is_superuser"):
+            query = db.query(models.Post).filter_by(id=post_id).one_or_none()
+        else:
+            query = (
+                db.query(models.Post)
+                .filter_by(post_id=post_id, user_id=user.get("user_id"))
+                .one_or_none()
+            )
+        if query is None:
+            raise HTTPException(status_code=404, detail="Post not found")
+        query.title = post.title
+        query.content = post.content
+        query.status = post.status
+        if post.categories:
+            category_names = [category.name for category in post.categories]
+            db_categories = (
+                db.query(models.PostCategories)
+                .filter(models.PostCategories.name.in_(category_names))
+                .all()
+            )
+
+            if len(db_categories) != len(category_names):
+                raise HTTPException(
+                    status_code=400, detail="Some categories not found"
+                )
+
+            for db_category in db_categories:
+                category_association = models.PostCategoriesAssociation(
+                    post_id=query.id, category_id=db_category.id
+                )
+                query.category_association.append(category_association)
+
+        # Checks if tags are provided to validate them
+        if post.tags:
+            tag_names = [tag.name for tag in post.tags]
+            db_tags = (
+                db.query(models.PostTags)
+                .filter(models.PostTags.name.in_(tag_names))
+                .all()
+            )
+
+            if len(db_tags) != len(tag_names):
+                raise HTTPException(
+                    status_code=400, detail="Some tags not found"
+                )
+
+            # Adds tags to the post
+            for db_tag in db_tags:
+                tag_association = models.PostTagsAssociation(
+                    post_id=query.id, tag_id=db_tag.id
+                )
+                query.tag_association.append(tag_association)
+        db.commit()
+
+        return {"message": "Post Edited Successfully"}, status.HTTP_200_OK
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/delete/{post_id}", response_model=dict)
+def delete_post(
+    post_id: int,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        if user.get("is_superuser"):
+            query = (
+                db.query(models.Post)
+                .filter(models.Post.id == post_id)
+                .one_or_none()
+            )
+        else:
+            query = (
+                db.query(models.Post)
+                .filter_by(post_id=post_id, user_id=user.get("user_id"))
+                .one_or_none()
+            )
+        if query is None:
+            raise HTTPException(status_code=404, detail="Post not found")
+        db.delete(query)
+        db.commit()
+
+        return {"message": "Post deleted successfully"}, status.HTTP_200_OK
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/tags")
+def get_tags(db: Session = Depends(get_db)):
+    return [tag.to_json() for tag in db.query(models.PostTags).all()]
+
+
+# Super user adds/edit/deletes tags and categories for now
+# TODO: add editor status
+
+
+@router.post("/tag/add")
+def add_tag(
+    tag: schemas.PostTag,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    # Superuser adds tags (TODO: add editor as well)
+    if not user.get("is_superuser"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    try:
+        db_tag = models.PostTags(name=tag.name)
+        db.add(db_tag)
+        db.commit()
+        return {"message": "Tag added successfully"}, status.HTTP_201_CREATED
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/tag/edit/{tag_id}")
+def edit_tag(
+    tag_id: int,
+    tag: schemas.PostTag,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not user.get("is_superuser"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    try:
+        query = db.query(models.PostTags).filter_by(id=tag_id).one_or_none()
+        if query is None:
+            raise HTTPException(status_code=404, detail="Tag not found")
+        query.name = tag.name
+        db.commit()
+        return {"message": "Tag edited successfully"}, status.HTTP_200_OK
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/tag/delete/{tag_id}")
+def delete_tag(
+    tag_id: int,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not user.get("is_superuser"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    try:
+        query = db.query(models.PostTags).filter_by(id=tag_id).one_or_none()
+        if query is None:
+            raise HTTPException(status_code=404, detail="Tag not found")
+        db.delete(query)
+        db.commit()
+        return {"message": "Tag deleted successfully"}, status.HTTP_200_OK
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/categories")
+def get_categories(db: Session = Depends(get_db)):
+    return [
+        category.to_json()
+        for category in db.query(models.PostCategories).all()
+    ]
+
+
+@router.post("/category/add")
+def add_category(
+    category: schemas.PostCategory,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not user.get("is_superuser"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    try:
+        db_category = models.PostCategories(
+            name=category.name, description=category.description
+        )
+        db.add(db_category)
+        db.commit()
+        return {
+            "message": "Category added successfully"
+        }, status.HTTP_201_CREATED
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/category/edit/{category_id}")
+def edit_category(
+    category_id: int,
+    category: schemas.PostCategory,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not user.get("is_superuser"):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    try:
+        query = (
             db.query(models.PostCategories)
-            .filter(models.PostCategories.name.in_(category_names))
-            .all()
+            .filter_by(id=category_id)
+            .one_or_none()
         )
+        if query is None:
+            raise HTTPException(status_code=404, detail="Category not found")
+        query.name = category.name
+        query.description = category.description
+        db.commit()
+        return {"message": "Category edited successfully"}, status.HTTP_200_OK
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
-        if len(db_categories) != len(category_names):
-            raise HTTPException(
-                status_code=400, detail="Some categories not found"
-            )
 
-        for db_category in db_categories:
-            category_association = models.PostCategoriesAssociation(
-                post_id=query.id, category_id=db_category.id
-            )
-            query.category_association.append(category_association)
+@router.delete("/category/delete/{category_id}")
+def delete_category(
+    category_id: int,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not user.get("is_superuser"):
+        raise HTTPException(status_code=403, detail="Forbidden")
 
-    # Checks if tags are provided to validate them
-    if post.tags:
-        tag_names = [tag.name for tag in post.tags]
-        db_tags = (
-            db.query(models.PostTags)
-            .filter(models.PostTags.name.in_(tag_names))
-            .all()
+    try:
+        query = (
+            db.query(models.PostCategories)
+            .filter_by(id=category_id)
+            .one_or_none()
         )
-
-        if len(db_tags) != len(tag_names):
-            raise HTTPException(status_code=400, detail="Some tags not found")
-
-        # Adds tags to the post
-        for db_tag in db_tags:
-            tag_association = models.PostTagsAssociation(
-                post_id=query.id, tag_id=db_tag.id
-            )
-            query.tag_association.append(tag_association)
-    db.commit()
-
-    return {"message": "Post Edited Successfully"}, status.HTTP_200_OK
+        if query is None:
+            raise HTTPException(status_code=404, detail="Category not found")
+        db.delete(query)
+        db.commit()
+        return {
+            "message": "Category deleted successfully"
+        }, status.HTTP_200_OK
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
