@@ -17,8 +17,13 @@ from utils import (
     get_current_user
 )
 # from typing import Annotated
-from settings import BASE_URL, FRONTEND_APP_ADDRESS, FRONTEND_APP_PORT, DOMAIN_NAME
-from routes import auth, animal, history
+from settings import (
+    BASE_URL,
+    FRONTEND_APP_ADDRESS,
+    FRONTEND_APP_PORT,
+    DOMAIN_NAME,
+)
+from routes import auth, animal, history, post
 
 
 Base.metadata.create_all(bind=engine)
@@ -51,9 +56,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["X-Custom-Header"],
-    max_age=3600
+    max_age=3600,
 )
 
 app.include_router(auth.router)
 app.include_router(animal.router)
 app.include_router(history.router)
+app.include_router(post.router)

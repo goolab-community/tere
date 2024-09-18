@@ -1,6 +1,7 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
+
 # from datetime import datetime
 # from .history import Media
 
@@ -13,16 +14,6 @@ class PostStatus(Enum):
     draft = "draft"
     published = "published"
     archived = "archived"
-
-
-class Post(BaseModel):
-    """
-    Post Schema
-    """
-
-    title: str
-    content: str
-    status: PostStatus = PostStatus.draft
 
 
 class PostComment(BaseModel):
@@ -86,3 +77,17 @@ class PostTagAssociation(BaseModel):
 
     post_id: int
     tag_id: int
+
+
+class Post(BaseModel):
+    """
+    Post Schema
+    """
+
+    title: str
+    content: str
+    status: PostStatus = PostStatus.draft
+    # views: int = 0
+
+    categories: Optional[List[PostCategory]] = None
+    tags: Optional[List[PostTag]] = None
