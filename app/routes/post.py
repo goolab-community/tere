@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.get("/post")
+@router.get("/{post_id}")
 def post(post_id: int, db: Session = Depends(get_db)):
     try:
         post = db.query(models.Post).filter(models.Post.id == post_id).first()
@@ -238,6 +238,17 @@ def get_tags(db: Session = Depends(get_db)):
     return [tag.to_json() for tag in db.query(models.PostTags).all()]
 
 
+@router.get("/tag/{tag_id}")
+def get_tag(tag_id: int, db: Session = Depends(get_db)):
+    try:
+        query = db.query(models.PostTags).filter_by(id=tag_id).one_or_none()
+        if query is None:
+            raise HTTPException(status_code=404, detail="Tag not found")
+        return query.to_json()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Super user adds/edit/deletes tags and categories for now
 # TODO: add editor status
 
@@ -311,6 +322,21 @@ def get_categories(db: Session = Depends(get_db)):
         category.to_json()
         for category in db.query(models.PostCategories).all()
     ]
+
+
+@router.get("/category/{category_id}")
+def get_category(category_id, db: Session = Depends(get_db)):
+    try:
+        query = (
+            db.query(models.PostCategories)
+            .filter_by(id=category_id)
+            .one_or_none()
+        )
+        if query is None:
+            raise HTTPException(status_code=404, detail="Category not found")
+        return query.to_json()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/category/add")
