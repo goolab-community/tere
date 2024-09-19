@@ -448,24 +448,12 @@ def get_comments(
     try:
         # Joining PostComment with User model to get the username
         query = (
-            db.query(models.PostComment, models.User.username)
-            .join(models.User, models.PostComment.user_id == models.User.id)
+            db.query(models.PostComment)
             .filter(models.PostComment.post_id == post_id)
             .all()
         )
 
-        result = [
-            {
-                "comment_id": comment.PostComment.id,
-                "post_id": comment.PostComment.post_id,
-                "user_id": comment.PostComment.user_id,
-                "content": comment.PostComment.content,
-                "username": comment.username,
-                "created_at": comment.created_at,
-                "updated_at": comment.PostComment.updated_at,
-            }
-            for comment in query
-        ]
+        result = [comment.to_json() for comment in query]
         return result
 
     except Exception as e:
@@ -495,6 +483,8 @@ def add_comment(
         )
         db.add(new_comment)
         db.commit()
+
+        return {"message": "Comment added successfully"}
     except Exception as e:
         logger.error(e)
         db.rollback()

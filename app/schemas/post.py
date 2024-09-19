@@ -21,8 +21,6 @@ class PostComment(BaseModel):
     Comment Schema
     """
 
-    post_id: int
-    user_id: int
     content: str
 
 

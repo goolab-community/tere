@@ -35,6 +35,7 @@ class Post(BaseModel):
     status = Column(Enum(PostStatus), default="draft")
     # views = Column(Integer, default=0)
 
+    comments = relationship("PostComment", back_populates="post")
     likes = relationship("PostLikes", back_populates="post", lazy="dynamic")
     saves = relationship("PostSaves", back_populates="post", lazy="dynamic")
     category_association = relationship(
@@ -52,11 +53,14 @@ class Post(BaseModel):
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "authors_username": self.user.username,
             "title": self.title,
             "content": self.content,
             "status": self.status.value,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "comments": [comment.to_json() for comment in self.comments],
+            "comments_count": len(self.comments),
             "likes": likes,
             "likes_count": len(likes),
             "saves": saves,
@@ -79,18 +83,22 @@ class PostComment(BaseModel):
     __tablename__ = "post_comments"
 
     post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
+    post = relationship("Post", back_populates="comments")
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User", backref="comments")
     content = Column(String, nullable=False)
 
     updated_at = Column(DateTime, onupdate=func.now(), default=func.now())
 
     def to_json(self):
         return {
-            "id": self.id,
+            "comment_id": self.id,
             "post_id": self.post_id,
             "user_id": self.user_id,
+            "authors_username": self.user.username,
             "content": self.content,
-            "updated_at": self.updated_at,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
         }
 
 
