@@ -44,13 +44,21 @@ class PostSave(BaseModel):
     user_id: int
 
 
-class PostCategory(BaseModel):
+class BasePostCategory(BaseModel):
+    """
+    Base Categories schema
+    for adding into posts without description
+    """
+
+    name: str
+
+
+class PostCategory(BasePostCategory):
     """
     Categories Schema
     """
 
-    name: str
-    description: Optional[str] = None
+    description: str
 
 
 class PostCategoryAssociation(BaseModel):
@@ -86,8 +94,8 @@ class Post(BaseModel):
 
     title: str
     content: str
-    status: PostStatus = PostStatus.draft
+    status: str = "draft"
     # views: int = 0
 
-    categories: Optional[List[PostCategory]] = None
+    categories: Optional[List[BasePostCategory]] = None
     tags: Optional[List[PostTag]] = None

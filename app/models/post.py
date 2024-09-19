@@ -28,9 +28,11 @@ class Post(BaseModel):
     __tablename__ = "posts"
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User", backref="posts")
+
     title = Column(String, nullable=False)
     content = Column(String)
-    status = Column(Enum(PostStatus), default=PostStatus.draft)
+    status = Column(Enum(PostStatus), default="draft")
     # views = Column(Integer, default=0)
 
     likes = relationship("PostLikes", back_populates="post", lazy="dynamic")
@@ -45,15 +47,20 @@ class Post(BaseModel):
     updated_at = Column(DateTime, onupdate=func.now(), default=func.now())
 
     def to_json(self):
+        likes = [like.to_json() for like in self.likes.all()]
+        saves = [save.to_json() for save in self.saves.all()]
         return {
             "id": self.id,
             "user_id": self.user_id,
             "title": self.title,
             "content": self.content,
             "status": self.status.value,
+            "created_at": self.created_at,
             "updated_at": self.updated_at,
-            "likes": [like.to_json() for like in self.likes.all()],
-            "saves": [save.to_json() for save in self.saves.all()],
+            "likes": likes,
+            "likes_count": len(likes),
+            "saves": saves,
+            "saves_count": len(saves),
             "category_association": [
                 category.to_json()
                 for category in self.category_association.all()
@@ -76,6 +83,15 @@ class PostComment(BaseModel):
     content = Column(String, nullable=False)
 
     updated_at = Column(DateTime, onupdate=func.now(), default=func.now())
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "post_id": self.post_id,
+            "user_id": self.user_id,
+            "content": self.content,
+            "updated_at": self.updated_at,
+        }
 
 
 class PostLikes(Base):
@@ -109,7 +125,7 @@ class PostSaves(BaseModel):
     __tablename__ = "post_saves"
 
     post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
-    post = relationship("Post", back_populates="saves")
+    post = relationship("Post", back_populates="saves", lazy="joined")
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     def to_json(self):
@@ -117,6 +133,7 @@ class PostSaves(BaseModel):
             "id": self.id,
             "post_id": self.post_id,
             "user_id": self.user_id,
+            "added_at": self.created_at,
         }
 
 
@@ -186,10 +203,7 @@ class PostTags(BaseModel):
     association = relationship("PostTagsAssociation", back_populates="tag")
 
     def to_json(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-        }
+        return {"id": self.id, "name": self.name}
 
 
 class PostTagsAssociation(Base):
