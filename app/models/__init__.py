@@ -1,6 +1,6 @@
 from .user import User # noqa
 from .animal import Animal, Specie, Sex, Breed # noqa
-from .history import History, Media, HistoryType, MediaType # noqa
+from .history import History, Media, PostMedia, HistoryType, MediaType # noqa
 from .post import ( # noqa
     Post,
     PostComment,

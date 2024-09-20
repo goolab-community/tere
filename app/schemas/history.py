@@ -26,13 +26,20 @@ class MediaType(Enum):
     document = 'document'
 
 
-class Media(BaseModel):
+class BaseMedia(BaseModel):
     url: str
     type: MediaType
     uploaded_by_user_id: Optional[int] = None
     date: Optional[datetime] = None
     description: Optional[str] = None
+
+
+class Media(BaseMedia):
     animal_id: Optional[int] = None
+
+
+class PostMedia(BaseMedia):
+    post_id: Optional[int] = None
 
 
 class History(BaseModel):

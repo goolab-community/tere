@@ -45,6 +45,8 @@ class Post(BaseModel):
         "PostTagsAssociation", back_populates="post", lazy="dynamic"
     )
 
+    medias = relationship("PostMedia", back_populates="post")
+
     updated_at = Column(DateTime, onupdate=func.now(), default=func.now())
 
     def to_json(self):
@@ -72,6 +74,7 @@ class Post(BaseModel):
             "tag_association": [
                 tag.to_json() for tag in self.tag_association.all()
             ],
+            "medias": [m.to_json() for m in self.medias]
         }
 
 

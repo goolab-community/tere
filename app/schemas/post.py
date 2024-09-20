@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from enum import Enum
+from .history import PostMedia
 
 # from datetime import datetime
 # from .history import Media
@@ -94,6 +95,6 @@ class Post(BaseModel):
     content: str
     status: str = "draft"
     # views: int = 0
-
+    medias: Optional[List[PostMedia]] = None
     categories: Optional[List[BasePostCategory]] = None
     tags: Optional[List[PostTag]] = None

@@ -9,6 +9,8 @@ from sqlalchemy import and_, or_  # noqa
 from utils import logger, get_current_user
 from settings import BASE_URL
 from typing import List
+from bucket import Bucket
+from datetime import datetime
 
 router = APIRouter(
     prefix=f"{BASE_URL}/post",
@@ -139,7 +141,38 @@ def add_post(
         # Saves new post to the database
         db.add(new_post)
         db.commit()
-        return {"message": "Post added successfully"}
+        image_media = models.PostMedia(
+            url=f"icons/post_main_image_{new_post.id}.jpg",
+            type="icon",
+            uploaded_by_user_id=user.get("user_id"),
+            date=datetime.now(),
+            post_id=new_post.id,
+        )
+        icon_media = models.PostMedia(
+            url=f"images/post_main_image_{new_post.id}.jpg",
+            type="image",
+            uploaded_by_user_id=user.get("user_id"),
+            date=datetime.now(),
+            post_id=new_post.id,
+        )
+        db.add(image_media)
+        db.add(icon_media)
+        db.commit()
+        bucket_client = Bucket()
+        url = bucket_client.generate_upload_signed_url(
+            "tere-media-bucket",
+            f"images/post_main_image_{new_post.id}.jpg",
+        )
+        url_icon = bucket_client.generate_upload_signed_url(
+            "tere-media-bucket",
+            f"icons/post_main_image_{new_post.id}.jpg",
+        )
+        return {
+            "post": new_post.to_json(),
+            "message": "Post added successfully",
+            "uploaded_url": url,
+            "uploaded_url_icon": url_icon,
+        }
 
     except Exception as e:
         logger.error(e)
@@ -147,6 +180,101 @@ def add_post(
         logger.error(e)
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/update_icon/{post_id}", response_model=dict)
+def update_post_icon(
+    post_id: int,
+    media_id: int,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        post = (
+            db.query(models.Post)
+            .filter_by(user_id=user.get("user_id"), id=post_id)
+            .one_or_none()
+        )
+        if post:
+            db_media = (
+                db.query(models.PostMedia)
+                .filter(
+                    and_(
+                        models.PostMedia.id == media_id,
+                        models.PostMedia.type == "icon",
+                    )
+                )
+                .first()
+            )
+            if db_media:
+                image_index = None
+                for i, m in enumerate(post.medias):
+                    if m.type == "icon":
+                        image_index = i
+                if image_index is not None:
+                    post.medias.pop(image_index)
+                    post.medias.append(db_media)
+                db.commit()
+                return {"media": db_media.to_json()}
+            else:
+                raise HTTPException(
+                    status_code=404, detail="PostMedia not found"
+                )
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.get("/media/{media_id}", response_model=dict)
+def read_post_media(media_id: int, db: Session = Depends(get_db)):
+    media = (
+        db.query(models.PostMedia)
+        .filter(models.PostMedia.id == media_id)
+        .first()
+    )
+    if media:
+        try:
+            bucket_client = Bucket()
+            url = bucket_client.generate_download_signed_url(
+                "tere-media-bucket", media.url
+            )
+        except Exception as e:
+            logger.error(e)
+            raise HTTPException(status_code=404, detail="PostMedia not found")
+        return {"media": {"url": url}}
+    else:
+        raise HTTPException(status_code=404, detail="PostMedia not found")
+
+
+@router.post("/media/{post_id}", response_model=dict)
+def create_post_media(
+    post_id: int,
+    media: schemas.PostMedia,
+    user: HTTPAuthorizationCredentials = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        post = (
+            db.query(models.Post)
+            .filter_by(user_id=user.get("user_id"), id=post_id)
+            .one_or_none()
+        )
+        if post:
+            new_media = models.PostMedia(
+                url=media.url,
+                type=media.type,
+                uploaded_by_user_id=user.get("user_id"),
+                date=datetime.now(),
+                post_id=post_id,
+            )
+            db.add(new_media)
+            db.commit()
+            return {"media": new_media.to_json()}
+        else:
+            raise HTTPException(status_code=404, detail="Animal not found")
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @router.put("/edit/{post_id}")
