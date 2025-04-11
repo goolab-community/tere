@@ -31,15 +31,15 @@ class Animal(BaseModel):
     species: str
     sex: str = None
     breed_id: str = None
-    tag_id: str = None
-    rfid_code: str = None
+    tag_id: Optional[str] = None
+    rfid_code: Optional[str] = None
     age_year: int = None
     age_month: int = None
     age_year_from: int = None
     age_month_from: int = None
     age_year_to: int = None
     age_month_to: int = None
-    name: str = None
+    name: Optional[str] = None
     description: str = None
     profile_image: Optional[str] = None
 

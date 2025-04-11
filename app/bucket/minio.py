@@ -11,6 +11,7 @@ class MinioBucket:
     def __init__(self) -> None:
         self.storage_client()
         logger.info("Create MinioBucket")
+        logger.info(HOST_IP)
         logger.info(self.client)
 
     def storage_client(self):

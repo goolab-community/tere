@@ -110,12 +110,13 @@ def create_animal(animal: schemas.Animal,
                   user: HTTPAuthorizationCredentials = Depends(get_current_user),
                   db: Session = Depends(get_db)):
     try:
-        # logger.info((animal.species, animal.sex))
-        # logger.info(user)
+        logger.info((animal.species, animal.sex))
+        logger.info(user)
+        logger.info(animal)
         new_animal = models.Animal(
             species=animal.species,
             sex=animal.sex,
-            breed_id=None,  # animal.breed_id,
+            # breed=animal.breed_id,  # animal.breed_id,
             tag_id=animal.tag_id,
             rfid_code=animal.rfid_code,
             age_year=animal.age_year,
@@ -131,6 +132,7 @@ def create_animal(animal: schemas.Animal,
             address=animal.address
         )
         db.add(new_animal)
+        logger.info("BEFORE COMMIT")
         db.commit()
         image_media = models.Media(
             url=f"icons/animal_main_image_{new_animal.id}.jpg",

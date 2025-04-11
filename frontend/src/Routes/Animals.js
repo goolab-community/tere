@@ -12,6 +12,7 @@ import axios from "axios";
 
 import dog from "../Images/german-dog.jpg";
 import { animals, testAnimals } from "../components/PropData";
+import { AnimalDetail } from "./Animal";
 
 import "../css/modal.css";
 import { Form } from "react-bootstrap";
@@ -37,7 +38,7 @@ function NewAnimal1({
     const [description, setDescription] = useState(null);
     const [specie, setSpecie] = useState("dog");
     const [sex, setSex] = useState("male");
-    const [bread, setBread] = useState("Pitbull");
+    const [breed, setBreed] = useState("Pitbull");
     const [age_month_comp, setAgeMonthComp] = useState(1);
     const [age_year_comp, setAgeYearComp] = useState(1);
     const [age_from_month_comp, setAgeFromMonthComp] = useState(1);
@@ -128,7 +129,7 @@ function NewAnimal1({
       console.log(description);
       console.log(specie);
       console.log(sex);
-      console.log(bread);
+      console.log(breed);
       console.log(age_month_comp, age_year_comp);
       console.log(age_from_month_comp, age_from_year_comp);
       console.log(age_to_month_comp, age_to_year_comp);
@@ -140,6 +141,7 @@ function NewAnimal1({
       const new_animal = {
         species: specie,
         sex: sex,
+        breed_id: breed,
         tag_id: tag_id,
         rfid_code: rfid_code,
         age_year: age_year_comp,
@@ -246,12 +248,12 @@ function NewAnimal1({
           </Form.Control>
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea4">
-          <Form.Label>Bread</Form.Label>
+          <Form.Label>Breed</Form.Label>
           <Form.Control
             as="select"
             placeholder="Breed"
             onChange={(e) => {
-              setBread(e.target.value);
+              setBreed(e.target.value);
             }}
           >
             <option value={"pitbull"}>Pitbull</option>

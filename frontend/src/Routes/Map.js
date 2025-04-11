@@ -706,7 +706,16 @@ function MapPage() {
                                 } `}
                                 src={""}
                                 id={animal.id}
-                                alt="Doge Image is not uploaded"
+                                alt="Image is not visible"
+                                onClick={(e) => {
+                                  console.log("Clicked image");
+                                  // open detail animal page
+                                  navigate(
+                                    `/animals/${animal.id}`,
+                                    {
+                                    }
+                                  );
+                                }}
                               />
                             </div>
 
