@@ -139,6 +139,7 @@ const AnimalDetail = () => {
     longitude,
     address,
     medias,
+    events,
   } = animal;
 
   const formatAge = () => {
@@ -201,19 +202,19 @@ const AnimalDetail = () => {
                   <strong>Age:</strong> {formatAge()}
                 </ListGroup.Item>
                 <ListGroup.Item>
+                  <strong>Address:</strong>
+                  {address ? address : " N/A"}
+                </ListGroup.Item>
+                <ListGroup.Item>
                   <strong>Location:</strong>{" "}
-                  {address ? (
-                    address
-                  ) : (
-                    <a
-                      href={`https://www.google.com/maps?q=${latitude},${longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: "blue", textDecoration: "underline" }}
-                    >
-                      {latitude}, {longitude}
-                    </a>
-                  )}
+                  <a
+                    href={`https://www.google.com/maps?q=${latitude},${longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "blue", textDecoration: "underline" }}
+                  >
+                    {latitude}, {longitude}
+                  </a>
                 </ListGroup.Item>
               </ListGroup>
 
@@ -260,18 +261,17 @@ const AnimalDetail = () => {
               )*/}
 
               <h5>History</h5>
-              {/*history.length ? (
+              {events.length ? (
                 <ul>
-                  {history.map((entry, idx) => (
-                    <li key={idx}>
-                      {entry.event || "Unknown event"} on{" "}
-                      {new Date(entry.timestamp).toLocaleDateString()}
+                  {events.map((entry, idx) => (
+                    <li key={entry.id}>              
+                      <strong>{new Date(entry.date).toLocaleString()}</strong>: {entry.description} (Health scale: {entry.health_scale}, Type: {entry.type}, User ID: {entry.user_id})
                     </li>
                   ))}
                 </ul>
               ) : (
                 <p>No history available.</p>
-              )*/}
+              )}
 
               <div className="text-end">
                 <Button variant="secondary" href="/map" className="mt-3">
