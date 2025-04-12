@@ -11,13 +11,10 @@ import {
   ListGroup,
 } from "react-bootstrap";
 import { API_URL } from "../config";
+import Modal from "react-bootstrap/Modal";
 
-function Lightbox({ images, onClose }) {
+// Add inside your component:
 
-  return (<div>
-    
-  </div>);
-}
 
 const AnimalDetail = () => {
   const { animalId } = useParams();
@@ -27,6 +24,7 @@ const AnimalDetail = () => {
 
   const [mediaUrls, setMediaUrls] = useState([]);
   const [animalIcon, setAnimalIcon] = useState(null);
+  const [lightboxUrl, setLightboxUrl] = useState(null);
 
   useEffect(() => {
     const fetchAnimal = async () => {
@@ -229,6 +227,28 @@ const AnimalDetail = () => {
                         alt={`Media ${idx + 1}`}
                         className="img-fluid rounded"
                         style={{
+                          height: "150px",
+                          objectFit: "cover",
+                          width: "100%",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setLightboxUrl(url)} // 👈 open lightbox
+                      />
+                    </Col>
+                  ))}
+                </Row>
+              ) : (
+                <p>No media available.</p>
+              )}
+              {/*mediaUrls.length ? (
+                <Row className="g-2 mb-3">
+                  {mediaUrls.map((url, idx) => (
+                    <Col xs={6} md={4} key={idx}>
+                      <img
+                        src={url}
+                        alt={`Media ${idx + 1}`}
+                        className="img-fluid rounded"
+                        style={{
                           objectFit: "cover",
                         }}
                       />
@@ -237,7 +257,7 @@ const AnimalDetail = () => {
                 </Row>
               ) : (
                 <p>No media available.</p>
-              )}
+              )*/}
 
               <h5>History</h5>
               {/*history.length ? (
@@ -262,6 +282,20 @@ const AnimalDetail = () => {
           </Card>
         </Col>
       </Row>
+      <Modal
+        show={!!lightboxUrl}
+        onHide={() => setLightboxUrl(null)}
+        centered
+        size="lg"
+      >
+        <Modal.Body className="p-0 bg-dark">
+          <img
+            src={lightboxUrl}
+            alt="Full size"
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };
