@@ -33,6 +33,7 @@ import {
   green_icon,
   blue_icon,
   yellow_icon,
+  gray_icon,
   Defaulticon,
 } from "../components/Icons";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
@@ -314,6 +315,7 @@ function MapPage() {
   const [marker_created, setMarkerCreated] = useState(false);
   const [marker_count, setMarkerCount] = useState(0);
   const [allow_marker_creation, setAllowMarkerCreation] = useState(false);
+  const [ghost_markers_show, setGhostMarkersShow] = useState(false);
   const [createAnimalModalShow, setCreateAnimalModalShow] =
     React.useState(false);
   const [selected_marker, setSelectedMarker] = useState(null);
@@ -491,6 +493,8 @@ function MapPage() {
         return blue_icon;
       case "green":
         return green_icon;
+      case "gray":
+        return gray_icon;
       default:
         return Defaulticon;
     }
@@ -505,6 +509,8 @@ function MapPage() {
       return "blue";
     } else if (health_scale > 7 && health_scale <= 10) {
       return "green";
+    } else if (health_scale === -1) {
+      return "gray";
     }
   }
 
@@ -524,6 +530,10 @@ function MapPage() {
     //   $("#cancel-marker-btn").show();
     // }
     // $("#toggle-marker-creation-btn").hide();
+  }
+
+  function set_ghost_btn_state(e) {
+    setGhostMarkersShow((prev) => !prev);
   }
 
   function MyVerticallyCenteredModal(props) {
@@ -600,17 +610,34 @@ function MapPage() {
                 onClick={(e) => {
                   set_btn_state(e);
                 }}
+                title={allow_marker_creation ? "Disable marker creation" : "Enable marker creation"}
               >
                 {allow_marker_creation ? "-" : "+"}
               </Button>
             )}
 
             <Button
+              id="toggle-ghost-show-btn"
+              style={{
+                zIndex: 10000,
+                marginBottom: "70px",
+                marginLeft: "45px",
+              }}
+              className="btn-sm btn-info position-absolute bottom-0 start-0"
+              value="disabled"
+              onClick={(e) => {
+                set_ghost_btn_state(e);
+              }}
+              title={ghost_markers_show ? "Hide ghost animals": "Show ghost animals"}
+            >
+              {ghost_markers_show ? "-" : "+"}
+            </Button>
+            <Button
               id="cancel-marker-btn"
               style={{
                 zIndex: 10000,
                 marginBottom: "70px",
-                marginLeft: "50px",
+                marginLeft: "80px",
               }}
               className="btn-sm btn-secondary position-absolute bottom-0 start-0"
               value="disabled"
@@ -627,7 +654,7 @@ function MapPage() {
                 style={{
                   zIndex: 10000,
                   marginBottom: "70px",
-                  marginLeft: "125px",
+                  marginLeft: "152px",
                 }}
                 className="btn-sm btn-primary position-absolute bottom-0 start-0"
               >
@@ -651,156 +678,157 @@ function MapPage() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {db_animals.map(
-                (animal, i) => (
-                  <div>
-                    <Marker
-                      icon={get_icon(health_to_color(animal.overall_health))}
-                      key={animal.id}
-                      position={[animal.latitude, animal.longitude]}
-                      onClick={() => {
-                        setActivePark(animal);
+                (animal, i) =>
+                  ghost_markers_show | animal.overall_health !== -1 && (
+                    <div>
+                      <Marker
+                        icon={get_icon(health_to_color(animal.overall_health))}
+                        key={animal.id}
+                        position={[animal.latitude, animal.longitude]}
+                        onClick={() => {
+                          setActivePark(animal);
 
-                        // console.log("Active marker:", marker);
-                        setCreateAnimalModalShow((prev) => !prev);
-                      }}
-                    >
-                      <div className=" invisible nadiri">{animal.id}</div>
-                      {!allow_marker_creation ? (
-                        // small popup after click location
-                        <Popup>
-                          <Card
-                            style={{
-                              width: "15rem",
-                              marginTop: "1.5rem",
-                              border: "none",
-                            }}
-                          >
-                            <div className=" relative  min-h-40 flex items-center w-full justify-center imagewrapper_loading ">
-                              <div
-                                className={` w-48 h-32 flex items-center justify-center ${
-                                  !_load ? " hidden" : " flex"
-                                } `}
-                              >
-                                <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                  <svg
-                                    aria-hidden="true"
-                                    className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 "
-                                    viewBox="0 0 100 101"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                      fill="currentColor"
-                                    />
-                                    <path
-                                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                      fill="currentFill"
-                                    />
-                                  </svg>
+                          // console.log("Active marker:", marker);
+                          setCreateAnimalModalShow((prev) => !prev);
+                        }}
+                      >
+                        <div className=" invisible nadiri">{animal.id}</div>
+                        {!allow_marker_creation ? (
+                          // small popup after click location
+                          <Popup>
+                            <Card
+                              style={{
+                                width: "15rem",
+                                marginTop: "1.5rem",
+                                border: "none",
+                              }}
+                            >
+                              <div className=" relative  min-h-40 flex items-center w-full justify-center imagewrapper_loading ">
+                                <div
+                                  className={` w-48 h-32 flex items-center justify-center ${
+                                    !_load ? " hidden" : " flex"
+                                  } `}
+                                >
+                                  <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                    <svg
+                                      aria-hidden="true"
+                                      className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 "
+                                      viewBox="0 0 100 101"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor"
+                                      />
+                                      <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill"
+                                      />
+                                    </svg>
+                                  </div>
                                 </div>
-                              </div>
-                              <img
-                                className={`imagee rounded-md ${
-                                  _load ? " invisible" : "visible"
-                                } `}
-                                src={""}
-                                id={animal.id}
-                                alt="Image is not visible"
-                                onClick={(e) => {
-                                  console.log("Clicked image");
-                                  // open detail animal page
-                                  navigate(
-                                    `/animals/${animal.id}`,
-                                    {
-                                    }
-                                  );
-                                }}
-                              />
-                            </div>
-
-                            <Card.Body className=" ">
-                              {/* <Card.Title>{"name " + animal.name}</Card.Title> */}
-                              <div className=" font-font1">
-                                <span className=" font-medium">Species:</span>
-                                &nbsp;
-                                <span className=" text-gray-600">
-                                  {animal.species || "Not Known"}
-                                </span>
-                              </div>
-                              <div className=" font-font1">
-                                <span className=" font-medium">Name: </span>
-                                &nbsp;
-                                <span className=" text-gray-600">
-                                  {animal.name || "Not Known"}
-                                </span>
-                              </div>
-                              <div className=" font-font1">
-                                <span className=" font-medium">Sex: </span>
-                                &nbsp;
-                                <span className=" text-gray-600">
-                                  {animal.sex || "Not Known"}
-                                </span>
-                              </div>
-                              <div className=" font-font1">
-                                <span className=" font-medium">Rfid_code:</span>
-                                &nbsp;
-                                <span className=" text-gray-600">
-                                  {animal.rfid_code || "Not Known"}
-                                </span>
-                              </div>
-                              <div className=" font-font1">
-                                <span className=" font-medium">Tag_id:</span>
-                                &nbsp;
-                                <span className=" text-gray-600">
-                                  {animal.tag_id || "Not Known"}
-                                </span>
-                              </div>
-                              <div className=" font-font1">
-                                <p className=" font-medium">Description:</p>
-                                <p className=" text-gray-600 mt-1 max-h-14 overflow-y-scroll">
-                                  {animal.description ||
-                                    "Unfortunately we don't have any description at the moment"}
-                                </p>
+                                <img
+                                  className={`imagee rounded-md ${
+                                    _load ? " invisible" : "visible"
+                                  } `}
+                                  src={""}
+                                  id={animal.id}
+                                  alt="Image is not visible"
+                                  onClick={(e) => {
+                                    console.log("Clicked image");
+                                    // open detail animal page
+                                    navigate(`/animals/${animal.id}`, {});
+                                  }}
+                                />
                               </div>
 
-                              <div className=" flex gap-3 mt-6">
-                                <Button
-                                  variant="primary"
-                                  onClick={(e) => {
-                                    show_animal_history_modal(animal);
-                                    // setEdit(false);
-                                    dispatch(editStateAction({ bool: false }));
-                                  }}
-                                >
-                                  Status Update
-                                </Button>
-                                <Button
-                                  variant="primary"
-                                  onClick={(e) => {
-                                    show_animal_history_modal(animal);
-                                    // setEdit(true);
-                                    dispatch(editStateAction({ bool: true }));
-                                  }}
-                                >
-                                  Edit
-                                </Button>
-                              </div>
-                            </Card.Body>
-                          </Card>
-                        </Popup>
-                      ) : (
-                        // new animal small popup
-                        <NewAnimal
-                          marker={animal}
-                          createAnimalModalShow={createAnimalModalShow}
-                          setSelectedMarker={setSelectedMarker}
-                          setCreateAnimalModalShow={setCreateAnimalModalShow}
-                        />
-                      )}
-                    </Marker>
-                  </div>
-                )
+                              <Card.Body className=" ">
+                                {/* <Card.Title>{"name " + animal.name}</Card.Title> */}
+                                <div className=" font-font1">
+                                  <span className=" font-medium">Species:</span>
+                                  &nbsp;
+                                  <span className=" text-gray-600">
+                                    {animal.species || "Not Known"}
+                                  </span>
+                                </div>
+                                <div className=" font-font1">
+                                  <span className=" font-medium">Name: </span>
+                                  &nbsp;
+                                  <span className=" text-gray-600">
+                                    {animal.name || "Not Known"}
+                                  </span>
+                                </div>
+                                <div className=" font-font1">
+                                  <span className=" font-medium">Sex: </span>
+                                  &nbsp;
+                                  <span className=" text-gray-600">
+                                    {animal.sex || "Not Known"}
+                                  </span>
+                                </div>
+                                <div className=" font-font1">
+                                  <span className=" font-medium">
+                                    Rfid_code:
+                                  </span>
+                                  &nbsp;
+                                  <span className=" text-gray-600">
+                                    {animal.rfid_code || "Not Known"}
+                                  </span>
+                                </div>
+                                <div className=" font-font1">
+                                  <span className=" font-medium">Tag_id:</span>
+                                  &nbsp;
+                                  <span className=" text-gray-600">
+                                    {animal.tag_id || "Not Known"}
+                                  </span>
+                                </div>
+                                <div className=" font-font1">
+                                  <p className=" font-medium">Description:</p>
+                                  <p className=" text-gray-600 mt-1 max-h-14 overflow-y-scroll">
+                                    {animal.description ||
+                                      "Unfortunately we don't have any description at the moment"}
+                                  </p>
+                                </div>
+
+                                <div className=" flex gap-3 mt-6">
+                                  <Button
+                                    variant="primary"
+                                    onClick={(e) => {
+                                      show_animal_history_modal(animal);
+                                      // setEdit(false);
+                                      dispatch(
+                                        editStateAction({ bool: false })
+                                      );
+                                    }}
+                                  >
+                                    Status Update
+                                  </Button>
+                                  <Button
+                                    variant="primary"
+                                    onClick={(e) => {
+                                      show_animal_history_modal(animal);
+                                      // setEdit(true);
+                                      dispatch(editStateAction({ bool: true }));
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                </div>
+                              </Card.Body>
+                            </Card>
+                          </Popup>
+                        ) : (
+                          // new animal small popup
+                          <NewAnimal
+                            marker={animal}
+                            createAnimalModalShow={createAnimalModalShow}
+                            setSelectedMarker={setSelectedMarker}
+                            setCreateAnimalModalShow={setCreateAnimalModalShow}
+                          />
+                        )}
+                      </Marker>
+                    </div>
+                  )
                 // --
               )}
               {

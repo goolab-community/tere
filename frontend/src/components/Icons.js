@@ -5,6 +5,7 @@ import red_icon_image from '../assets/icons/marker-red-icon.png';
 import yellow_icon_image from '../assets/icons/marker-yellow-icon.png';
 import blue_icon_image from '../assets/icons/marker-blue-icon.png';
 import green_icon_image from '../assets/icons//marker-green-icon.png';
+import gray_icon_image from '../assets/icons/marker-gray-icon.png';
 
 
 const red_icon = L.icon({
@@ -32,6 +33,12 @@ const green_icon = L.icon({
   iconSize: [28, 46],
   iconAnchor: [17, 46],
 });
+const gray_icon = L.icon({
+  iconUrl: gray_icon_image,
+  shadowUrl: iconShadow,
+  iconSize: [28, 46],
+  iconAnchor: [17, 46],
+});
 const Defaulticon = L.icon({
   iconUrl: red_icon_image,
   shadowUrl: iconShadow,
@@ -39,4 +46,4 @@ const Defaulticon = L.icon({
   iconAnchor: [17, 46],
 });
 
-export {red_icon, green_icon, blue_icon, yellow_icon, Defaulticon}
+export {red_icon, green_icon, blue_icon, yellow_icon, gray_icon, Defaulticon}
