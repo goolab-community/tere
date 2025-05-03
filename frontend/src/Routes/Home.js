@@ -257,7 +257,7 @@ const Home = () => {
               >
                 <li className="ftco-animate">
                   <a
-                    href="https://facebook.com"
+                    href="https://www.facebook.com/people/Tere-APP/61573272732037/"
                     target="_blank"
                     rel="noopener noreferrer"
                     data-toggle="tooltip"
@@ -295,7 +295,7 @@ const Home = () => {
                 </li>
                 <li className="ftco-animate">
                   <a
-                    href="https://youtube.com"
+                    href="https://www.youtube.com/channel/UCN7_qurX9iSbTubyPmSQnIA"
                     target="_blank"
                     rel="noopener noreferrer"
                     data-toggle="tooltip"
