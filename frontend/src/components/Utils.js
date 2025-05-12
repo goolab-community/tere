@@ -36,22 +36,23 @@ function SliderWithInputFormControl({id, name, value, max, setValue}) {
 }
 
 
-function uploadFile(file, signedUrl) {
+async function uploadFile(file, signedUrl) {
   console.log("Uploading file to S3:", file.type, "URL:", signedUrl);
   const config = {
     headers: {
-      // 'Authorization': `Bearer ${localStorage.getItem("token")}`,
-      'Content-Type': 'application/octet-stream',
+      // Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/octet-stream",
     },
   };
 
-  axios.put(signedUrl, file, config)
-    .then(response => {
-        console.log('File uploaded successfully:', response);
-    })
-    .catch(error => {
-        console.error('Error uploading file:', error);
-    });
+  try {
+    const response = await axios.put(signedUrl, file, config);
+    console.log("File uploaded successfully:", response);
+    return response;
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
 }
 
 

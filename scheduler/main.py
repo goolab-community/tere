@@ -55,15 +55,15 @@ while True:
         else:
             SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{db_user}:{db_password}@/{db_name}?host={db_host}"
 
-        logging.info(SQLALCHEMY_DATABASE_URL)
+        # logging.info(SQLALCHEMY_DATABASE_URL)
         # Create a new SQLAlchemy engine instance
         engine = create_engine(SQLALCHEMY_DATABASE_URL)
-        logging.info("-------- 2222 --------")
         # Create a new session
         Session = sessionmaker(bind=engine)
         session = Session()
         # query animals, with sqlalchemy ORM
-        query = session.query(Animal).filter(Animal.overall_health != -1)
+        # query = session.query(Animal).filter(Animal.overall_health != -1)
+        query = session.query(Animal)
         animals = query.all()
         logging.info(f"Animals: {animals}")
         # iterate over animals
@@ -71,7 +71,9 @@ while True:
             # check if animal health state is not updated more than a week
             logging.info(f"Animal: {animal.id}, Health State: {animal.overall_health}, Updated At: {animal.updated_at}")
             if True or animal.updated_at < (datetime.datetime.now() - datetime.timedelta(days=7)):
-                if animal.overall_health == 0 or animal.overall_health is None:
+                logging.info(animal.overall_health)
+                if animal.overall_health <= -1 or animal.overall_health == 0 or animal.overall_health is None:
+                    logging.info(animal.overall_health)
                     # animal is a ghost
                     animal.overall_health = -1
                     logging.info(f"{animal.id} Animal is a ghost")
@@ -79,7 +81,7 @@ while True:
                     # increment health status by one
                     animal.overall_health -= 1
                     logging.info(f"{animal.id} Animal health state decremented to")
-
+            logging.info(animal.overall_health)
         session.commit()
         # close session
         session.close()

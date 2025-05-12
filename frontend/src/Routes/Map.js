@@ -91,7 +91,7 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
     }
   });
 
-  function submit_history(e) {
+  async function submit_history(e) {
     console.log(e);
     // handleClose();
     console.log(
@@ -166,24 +166,24 @@ function StatusUpdateModal({ handleShow, handleClose, show, animal, edit }) {
       },
     };
 
-    axios
-      .post(`${API_URL}/history/history`, history, config)
-      .then((response) => {
-        console.log(response);
-        if (response.data.upload_url != null || selected_file != null) {
-          uploadFile(selected_file, response.data.upload_url);
-          alert("History updated successfully");
-        } else {
-          alert("History updated without media");
-        }
-        // goto home page
-        window.location.href = "/history";
-      })
-      .catch((error) => {
-        console.log(history);
-        console.log(error);
-        alert("Error updating history");
-      });
+    try {
+      const response = await axios.post(`${API_URL}/history/history`, history, config);
+      console.log(response);
+
+      if (response.data.upload_url != null && selected_file != null) {
+        await uploadFile(selected_file, response.data.upload_url);
+        alert("History updated successfully");
+      } else {
+        alert("History updated without media");
+      }
+
+      // Redirect after successful upload
+      window.location.href = "/history";
+    } catch (error) {
+      console.log(history);
+      console.error("Error:", error);
+      alert("Error updating history");
+    }
   }
 
   return (

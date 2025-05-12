@@ -53,3 +53,16 @@ services:
       PGADMIN_DEFAULT_PASSWORD: tere
     depends_on:
       - tere-cloudsql-proxy
+  # tere-scheduler:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile_scheduler
+  #   volumes:
+  #     - ./scheduler:/app
+  #   env_file:
+  #     - ./.env
+  #   container_name: tere-scheduler
+  #   depends_on:
+  #     - tere-cloudsql-proxy
+  #     - tere-api
+  #   restart: unless-stopped
