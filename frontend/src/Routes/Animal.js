@@ -198,11 +198,11 @@ const AnimalDetail = () => {
                 <ListGroup.Item>
                   <strong>RFID Code:</strong> {rfid_code || "N/A"}
                 </ListGroup.Item>
-                <ListGroup.Item>
+                {/*<ListGroup.Item>
                   <strong>Age:</strong> {formatAge()}
-                </ListGroup.Item>
+                </ListGroup.Item>*/}
                 <ListGroup.Item>
-                  <strong>Address:</strong>
+                  <strong>Address: </strong>
                   {address ? address : " N/A"}
                 </ListGroup.Item>
                 <ListGroup.Item>

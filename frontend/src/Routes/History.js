@@ -101,7 +101,7 @@ function History() {
   return (
     <div
       className="mt-[--margin-top]"
-      style={{ marginLeft: "3%", marginRight: "5%" }}
+      style={{ marginLeft: "3%", marginTop:"10%", marginRight: "5%" }}
       ref={wrapperRef}
     />
   );
